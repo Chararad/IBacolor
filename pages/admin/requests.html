@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Manage Requests | iBacolor</title><link rel="stylesheet" href="../../css/style.css"><link rel="stylesheet" href="../../css/components.css"><link rel="stylesheet" href="../../css/responsive.css">
+  </head>
+  <body data-page="admin/requests" class="admin-view">
+    <div id="app">
+      <aside class="admin-sidebar"><a class="admin-sidebar-brand" href="../admin/dashboard.html"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt=""><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
+        <p class="admin-label">Workspace
+        </p><a href="../admin/dashboard.html">▦ Dashboard</a><a href="../admin/requests.html">▤ Service requests</a><a href="../admin/documents.html">▧ Documents</a><a href="../admin/reports.html">! Community reports</a>
+        <p class="admin-label">Content
+        </p><a href="../admin/news.html">✦ News</a><a href="../admin/services.html">▣ Services</a><a href="../admin/hotlines.html">☎ Hotlines</a><a href="../admin/users.html">◯ Users</a>
+        <div class="admin-sidebar-footer"><a href="../../index.html">← Public website</a>
+        </div>
+      </aside>
+      <header class="site-header">
+        <div class="container header-inner"><a class="brand" href="../../index.html"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt=""><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a><button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button>
+          <div id="main-nav">
+            <nav class="site-nav" aria-label="admin navigation">
+              <div class="nav-links"><a href="../admin/dashboard.html">Dashboard</a><a href="../admin/requests.html">Requests</a><a href="../admin/reports.html">Reports</a><a href="../admin/documents.html">Documents</a><a href="../admin/users.html">Users</a>
+                <div class="nav-group"><span>Content management</span><a href="../admin/news.html">News</a><a href="../admin/services.html">Services</a><a href="../admin/hotlines.html">Hotlines</a>
+                </div>
+              </div><a class="button button-small button-outline" href="../../index.html">Sign out</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+      <main>
+        <section class="page-header">
+          <div class="container">
+            <div class="breadcrumbs"><a href="../../index.html">Home</a><span>/</span>Requests
+            </div>
+            <p class="eyebrow">Administration
+            </p><h1>Service requests</h1>
+            <p class="lead">Review and manage resident service requests.
+            </p>
+          </div>
+        </section>
+        <section class="section">
+          <div class="container">
+            <article class="card ">
+              <div class="filter-bar">
+                <label>Search requests<input id="admin-request-search" type="search" placeholder="Reference, resident or service">
+                </label>
+                <label>Status<select id="admin-request-status"><option>All statuses</option><option>Under Review</option><option>Resolved</option><option>Submitted</option><option>In Progress</option></select>
+                </label>
+              </div>
+              <p id="admin-request-count" class="results-count" aria-live="polite">4 of 4 requests shown
+              </p>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Reference
+                      </th>
+                      <th>Applicant
+                      </th>
+                      <th>Service
+                      </th>
+                      <th>Submitted
+                      </th>
+                      <th>Status
+                      </th>
+                      <th>Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>IB-2026-00124</strong>
+                      </td>
+                      <td>Maria Santos
+                      </td>
+                      <td>Business Permit
+                      </td>
+                      <td>Sep 20, 2026
+                      </td>
+                      <td><span class="status status-under-review">Under Review</span>
+                      </td>
+                      <td class="table-actions"><a class="button button-small button-outline" href="request-details.html">View</a><button class="button button-small button-ghost" type="button">Update</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>IB-2026-00118</strong>
+                      </td>
+                      <td>Maria Santos
+                      </td>
+                      <td>Barangay Clearance
+                      </td>
+                      <td>Sep 15, 2026
+                      </td>
+                      <td><span class="status status-resolved">Resolved</span>
+                      </td>
+                      <td class="table-actions"><a class="button button-small button-outline" href="request-details.html">View</a><button class="button button-small button-ghost" type="button">Update</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>IB-2026-00105</strong>
+                      </td>
+                      <td>Jose Dela Cruz
+                      </td>
+                      <td>Civil Registry Certificate
+                      </td>
+                      <td>Sep 08, 2026
+                      </td>
+                      <td><span class="status status-submitted">Submitted</span>
+                      </td>
+                      <td class="table-actions"><a class="button button-small button-outline" href="request-details.html">View</a><button class="button button-small button-ghost" type="button">Update</button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><strong>IB-2026-00098</strong>
+                      </td>
+                      <td>Ana Reyes
+                      </td>
+                      <td>Building Permit
+                      </td>
+                      <td>Sep 01, 2026
+                      </td>
+                      <td><span class="status status-in-progress">In Progress</span>
+                      </td>
+                      <td class="table-actions"><a class="button button-small button-outline" href="request-details.html">View</a><button class="button button-small button-ghost" type="button">Update</button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </article>
+          </div>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <div class="container footer-grid">
+          <div><a class="brand brand-footer" href="../../index.html"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt=""><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a>
+            <p>A simpler way to access municipal information and public services.
+            </p>
+          </div>
+          <div><h3>Explore</h3><a href="../services.html">Services</a><a href="../news.html">News and announcements</a><a href="../hotlines.html">Emergency hotlines</a>
+          </div>
+          <div><h3>Need assistance?</h3>
+            <p>Municipal Hall<br>(045) 900-1000<br>Mon–Fri, 8:00 AM–5:00 PM
+            </p>
+          </div>
+        </div>
+        <div class="container footer-bottom"><span>© 2026 Municipality of Bacolor</span>
+        </div>
+      </footer>
+      <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content"><button class="modal-close" type="button" aria-label="Close">×</button><h2>iBacolor</h2>
+          <p>This dialog is part of the frontend component foundation.
+          </p>
+        </div>
+      </div>
+    </div><script src="../../js/mock-data.js"></script><script src="../../js/data-store.js"></script><script src="../../js/navigation.js"></script><script src="../../js/main.js"></script>
+  </body>
+</html>

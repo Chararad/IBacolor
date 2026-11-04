@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+  <!-- Page metadata -->
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Community Reports | iBacolor</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <link rel="stylesheet" href="../../css/components.css" />
+    <link rel="stylesheet" href="../../css/responsive.css" />
+  </head>
+  <body data-page="resident/reports">
+    <div id="app">
+      <!-- Site header and navigation -->
+      <header class="site-header">
+        <div class="container header-inner">
+          <a class="brand" href="../../main.php"
+            ><img
+              class="brand-logo"
+              src="../../assets/bacolor-seal.webp"
+              alt=""
+            /><span
+              ><strong>iBacolor</strong
+              ><small>Municipal Public Service Portal</small></span
+            ></a
+          ><button
+            class="menu-toggle"
+            aria-expanded="false"
+            aria-controls="main-nav"
+          >
+            Menu
+          </button>
+          <div id="main-nav">
+            <nav class="site-nav" aria-label="resident navigation">
+              <div class="nav-links">
+                <a href="../resident/dashboard.php">Dashboard</a
+                ><a href="../resident/requests.php">My Requests</a
+                ><a href="../resident/reports.php">Community Reports</a
+                ><a href="../resident/profile.php">Profile</a>
+              </div>
+              <a
+                class="button button-small button-outline"
+                href="../../main.php"
+                >Sign out</a
+              >
+            </nav>
+          </div>
+        </div>
+      </header>
+      <!-- Main page content -->
+      <main>
+        <section class="page-header">
+          <div class="container">
+            <div class="breadcrumbs">
+              <a href="../../main.php">Home</a><span>/</span>Community Reports
+            </div>
+            <p class="eyebrow">Resident portal</p>
+            <h1>Community reports</h1>
+            <p class="lead">
+              Report a local issue and follow up on concerns submitted to the
+              municipality.
+            </p>
+          </div>
+        </section>
+        <section class="section">
+          <div class="container content-grid">
+            <form class="form-card" data-feedback-form="">
+              <p class="eyebrow">New report</p>
+              <h2>Report an issue</h2>
+              <label
+                >Category<select required="">
+                  <option value="">Select a category</option>
+                  <option>Road concern</option>
+                  <option>Waste management</option>
+                  <option>Public safety</option>
+                  <option>Other</option>
+                </select>
+              </label>
+              <label
+                >Location<input
+                  required=""
+                  placeholder="Barangay or specific location"
+                />
+              </label>
+              <label
+                >Description<textarea
+                  required=""
+                  rows="5"
+                  placeholder="Tell us what happened and when."
+                ></textarea>
+              </label>
+              <label>Photo or document (optional)<input type="file" /> </label
+              ><button class="button" type="submit">Submit report</button
+              ><small class="form-help"
+                >Add a photo to help describe the location (optional).</small
+              >
+            </form>
+            <div>
+              <article class="card">
+                <div class="section-heading compact">
+                  <h2>My reports</h2>
+                  <span class="status status-under-review">Under Review</span>
+                </div>
+                <div class="report-item">
+                  <strong>CR-2026-0041</strong
+                  ><span>Damaged roads · Sep 21, 2026</span>
+                  <p>Road lighting needs repair near the covered court.</p>
+                  <span class="status status-under-review">Under Review</span>
+                </div>
+                <div class="report-item">
+                  <strong>CR-2026-0038</strong
+                  ><span>Garbage disposal · Sep 17, 2026</span>
+                  <p>Request for additional collection schedule.</p>
+                  <span class="status status-submitted">Submitted</span>
+                </div>
+                <div class="report-item">
+                  <strong>CR-2026-0030</strong
+                  ><span>Flooding · Sep 07, 2026</span>
+                  <p>Drainage issue cleared after cleanup and desilting.</p>
+                  <span class="status status-resolved">Resolved</span>
+                </div>
+                <div class="report-item">
+                  <strong>CR-2026-0022</strong
+                  ><span>Streetlight concern · Aug 30, 2026</span>
+                  <p>Streetlight repaired and maintenance completed.</p>
+                  <span class="status status-closed">Closed</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+      </main>
+      <!-- Site footer -->
+      <footer class="site-footer">
+        <div class="container footer-grid">
+          <div>
+            <a class="brand brand-footer" href="../../main.php"
+              ><img
+                class="brand-logo"
+                src="../../assets/bacolor-seal.webp"
+                alt=""
+              /><span
+                ><strong>iBacolor</strong
+                ><small>Municipal Public Service Portal</small></span
+              ></a
+            >
+            <p>
+              A simpler way to access municipal information and public services.
+            </p>
+          </div>
+          <div>
+            <h3>Explore</h3>
+            <a href="../services.php">Services</a
+            ><a href="../news.php">News and announcements</a
+            ><a href="../hotlines.php">Emergency hotlines</a>
+          </div>
+          <div>
+            <h3>Need assistance?</h3>
+            <p>
+              Municipal Hall<br />(045) 900-1000<br />Mon–Fri, 8:00 AM–5:00 PM
+            </p>
+          </div>
+        </div>
+        <div class="container footer-bottom">
+          <span>© 2026 Municipality of Bacolor</span>
+        </div>
+      </footer>
+      <div
+        class="modal"
+        id="demo-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+      >
+        <div class="modal-content">
+          <button class="modal-close" type="button" aria-label="Close">
+            ×
+          </button>
+          <h2>iBacolor</h2>
+          <p>This dialog is part of the frontend component foundation.</p>
+        </div>
+      </div>
+    </div>
+    <!-- Page scripts -->
+    <script src="../../js/mock-data.js"></script>
+    <script src="../../js/data-store.js"></script>
+    <script src="../../js/navigation.js"></script>
+    <script src="../../js/main.js"></script>
+  </body>
+</html>

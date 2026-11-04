@@ -1,0 +1,340 @@
+/* Mock data only. Replace with backend data in a later phase. */
+const MOCK_DATA = {
+  municipality: {
+    name: "Municipality of Bacolor, Province of Pampanga",
+    shortName: "Bacolor",
+    address: "Municipal Hall, Poblacion, Bacolor, Pampanga",
+    officeHours: "Monday to Friday, 8:00 AM to 5:00 PM",
+    phone: "(045) 900-1000",
+    email: "municipalityofbacolor@gmail.com",
+    website: "https://www.bacolor.gov.ph",
+    facebook: "https://www.facebook.com/BacolorPampanga",
+    logo: "Municipal Seal",
+    about: "Bacolor is a historic municipality in Pampanga known for its strong community spirit, active local governance, and public service programs for residents and visitors.",
+    history: "The town of Bacolor has deep roots in Pampanga's colonial and provincial history, with longstanding civic institutions and community traditions that continue to shape its identity today.",
+    vision: "A resilient, inclusive, and service-oriented municipality that promotes public welfare, community development, and transparent governance.",
+    mission: "To provide accessible, responsive, and efficient public services that improve the quality of life of Bacolor residents while sustaining community growth and safety.",
+    quickFacts: [
+      "21 barangays under the municipality",
+      "Located in the Province of Pampanga",
+      "Public services available through the municipal hall and local offices",
+      "Annual celebrations include town fiestas, civic programs, and community events"
+    ],
+    annualCelebrations: [
+      "Town Fiesta and community celebrations",
+      "Municipal anniversary and civic programs",
+      "Environmental and clean-up campaigns",
+      "Holiday and disaster preparedness activities"
+    ]
+  },
+  barangays: [
+    "Anunas",
+    "Balas",
+    "Cabambangan",
+    "Cabetican",
+    "Calibutbut",
+    "Concepcion",
+    "Cuayan",
+    "Dela Paz",
+    "Dolores",
+    "Lourdes",
+    "Magliman",
+    "Maliwalu",
+    "Mambog",
+    "Mañebeng",
+    "Poblacion",
+    "San Antonio",
+    "San Isidro",
+    "Santa Barbara",
+    "Santa Ines",
+    "Tibag",
+    "Zaragosa"
+  ],
+  services: [
+    {
+      id: "business-permit",
+      name: "Business Permit",
+      description: "Apply for a new or renewed permit for operating a business or enterprise in Bacolor.",
+      requirements: ["Valid government ID", "Barangay clearance", "Proof of business address", "Business registration details"],
+      status: "Available",
+      category: "Business",
+      office: "Municipal Treasurer's Office",
+      fees: "Fee varies depending on business type and category",
+      processing: "Application review and payment processing are handled through the municipal office.",
+      instructions: "Submit the completed application and required supporting documents at the office counter or designated municipal intake desk."
+    },
+    {
+      id: "civil-registry",
+      name: "Civil Registry Certificate",
+      description: "Request certified copies of birth, marriage, or death certificates and related civil registry records.",
+      requirements: ["Valid government ID", "Completed request form", "Supporting record details", "Barangay certification when required"],
+      status: "Available",
+      category: "Civil Registry",
+      office: "Municipal Civil Registry Office",
+      fees: "Processing fee depends on the type of certificate and request",
+      processing: "Requests are processed after verification of records and required documentation.",
+      instructions: "Provide the requested record details and submit the application with any required supporting papers."
+    },
+    {
+      id: "barangay-clearance",
+      name: "Barangay Clearance",
+      description: "Secure a barangay clearance for employment, business, or local transactions requiring local certification.",
+      requirements: ["Valid government ID", "Proof of residency", "Barangay certification", "Application form"],
+      status: "Available",
+      category: "Community",
+      office: "Barangay Office",
+      fees: "Fee may vary depending on the purpose of the clearance",
+      processing: "Barangay review and approval are required before the clearance is released.",
+      instructions: "Coordinate with the barangay where you are residing and submit the necessary documents to the local clerk or office."
+    },
+    {
+      id: "building-permit",
+      name: "Building Permit",
+      description: "Secure approval for construction, renovation, or structural works that require municipal engineering review.",
+      requirements: ["Building plans", "Lot title or authorization", "Valid government ID", "Scope of work details"],
+      status: "In review",
+      category: "Engineering",
+      office: "Municipal Engineering Office",
+      fees: "Fee varies based on project scope and project cost estimate",
+      processing: "Project documents are assessed by the engineering office before approval is issued.",
+      instructions: "Submit the plans and requirements to the engineering office for evaluation and follow-up review."
+    },
+    {
+      id: "community-tax-certificate",
+      name: "Community Tax Certificate",
+      description: "Request a cedula or community tax certificate for personal or local compliance purposes.",
+      requirements: ["Valid ID", "Tax declaration or proof of residence", "Application form"],
+      status: "Available",
+      category: "Finance",
+      office: "Municipal Treasurer's Office",
+      fees: "Community tax fees apply according to municipal schedule",
+      processing: "Payment and verification are done at the treasurer's office.",
+      instructions: "Present the required documents to the municipal treasurer and complete the payment process."
+    },
+    {
+      id: "health-certificate",
+      name: "Health Certificate",
+      description: "Request a health certificate or related public health service required for employment, transactions, or medical clearance.",
+      requirements: ["Medical request form", "Medical exam results", "Barangay clearance", "Official receipt"],
+      status: "Available",
+      category: "Health",
+      office: "Rural Health Unit",
+      fees: "₱100–₱200 for health certificates; ₱150–₱500 for laboratory tests depending on service",
+      processing: "Assessment and medical service processing are handled by the local health unit.",
+      instructions: "Submit the doctor’s request or medical document and any supporting papers to the health office."
+    },
+    {
+      id: "social-assistance",
+      name: "Social Assistance",
+      description: "Request assistance for medical, food, emergency, disaster, and family support programs administered by the municipality.",
+      requirements: ["Valid ID", "Barangay certification", "Medical abstract or prescription where applicable", "Incident or damage report if needed"],
+      status: "Available",
+      category: "Social Welfare",
+      office: "Municipal Social Welfare and Development Office",
+      fees: "No direct fee for government-funded support programs; requirements vary by program",
+      processing: "Applications are assessed through social work intervention and referral services.",
+      instructions: "Visit the MSWDO or barangay assistance desk and provide the required documents for evaluation."
+    },
+    {
+      id: "senior-pwd-assistance",
+      name: "Senior / PWD / Women and Children Assistance",
+      description: "Apply for support programs, registration, and inclusion-based assistance for eligible residents.",
+      requirements: ["Registration form", "Valid ID", "Barangay certification", "Supporting documents if applicable"],
+      status: "Available",
+      category: "Social Welfare",
+      office: "Municipal Social Welfare and Development Office",
+      fees: "Free for government-supported programs where applicable",
+      processing: "Program eligibility is determined by the office after document review and assessment.",
+      instructions: "Submit the application and required supporting documents for review and case assessment."
+    }
+  ],
+  officeDirectory: [
+    {
+      office: "Office of the Mayor",
+      official: "Mayor Diman Datu",
+      telephone: "(045) 900-1000",
+      email: "municipalityofbacolor@gmail.com",
+      website: "https://www.bacolor.gov.ph",
+      location: "Municipal Hall, Bacolor, Pampanga",
+      services: ["Executive oversight", "Administrative coordination", "Policy direction"],
+      category: "Executive"
+    },
+    {
+      office: "Municipal Treasurer's Office",
+      official: "Treasurer / staff",
+      telephone: "(045) 900-1000",
+      email: "municipalityofbacolor@gmail.com",
+      website: "https://www.bacolor.gov.ph",
+      location: "Municipal Hall, Bacolor, Pampanga",
+      services: ["Tax payment", "Community tax certificate", "Business-related payments"],
+      category: "Finance"
+    },
+    {
+      office: "Municipal Civil Registry Office",
+      official: "Civil Registrar / staff",
+      telephone: "Not provided",
+      email: "Not provided",
+      website: "Not provided",
+      location: "Municipal Hall, Bacolor, Pampanga",
+      services: ["Birth certificates", "Marriage certificates", "Death certificates", "Civil registry corrections"],
+      category: "Civil Registry"
+    },
+    {
+      office: "Municipal Engineer's Office",
+      official: "Engr. Marietta G. Rodriguez",
+      telephone: "0917-833-7397",
+      email: "Not provided",
+      website: "Not provided",
+      location: "Municipal Hall Building, Bacolor, Pampanga",
+      services: ["Infrastructure planning", "Building permit evaluation", "Public works monitoring"],
+      category: "Engineering"
+    },
+    {
+      office: "Municipal Social Welfare and Development Office",
+      official: "MSWDO staff",
+      telephone: "Not provided",
+      email: "Not provided",
+      website: "Not provided",
+      location: "Municipal Hall, Bacolor, Pampanga",
+      services: ["Financial assistance", "Medical assistance", "Emergency aid", "Social case assessment"],
+      category: "Social Welfare"
+    },
+    {
+      office: "Rural Health Unit",
+      official: "RHU staff",
+      telephone: "Not provided",
+      email: "Not provided",
+      website: "Not provided",
+      location: "Municipal health facility, Bacolor, Pampanga",
+      services: ["Health certificates", "Medical services", "Public health programs"],
+      category: "Health"
+    },
+    {
+      office: "Municipal Planning and Development Office",
+      official: "Planning and Development staff",
+      telephone: "Not provided",
+      email: "Not provided",
+      website: "Not provided",
+      location: "Municipal Hall, Bacolor, Pampanga",
+      services: ["Development planning", "Programs and projects", "Local development review"],
+      category: "Planning"
+    },
+    {
+      office: "Municipal Agriculture Office",
+      official: "Agriculture staff",
+      telephone: "Not provided",
+      email: "Not provided",
+      website: "Not provided",
+      location: "Municipal Hall, Bacolor, Pampanga",
+      services: ["Agriculture support", "Community programs", "Farm-related assistance"],
+      category: "Agriculture"
+    }
+  ],
+  emergencyContacts: [
+    {
+      office: "Municipal Disaster Risk Reduction Management Office (MDRRMO - Bacolor)",
+      official: "Mr. Joel D. Samia",
+      telephone: "Smart: 0929-446-1940 | Globe: 0966-136-5586",
+      email: "mdrrmcbacolor@gmail.com",
+      social: "https://www.facebook.com/BacolorRescue.DIMANteam",
+      location: "XMW2+RM3, Barangay Cabambangan, Bacolor, Pampanga",
+      services: ["Disaster preparedness", "Emergency rescue", "Risk assessment", "Disaster mitigation"],
+      category: "Emergency"
+    },
+    {
+      office: "Bacolor Police Station (PNP)",
+      official: "PMA Jessie James M. Domingo",
+      telephone: "(045) 901-0833",
+      email: "Not provided",
+      social: "https://www.facebook.com/PulisBaculud/",
+      location: "XMW2+GM2, National Road, Bacolor, 2001 Pampanga",
+      services: ["Law enforcement", "Public safety", "Traffic management", "Community policing"],
+      category: "Emergency"
+    },
+    {
+      office: "Bacolor Fire Station (BFP)",
+      official: "FSINSP Jovel E. Hernandez",
+      telephone: "(045) 436-1828 | 0923-103-8363",
+      email: "Not provided",
+      social: "https://www.facebook.com/p/Bacolor-Fire-Station-BFP-R3-61569884632047/",
+      location: "XMW2+VJJ, Bacolor, Pampanga",
+      services: ["Fire prevention", "Fire suppression", "Emergency rescue", "Fire safety education"],
+      category: "Emergency"
+    },
+    {
+      office: "Bacolor Municipal Hospital / Rural Health Unit",
+      official: "Health Unit staff",
+      telephone: "Not provided",
+      email: "Not provided",
+      social: "Not provided",
+      location: "Municipal health facility, Bacolor, Pampanga",
+      services: ["Medical consultation", "Health emergencies", "Public health support"],
+      category: "Health"
+    }
+  ],
+  hotlines: [
+    { office: "Municipality of Bacolor", number: "(045) 900-1000", description: "General municipal inquiries and office directory." },
+    { office: "MDRRMO - Bacolor", number: "Smart: 0929-446-1940 | Globe: 0966-136-5586", description: "Disaster response, rescue operations, emergency coordination." },
+    { office: "Bacolor Police Station", number: "(045) 901-0833", description: "Public safety, police assistance, and traffic matters." },
+    { office: "Bacolor Fire Station", number: "(045) 436-1828 | 0923-103-8363", description: "Fire prevention, rescue response, and emergency fire assistance." }
+  ],
+  news: [
+    { id: 1, title: "Bacolor launches iBacolor public service portal", date: "September 18, 2026", tag: "Announcement", summary: "Residents can now find municipal services, contact details, and request guidance in one place.", content: "The Municipality of Bacolor has launched a new public-facing portal to help residents understand available access points for government services, municipal offices, and emergency contact information. The portal is intended to make common transactions easier to locate and understand." },
+    { id: 2, title: "Scheduled maintenance of municipal offices", date: "September 12, 2026", tag: "Advisory", summary: "Selected offices will observe adjusted hours for internal systems maintenance and office servicing.", content: "Selected municipal offices will adjust service hours during the scheduled maintenance period. Residents are encouraged to plan their transactions and contact the office in advance for urgent concerns." },
+    { id: 3, title: "Community clean-up drive this October", date: "September 05, 2026", tag: "Community", summary: "Join the municipal clean-up drive across participating barangays to keep public spaces safe and healthy.", content: "The municipality is organizing a clean-up drive as part of its environmental and community safety programs. Barangays and residents are encouraged to participate and support public cleanliness initiatives." },
+    { id: 4, title: "Public health and safety reminders", date: "August 28, 2026", tag: "Health", summary: "Residents are reminded to coordinate with the Rural Health Unit for preventive services and health records.", content: "The Municipal Health Office encourages residents to keep updated with health services, preventive care, and public health advisories available through local facilities and barangay coordination." }
+  ],
+  residentProfile: {
+    fullName: "Maria Santos",
+    email: "maria.santos@email.com",
+    mobile: "0917 123 4567",
+    municipality: "Bacolor",
+    province: "Pampanga",
+    barangay: "Cabambangan",
+    address: "123 Example Street, Cabambangan, Bacolor, Pampanga",
+    accountStatus: "Active",
+    verificationStatus: "Verified",
+    dateOfBirth: "1995-04-12"
+  },
+  requests: [
+    { reference: "IB-2026-00124", service: "Business Permit", submitted: "Sep 20, 2026", updated: "Sep 22, 2026", status: "Under Review", applicant: "Maria Santos", remarks: "Application reviewed by municipal office." },
+    { reference: "IB-2026-00118", service: "Barangay Clearance", submitted: "Sep 15, 2026", updated: "Sep 16, 2026", status: "Resolved", applicant: "Maria Santos", remarks: "Clearance released and completed." },
+    { reference: "IB-2026-00105", service: "Civil Registry Certificate", submitted: "Sep 08, 2026", updated: "Sep 09, 2026", status: "Submitted", applicant: "Jose Dela Cruz", remarks: "Waiting for verification." },
+    { reference: "IB-2026-00098", service: "Building Permit", submitted: "Sep 01, 2026", updated: "Sep 03, 2026", status: "In Progress", applicant: "Ana Reyes", remarks: "Plans are under engineering review." }
+  ],
+  reports: [
+    { id: "CR-2026-0041", category: "Damaged roads", location: "Barangay Cabambangan", submitted: "Sep 21, 2026", status: "Under Review", summary: "Road lighting needs repair near the covered court.", barangay: "Cabambangan", remarks: "Awaiting inspection." },
+    { id: "CR-2026-0038", category: "Garbage disposal", location: "Barangay San Isidro", submitted: "Sep 17, 2026", status: "Submitted", summary: "Request for additional collection schedule.", barangay: "San Isidro", remarks: "Case filed for municipal coordination." },
+    { id: "CR-2026-0030", category: "Flooding", location: "Barangay Santa Barbara", submitted: "Sep 07, 2026", status: "Resolved", summary: "Drainage issue cleared after cleanup and desilting.", barangay: "Santa Barbara", remarks: "Resolved and closed by local field team." },
+    { id: "CR-2026-0022", category: "Streetlight concern", location: "Barangay Poblacion", submitted: "Aug 30, 2026", status: "Closed", summary: "Streetlight repaired and maintenance completed.", barangay: "Poblacion", remarks: "Maintenance completed and closed." }
+  ],
+  reportCategories: [
+    "Damaged roads",
+    "Garbage disposal",
+    "Flooding",
+    "Drainage concern",
+    "Streetlight concern",
+    "Public facilities",
+    "Environmental concerns",
+    "Public safety",
+    "Water supply",
+    "Electrical hazards",
+    "Traffic obstruction",
+    "Sanitation",
+    "Stray animals",
+    "Noise complaint",
+    "Dangerous trees",
+    "Disaster-related concern"
+  ],
+  documents: [
+    { name: "Business Permit Application", owner: "Maria Santos", type: "Application form", uploaded: "Sep 20, 2026", status: "Accepted" },
+    { name: "Valid Government ID", owner: "Maria Santos", type: "Identity document", uploaded: "Sep 20, 2026", status: "Accepted" },
+    { name: "Building Plans", owner: "Ana Reyes", type: "Technical document", uploaded: "Sep 01, 2026", status: "Needs Correction" },
+    { name: "Barangay Clearance", owner: "Jose Dela Cruz", type: "Residence verification", uploaded: "Sep 08, 2026", status: "Submitted" }
+  ],
+  users: [
+    { name: "Maria Santos", email: "maria.santos@email.com", barangay: "Cabambangan", joined: "Sep 01, 2026", status: "Active", verification: "Verified" },
+    { name: "Jose Dela Cruz", email: "jose.delacruz@email.com", barangay: "San Isidro", joined: "Aug 26, 2026", status: "Active", verification: "Verified" },
+    { name: "Ana Reyes", email: "ana.reyes@email.com", barangay: "Santa Barbara", joined: "Aug 19, 2026", status: "Pending verification", verification: "Pending" }
+  ]
+};

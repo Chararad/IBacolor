@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+  <!-- Page metadata -->
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>iBacolor | Municipal Public Service Portal</title>
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/components.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+
+  <body data-page="home">
+    <div id="app">
+      <!-- Site header and navigation -->
+      <header class="site-header">
+        <div class="container header-inner">
+          <a class="brand" href="main.php">
+            <img class="brand-logo" src="assets/bacolor-seal.webp" alt="" />
+            <span>
+              <strong>iBacolor</strong>
+              <small>Municipal Public Service Portal</small>
+            </span>
+          </a>
+          <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button>
+          <div id="main-nav">
+            <nav class="site-nav" aria-label="public navigation">
+              <div class="nav-links">
+                <a href="main.php">Home</a>
+                <a href="pages/services.php">Services</a>
+                <a href="pages/news.php">News</a>
+                <a href="pages/hotlines.php">Emergency Hotlines</a>
+              </div>
+              <a class="button button-small" href="pages/login.php">Resident sign in</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+      <!-- Main page content -->
+      <main>
+        <section class="hero">
+          <div class="container hero-grid">
+            <div class="hero-copy-block">
+              <p class="eyebrow">Municipality of Bacolor · Pampanga</p>
+              <h1>Bacolor’s services and updates, in one place.</h1>
+              <p class="hero-copy">
+                Pay taxes, apply for permits, request assistance and report concerns with guidance
+                from your municipal government.
+              </p>
+              <form class="home-search" action="pages/services.php" method="get">
+                <label class="visually-hidden" for="home-service-search">
+                  Search municipal services, offices and requirements
+                </label>
+                <span><span class="icon" aria-hidden="true">⌕</span></span>
+                <input
+                  id="home-service-search"
+                  name="q"
+                  type="search"
+                  aria-label="Search municipal services, offices and requirements"
+                  placeholder="Search services, offices or requirements"
+                />
+                <button type="submit" aria-label="Search">
+                  <span class="icon" aria-hidden="true">→</span>
+                </button>
+              </form>
+              <div class="button-row">
+                <a class="button" href="pages/services.php">Browse services</a>
+                <a class="button button-outline" href="pages/resident/reports.php">
+                  Report an issue
+                </a>
+              </div>
+            </div>
+            <aside class="hero-panel">
+              <div class="hero-panel-top">
+                <span class="hero-kicker">Your municipal guide</span>
+                <img src="assets/bacolor-seal.webp" alt="Municipality of Bacolor seal" />
+              </div>
+              <h2>
+                One municipality.
+                <br/>
+                Many ways to get help.
+              </h2>
+              <p>Explore local services, important contacts and the latest municipal updates.</p>
+              <div class="hero-panel-links">
+                <a href="pages/hotlines.php">
+                  <span class="hero-link-icon">☎</span>
+                  <span>
+                    <small>Emergency contact</small>
+                    <strong>Smart: 0929-446-1940</strong>
+                  </span>
+                  <span aria-hidden="true">→</span>
+                </a>
+                <a href="pages/services.php">
+                  <span class="hero-link-icon">▦</span>
+                  <span>
+                    <small>Service directory</small>
+                    <strong>8 services to explore</strong>
+                  </span>
+                  <span aria-hidden="true">→</span>
+                </a>
+              </div>
+            </aside>
+          </div>
+        </section>
+        <section class="section quick-services-section">
+          <div class="container">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Start here</p>
+                <h2>Quick services</h2>
+              </div>
+              <a class="text-link" href="pages/services.php">
+                Browse all services
+                <span class="icon" aria-hidden="true">→</span>
+              </a>
+            </div>
+            <div class="quick-grid">
+              <a href="pages/services.php">
+                <span aria-hidden="true">▦</span>
+                <strong>Find a service</strong>
+                <small>Requirements, office and next steps</small>
+              </a>
+              <a href="pages/resident/reports.php">
+                <span aria-hidden="true">!</span>
+                <strong>Report an issue</strong>
+                <small>Tell us about a community concern</small>
+              </a>
+              <a href="pages/hotlines.php">
+                <span aria-hidden="true">☎</span>
+                <strong>Contact an office</strong>
+                <small>Find municipal and emergency contacts</small>
+              </a>
+              <a href="pages/news.php">
+                <span aria-hidden="true">▤</span>
+                <strong>Latest updates</strong>
+                <small>Read announcements and advisories</small>
+              </a>
+            </div>
+          </div>
+        </section>
+        <section class="section section-services">
+          <div class="container">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Municipal services</p>
+                <h2>Browse services</h2>
+                <p class="section-intro">
+                  Review the responsible office, requirements and application guidance before you
+                  begin.
+                </p>
+              </div>
+              <a class="button button-outline" href="pages/services.php">View all services</a>
+            </div>
+            <div class="card-grid home-service-grid">
+              <article class="card home-service-card">
+                <span class="tag">Business</span>
+                <h3>Business Permit</h3>
+                <p>
+                  Apply for a new or renewed permit for operating a business or enterprise in
+                  Bacolor.
+                </p>
+                <p class="service-office">
+                  <span>Responsible office</span>
+                  <strong>Municipal Treasurer's Office</strong>
+                </p>
+                <a class="text-link" href="pages/services.php?service=business-permit">
+                  View service details
+                  <span class="icon" aria-hidden="true">→</span>
+                </a>
+              </article>
+              <article class="card home-service-card">
+                <span class="tag">Civil Registry</span>
+                <h3>Civil Registry Certificate</h3>
+                <p>
+                  Request certified copies of birth, marriage, or death certificates and related
+                  civil registry records.
+                </p>
+                <p class="service-office">
+                  <span>Responsible office</span>
+                  <strong>Municipal Civil Registry Office</strong>
+                </p>
+                <a class="text-link" href="pages/services.php?service=civil-registry">
+                  View service details
+                  <span class="icon" aria-hidden="true">→</span>
+                </a>
+              </article>
+              <article class="card home-service-card">
+                <span class="tag">Community</span>
+                <h3>Barangay Clearance</h3>
+                <p>
+                  Secure a barangay clearance for employment, business, or local transactions
+                  requiring local certification.
+                </p>
+                <p class="service-office">
+                  <span>Responsible office</span>
+                  <strong>Barangay Office</strong>
+                </p>
+                <a class="text-link" href="pages/services.php?service=barangay-clearance">
+                  View service details
+                  <span class="icon" aria-hidden="true">→</span>
+                </a>
+              </article>
+            </div>
+          </div>
+        </section>
+        <section class="section section-muted home-news-section">
+          <div class="container">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">From the municipality</p>
+                <h2>News and announcements</h2>
+              </div>
+              <a class="button button-outline" href="pages/news.php">All updates</a>
+            </div>
+            <div class="card-grid card-grid-news">
+              <article class="card news-card news-card-1">
+                <span class="tag">Announcement</span>
+                <p class="meta">September 18, 2026</p>
+                <h3 id="news-1">Bacolor launches iBacolor public service portal</h3>
+                <p>
+                  Residents can now find municipal services, contact details, and request guidance
+                  in one place.
+                </p>
+                <details class="news-details">
+                  <summary>Read full announcement</summary>
+                  <p>
+                    The Municipality of Bacolor has launched a new public-facing portal to help
+                    residents understand available access points for government services, municipal
+                    offices, and emergency contact information. The portal is intended to make
+                    common transactions easier to locate and understand.
+                  </p>
+                </details>
+                <a class="text-link" href="pages/news.php#news-1">
+                  View announcement
+                  <span class="icon" aria-hidden="true">→</span>
+                </a>
+              </article>
+              <article class="card news-card news-card-2">
+                <span class="tag">Advisory</span>
+                <p class="meta">September 12, 2026</p>
+                <h3 id="news-2">Scheduled maintenance of municipal offices</h3>
+                <p>
+                  Selected offices will observe adjusted hours for internal systems maintenance and
+                  office servicing.
+                </p>
+                <details class="news-details">
+                  <summary>Read full announcement</summary>
+                  <p>
+                    Selected municipal offices will adjust service hours during the scheduled
+                    maintenance period. Residents are encouraged to plan their transactions and
+                    contact the office in advance for urgent concerns.
+                  </p>
+                </details>
+                <a class="text-link" href="pages/news.php#news-2">
+                  View announcement
+                  <span class="icon" aria-hidden="true">→</span>
+                </a>
+              </article>
+              <article class="card news-card news-card-3">
+                <span class="tag">Community</span>
+                <p class="meta">September 05, 2026</p>
+                <h3 id="news-3">Community clean-up drive this October</h3>
+                <p>
+                  Join the municipal clean-up drive across participating barangays to keep public
+                  spaces safe and healthy.
+                </p>
+                <details class="news-details">
+                  <summary>Read full announcement</summary>
+                  <p>
+                    The municipality is organizing a clean-up drive as part of its environmental and
+                    community safety programs. Barangays and residents are encouraged to participate
+                    and support public cleanliness initiatives.
+                  </p>
+                </details>
+                <a class="text-link" href="pages/news.php#news-3">
+                  View announcement
+                  <span class="icon" aria-hidden="true">→</span>
+                </a>
+              </article>
+              <article class="card news-card news-card-4">
+                <span class="tag">Health</span>
+                <p class="meta">August 28, 2026</p>
+                <h3 id="news-4">Public health and safety reminders</h3>
+                <p>
+                  Residents are reminded to coordinate with the Rural Health Unit for preventive
+                  services and health records.
+                </p>
+                <details class="news-details">
+                  <summary>Read full announcement</summary>
+                  <p>
+                    The Municipal Health Office encourages residents to keep updated with health
+                    services, preventive care, and public health advisories available through local
+                    facilities and barangay coordination.
+                  </p>
+                </details>
+                <a class="text-link" href="pages/news.php#news-4">
+                  View announcement
+                  <span class="icon" aria-hidden="true">→</span>
+                </a>
+              </article>
+            </div>
+          </div>
+        </section>
+        <section class="section municipality-section">
+          <div class="container municipality-layout">
+            <div>
+              <p class="eyebrow">A place with history</p>
+              <h2>Get to know Bacolor</h2>
+              <p>
+                Find municipal information, important contacts and services for the 21 barangays of
+                Bacolor.
+              </p>
+              <a class="text-link" href="pages/hotlines.php">
+                Explore the municipal directory
+                <span class="icon" aria-hidden="true">→</span>
+              </a>
+            </div>
+            <div class="municipality-facts">
+              <div>
+                <strong>01</strong>
+                <span>21 barangays under the municipality</span>
+              </div>
+              <div>
+                <strong>02</strong>
+                <span>Located in the Province of Pampanga</span>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- Site footer -->
+        <footer class="home-contact-strip">
+          <div class="container contact-grid">
+            <div>
+              <p class="eyebrow">Need urgent assistance?</p>
+              <h2>Keep important contacts close.</h2>
+            </div>
+            <div>
+              <strong>Smart: 0929-446-1940</strong>
+              <span>Municipal Disaster Risk Reduction Management Office (MDRRMO - Bacolor)</span>
+            </div>
+            <div>
+              <a class="button button-light" href="pages/hotlines.php">View emergency contacts</a>
+            </div>
+          </div>
+        </footer>
+      </main>
+      <footer class="site-footer">
+        <div class="container footer-grid">
+          <div>
+            <a class="brand brand-footer" href="main.php">
+              <img class="brand-logo" src="assets/bacolor-seal.webp" alt="" />
+              <span>
+                <strong>iBacolor</strong>
+                <small>Municipal Public Service Portal</small>
+              </span>
+            </a>
+            <p>A simpler way to access municipal information and public services.</p>
+          </div>
+          <div>
+            <h3>Explore</h3>
+            <a href="pages/services.php">Services</a>
+            <a href="pages/news.php">News and announcements</a>
+            <a href="pages/hotlines.php">Emergency hotlines</a>
+          </div>
+          <div>
+            <h3>Need assistance?</h3>
+            <p>
+              Municipal Hall
+              <br />
+              (045) 900-1000
+              <br />
+              Mon–Fri, 8:00 AM–5:00 PM
+            </p>
+          </div>
+        </div>
+        <div class="container footer-bottom">
+          <span>© 2026 Municipality of Bacolor</span>
+        </div>
+      </footer>
+      <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content">
+          <button class="modal-close" type="button" aria-label="Close">×</button>
+          <h2>iBacolor</h2>
+          <p>This dialog is part of the frontend component foundation.</p>
+        </div>
+      </div>
+      <nav class="bottom-nav" aria-label="Quick navigation">
+        <a href="main.php">
+          <span class="icon" aria-hidden="true">⌂</span>
+          <span>Home</span>
+        </a>
+        <a href="pages/services.php">
+          <span class="icon" aria-hidden="true">▦</span>
+          <span>Services</span>
+        </a>
+        <a class="emergency-action" href="pages/hotlines.php">
+          <span class="icon" aria-hidden="true">☎</span>
+          <span>Emergency</span>
+        </a>
+        <a href="pages/news.php">
+          <span class="icon" aria-hidden="true">▤</span>
+          <span>Updates</span>
+        </a>
+        <a href="pages/login.php">
+          <span class="icon" aria-hidden="true">◯</span>
+          <span>Profile</span>
+        </a>
+      </nav>
+    </div>
+    <!-- Page scripts -->
+    <script src="js/mock-data.js"></script>
+    <script src="js/data-store.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="js/main.js"></script>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+.empty-state,.loading-state,.error-state{
+    padding:35px;
+    text-align:center;
+    border:1px dashed var(--line);
+    color:var(--muted);
+    background:var(--soft)
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(20,25,30,.5);
+    z-index:20;
+    align-items:center;
+    justify-content:center
+}
+
+.modal.is-open{
+    display:flex
+}
+
+.modal-content{
+    background:#fff;
+    padding:28px;
+    border-radius:8px;
+    max-width:520px;width:calc(100% - 30px)
+}
+
+.modal-close{
+    float:right;
+    border:0;
+    background:none;
+    font-size:20px
+}
+
+.notice-warning{
+    background:#fff4d9;
+    color:var(--amber);
+    border-left:3px solid var(--amber)
+}

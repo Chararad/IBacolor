@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Start a Request | iBacolor</title><link rel="stylesheet" href="../../css/style.css"><link rel="stylesheet" href="../../css/components.css"><link rel="stylesheet" href="../../css/responsive.css">
+  </head>
+  <body data-page="resident/request-form">
+    <div id="app">
+      <header class="site-header">
+        <div class="container header-inner"><a class="brand" href="../../index.html"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt=""><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a><button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button>
+          <div id="main-nav">
+            <nav class="site-nav" aria-label="resident navigation">
+              <div class="nav-links"><a href="../resident/dashboard.html">Dashboard</a><a href="../resident/requests.html">My Requests</a><a href="../resident/reports.html">Community Reports</a><a href="../resident/profile.html">Profile</a>
+              </div><a class="button button-small button-outline" href="../../index.html">Sign out</a>
+            </nav>
+          </div>
+        </div>
+      </header>
+      <main>
+        <section class="page-header">
+          <div class="container">
+            <div class="breadcrumbs"><a href="../../index.html">Home</a><span>/</span>Services / Request
+            </div>
+            <p class="eyebrow">Resident portal
+            </p><h1>Start a service request</h1>
+            <p class="lead">Complete the request details and attach the required documents.
+            </p>
+          </div>
+        </section>
+        <section class="section">
+          <div class="container narrow">
+            <form class="form-card" data-feedback-form="">
+              <label>Service<select required=""><option>Business Permit</option><option>Civil Registry Certificate</option><option>Barangay Clearance</option><option>Building Permit</option></select>
+              </label>
+              <div class="form-grid">
+                <label>First name<input value="Maria" required="">
+                </label>
+                <label>Last name<input value="Santos" required="">
+                </label>
+                <label>Mobile number<input placeholder="09xx xxx xxxx" required="">
+                </label>
+                <label>Barangay<select required=""><option>Cabambangan</option><option>San Isidro</option><option>Sta. Barbara</option></select>
+                </label>
+              </div>
+              <label>Purpose or request details<textarea rows="5" required="" placeholder="Provide relevant details for this request."></textarea>
+              </label>
+              <label>Upload documents<input type="file" multiple="">
+              </label><small class="form-help">Required documents are listed on the service information page.</small>
+              <div class="form-actions"><button class="button" type="submit">Submit request</button><a class="text-link" href="../services.html">Back to services</a>
+              </div>
+            </form>
+          </div>
+        </section>
+      </main>
+      <footer class="site-footer">
+        <div class="container footer-grid">
+          <div><a class="brand brand-footer" href="../../index.html"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt=""><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a>
+            <p>A simpler way to access municipal information and public services.
+            </p>
+          </div>
+          <div><h3>Explore</h3><a href="../services.html">Services</a><a href="../news.html">News and announcements</a><a href="../hotlines.html">Emergency hotlines</a>
+          </div>
+          <div><h3>Need assistance?</h3>
+            <p>Municipal Hall<br>(045) 900-1000<br>Mon–Fri, 8:00 AM–5:00 PM
+            </p>
+          </div>
+        </div>
+        <div class="container footer-bottom"><span>© 2026 Municipality of Bacolor</span>
+        </div>
+      </footer>
+      <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-hidden="true">
+        <div class="modal-content"><button class="modal-close" type="button" aria-label="Close">×</button><h2>iBacolor</h2>
+          <p>This dialog is part of the frontend component foundation.
+          </p>
+        </div>
+      </div>
+    </div><script src="../../js/mock-data.js"></script><script src="../../js/data-store.js"></script><script src="../../js/navigation.js"></script><script src="../../js/main.js"></script>
+  </body>
+</html>

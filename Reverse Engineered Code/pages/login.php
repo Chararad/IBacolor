@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+  <!-- Page metadata -->
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Sign in | iBacolor</title>
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/components.css" />
+    <link rel="stylesheet" href="../css/responsive.css" />
+  </head>
+  <body data-page="login">
+    <div id="app">
+      <!-- Site header and navigation -->
+      <header class="site-header">
+        <div class="container header-inner">
+          <a class="brand" href="../main.php"
+            ><img
+              class="brand-logo"
+              src="../assets/bacolor-seal.webp"
+              alt=""
+            /><span
+              ><strong>iBacolor</strong
+              ><small>Municipal Public Service Portal</small></span
+            ></a
+          ><button
+            class="menu-toggle"
+            aria-expanded="false"
+            aria-controls="main-nav"
+          >
+            Menu
+          </button>
+          <div id="main-nav">
+            <nav class="site-nav" aria-label="public navigation">
+              <div class="nav-links">
+                <a href="../main.php">Home</a><a href="services.php">Services</a
+                ><a href="news.php">News</a
+                ><a href="hotlines.php">Emergency Hotlines</a>
+              </div>
+              <a class="button button-small" href="login.php"
+                >Resident sign in</a
+              >
+            </nav>
+          </div>
+        </div>
+      </header>
+      <!-- Main page content -->
+      <main>
+        <section class="login-landing">
+          <div class="container login-landing-grid">
+            <div class="login-welcome">
+              <p class="eyebrow">Municipality of Bacolor · Pampanga</p>
+              <h1>Welcome to <span>iBacolor</span></h1>
+              <p class="login-intro-copy">
+                Your local services, municipal updates, and resident
+                support—connected in one place.
+              </p>
+              <div class="login-landing-links">
+                <a class="button" href="services.php"
+                  >Explore municipal services</a
+                ><a class="text-link" href="hotlines.php"
+                  >Emergency hotlines
+                  <span class="icon" aria-hidden="true">→</span></a
+                >
+              </div>
+              <div class="login-trust-mark">
+                <img src="../assets/bacolor-seal.webp" alt="" /><span
+                  >Municipal Public Service Portal<strong
+                    >For residents and visitors</strong
+                  ></span
+                >
+              </div>
+            </div>
+            <form class="form-card login-form" data-feedback-form="">
+              <p class="eyebrow">Resident portal</p>
+              <h2>Sign in to your account</h2>
+              <p class="login-form-intro">
+                Track service requests and community reports.
+              </p>
+              <label
+                >Email address<input
+                  type="email"
+                  required=""
+                  autocomplete="email"
+                  placeholder="you@example.com"
+                />
+              </label>
+              <label
+                >Password<input
+                  type="password"
+                  required=""
+                  autocomplete="current-password"
+                  placeholder="Enter your password"
+                />
+              </label>
+              <div class="form-actions">
+                <button class="button" type="submit">Sign in</button
+                ><a class="text-link" href="register.php">Create an account</a>
+              </div>
+              <a class="login-visitor-link" href="../main.php"
+                >Continue as a visitor
+                <span class="icon" aria-hidden="true">→</span></a
+              >
+            </form>
+          </div>
+        </section>
+      </main>
+      <!-- Site footer -->
+      <footer class="site-footer">
+        <div class="container footer-grid">
+          <div>
+            <a class="brand brand-footer" href="../main.php"
+              ><img
+                class="brand-logo"
+                src="../assets/bacolor-seal.webp"
+                alt=""
+              /><span
+                ><strong>iBacolor</strong
+                ><small>Municipal Public Service Portal</small></span
+              ></a
+            >
+            <p>
+              A simpler way to access municipal information and public services.
+            </p>
+          </div>
+          <div>
+            <h3>Explore</h3>
+            <a href="services.php">Services</a
+            ><a href="news.php">News and announcements</a
+            ><a href="hotlines.php">Emergency hotlines</a>
+          </div>
+          <div>
+            <h3>Need assistance?</h3>
+            <p>
+              Municipal Hall<br />(045) 900-1000<br />Mon–Fri, 8:00 AM–5:00 PM
+            </p>
+          </div>
+        </div>
+        <div class="container footer-bottom">
+          <span>© 2026 Municipality of Bacolor</span>
+        </div>
+      </footer>
+      <div
+        class="modal"
+        id="demo-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-hidden="true"
+      >
+        <div class="modal-content">
+          <button class="modal-close" type="button" aria-label="Close">
+            ×
+          </button>
+          <h2>iBacolor</h2>
+          <p>This dialog is part of the frontend component foundation.</p>
+        </div>
+      </div>
+      <nav class="bottom-nav" aria-label="Quick navigation">
+        <a href="../main.php"
+          ><span class="icon" aria-hidden="true">⌂</span><span>Home</span></a
+        ><a href="../pages/services.php"
+          ><span class="icon" aria-hidden="true">▦</span
+          ><span>Services</span></a
+        ><a class="emergency-action" href="../pages/hotlines.php"
+          ><span class="icon" aria-hidden="true">☎</span
+          ><span>Emergency</span></a
+        ><a href="../pages/news.php"
+          ><span class="icon" aria-hidden="true">▤</span><span>Updates</span></a
+        ><a href="../pages/login.php"
+          ><span class="icon" aria-hidden="true">◯</span><span>Profile</span></a
+        >
+      </nav>
+    </div>
+    <!-- Page scripts -->
+    <script src="../js/mock-data.js"></script>
+    <script src="../js/data-store.js"></script>
+    <script src="../js/navigation.js"></script>
+    <script src="../js/main.js"></script>
+  </body>
+</html>
