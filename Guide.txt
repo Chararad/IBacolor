@@ -1,0 +1,39 @@
+Added The Database To Store All The Data Transfer Including Services, Barangays, Accounts, Requests, Verification And More
+Added Process for Register And Login Validations
+Added API and Other Necessary Includes To Support The Website
+
+! One may Encounter some bugs please list them so they can be handled immediately.
+
+Problems Encountered (List All Of The Problems Encountered And Need To Be Fixed
+And Rate Them 1-10 To Their Severity)
+- 
+
+To be Fixed (Problems Encountered Currently Fixing)
+-
+
+Currently Admin
+- ral*******7@gmail.com - hashed
+- Just Tell Me When You Want It
+
+BlockChainable Part
+News And Announcements - Goodluck Jess
+
+To Use The Whole Website,
+Open Xampp, start apache and mysql
+go to localhost/IBACOLOR/main.php - really depends on how is your folder is inserted on htdocs
+import The SQL and configure the connection.php
+Create an Account By Signing In
+Test and List Encountered Problems
+
+Assets - picture, svg and logos
+CSS - Stylesheet for responsivenes, and other UI appearance
+Includes - Supporting Files
+JS - Functions and Data Handlers and For One More Client Side Validations
+Pages - PHP Files with HTML and php to communicate with database and also for Server Side Validations
+main.php and main.js - The Landing Page (use Xampp and turn on apache and mysql)
+ibacolor.sql - importable sql schema
+Guide.txt - just from the words of mine
+
+Gonna Test This Soon With Yall Using Localhost
+
+GoodLuck Breaking It In Browser Just Please Dont Break It In The Repository Itself
