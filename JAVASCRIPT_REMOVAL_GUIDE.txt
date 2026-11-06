@@ -1,0 +1,96 @@
+iBacolor JavaScript removal guide
+=================================
+
+Features now live in shared helpers under js/modules/, while each PHP page
+loads its own initializer from js/pages/. Feature blocks are still marked with
+matching BEGIN/END comments; the markers locate code but do not disable it.
+Removing a feature also requires removing its call from the relevant page
+initializer. Test every affected page afterward.
+
+Before removing anything
+------------------------
+
+- Back up the project first.
+- Remove a whole matching block, not just its BEGIN/END comments.
+- Test every page that uses the feature afterward.
+- The current project is a frontend prototype. Account, request, report, and
+  shared portal data are stored in this browser, not in MySQL.
+- If replacing browser storage with PHP/MySQL, implement and test the PHP
+  feature before removing its JavaScript block.
+
+Shared modules and features
+---------------------------
+
+1. js/modules/shared.js
+   - Mobile navigation: initializeMobileNavigation() opens/closes the
+     responsive menu and handles Escape.
+   - Barangay dropdowns: populateBarangaySelects() fills controls marked
+     data-barangays from MOCK_DATA.
+   - Date/time formatting: formatDateTime(value) is used by reports and
+     resident request pages.
+
+2. js/modules/services.js
+   - initializeServiceDirectory() builds and filters the service directory,
+     including its generated service links.
+   - Loaded and initialized by js/pages/services.js.
+
+3. js/modules/filters.js
+   - initializeRequestFilters() filters the admin requests table by keyword
+     and status; initialized by js/pages/admin-requests.js.
+   - initializeNewsFilters() filters announcements by category and date;
+     initialized by js/pages/news.js.
+
+4. js/modules/reports.js
+   - initializeReports() handles resident report submission, browser storage,
+     filtering, and report history display.
+   - Loaded and initialized by js/pages/resident-reports.js. It depends on
+     formatDateTime() and IBacolorStore.
+
+5. js/modules/directory.js
+   - renderDirectory() renders office and barangay contact details.
+   - Loaded and initialized by js/pages/hotlines.js.
+
+6. js/modules/accounts.js
+   - redirectToLogin(), initializeAccountAccess(), and hashPassword() support
+     registration, sign-in, sign-out, resident access checks, profile editing,
+     password changes, notification preferences, and registration location
+     capture.
+   - Do not remove hashPassword() alone: registration, sign-in, and password
+     changes depend on it. SESSION_KEY and ACCOUNTS_KEY are defined in
+     js/modules/shared.js.
+   - Account access is initialized by every page entry.
+
+7. js/modules/resident.js
+   - initializeRequestSubmission(), initializeResidentRequests(),
+     getResidentRequests(), initializeResidentDashboard(), and
+     initializeResidentRequestDetails() provide request submission and the
+     resident request list, dashboard summary, and request details.
+   - The relevant page entries are js/pages/resident-request-form.js,
+     resident-requests.js, resident-dashboard.js, and
+     resident-request-details.js. This module uses sessionStorage,
+     IBacolorStore, MOCK_DATA, and formatDateTime().
+
+8. js/modules/feedback.js
+   - initializeFormFeedback() provides generic confirmation for forms marked
+     data-feedback-form. Registration, login, request, community report,
+     profile, and settings forms are explicitly excluded.
+   - The generic handler is initialized by each page entry.
+
+Page startup
+------------
+
+Each js/pages/<page>.js file initializes shared mobile navigation, account
+access, generic form feedback, and only the page-specific features listed
+above. PHP pages load their page entry and the shared data scripts; they no
+longer load js/main.js.
+
+Related files
+-------------
+
+- js/data-store.js stores shared prototype records in localStorage. Reports
+  and service requests use IBacolorStore from this file.
+- js/mock-data.js supplies sample data used by several modules.
+- js/navigation.js only marks the current navigation link.
+- connection.php creates a PHP PDO connection; browser JavaScript does not
+  call it. Browser JavaScript cannot directly connect to MySQL. A PHP
+  backend/API is needed to use MySQL.
