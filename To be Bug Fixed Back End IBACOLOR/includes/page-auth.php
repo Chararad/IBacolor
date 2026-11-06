@@ -10,11 +10,12 @@ if (!in_array($requiredRole, ['resident', 'admin'], true)) {
     http_response_code(403);
     exit('Access denied.');
 }
+$allowedRoles = $requiredRole === 'resident' ? ['resident', 'admin'] : ['admin'];
 
 require_once __DIR__ . '/connection.php';
 
 $accountId = filter_var($_SESSION['account_id'] ?? null, FILTER_VALIDATE_INT);
-if (!$accountId || ($_SESSION['role'] ?? '') !== $requiredRole) {
+if (!$accountId || !in_array($_SESSION['role'] ?? '', $allowedRoles, true)) {
     header('Location: ../login.php');
     exit;
 }
@@ -24,7 +25,7 @@ $statement = $iBacolorConnection->prepare(
 );
 $statement->execute(['account_id' => $accountId]);
 $account = $statement->fetch(PDO::FETCH_ASSOC);
-if (!$account || $account['roles'] !== $requiredRole || $account['status'] !== 'active') {
+if (!$account || !in_array($account['roles'], $allowedRoles, true) || $account['roles'] !== $_SESSION['role'] || $account['status'] !== 'active') {
     $_SESSION = [];
     session_destroy();
     header('Location: ../login.php');

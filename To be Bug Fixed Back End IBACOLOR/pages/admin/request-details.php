@@ -13,6 +13,7 @@
                 <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
                 <p class="admin-label">Workspace</p>
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
+                <a href="../resident/dashboard.php">Resident portal</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">

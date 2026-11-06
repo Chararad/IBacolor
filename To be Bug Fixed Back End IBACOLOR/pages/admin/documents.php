@@ -13,6 +13,7 @@
                 <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
                 <p class="admin-label">Workspace</p>
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
+                <a href="../resident/dashboard.php">Resident portal</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">
@@ -63,63 +64,8 @@
                                             <th>Action</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>Business Permit Application</strong></td>
-                                            <td>Maria Santos</td>
-                                            <td>Application form</td>
-                                            <td>Sep 20, 2026</td>
-                                            <td>
-                                                <span class="status status-accepted">Accepted</span>
-                                            </td>
-                                            <td>
-                                                <button class="button button-small button-outline" type="button">
-                                                    View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Valid Government ID</strong></td>
-                                            <td>Maria Santos</td>
-                                            <td>Identity document</td>
-                                            <td>Sep 20, 2026</td>
-                                            <td>
-                                                <span class="status status-accepted">Accepted</span>
-                                            </td>
-                                            <td>
-                                                <button class="button button-small button-outline" type="button">
-                                                    View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Building Plans</strong></td>
-                                            <td>Ana Reyes</td>
-                                            <td>Technical document</td>
-                                            <td>Sep 01, 2026</td>
-                                            <td>
-                                                <span class="status status-needs-correction">Needs Correction</span>
-                                            </td>
-                                            <td>
-                                                <button class="button button-small button-outline" type="button">
-                                                    View
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>Barangay Clearance</strong></td>
-                                            <td>Jose Dela Cruz</td>
-                                            <td>Residence verification</td>
-                                            <td>Sep 08, 2026</td>
-                                            <td>
-                                                <span class="status status-submitted">Submitted</span>
-                                            </td>
-                                            <td>
-                                                <button class="button button-small button-outline" type="button">
-                                                    View
-                                                </button>
-                                            </td>
-                                        </tr>
+                                    <tbody id="admin-documents-list">
+                                        <tr><td colspan="6">Loading documents...</td></tr>
                                     </tbody>
                                 </table>
                             </div>

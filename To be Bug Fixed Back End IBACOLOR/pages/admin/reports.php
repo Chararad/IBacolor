@@ -13,6 +13,7 @@
                 <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
                 <p class="admin-label">Workspace</p>
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
+                <a href="../resident/dashboard.php">Resident portal</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">
@@ -63,76 +64,8 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <strong>CR-2026-0041</strong><br /><small>Road lighting needs repair near the covered
-                                                    court.</small>
-                                            </td>
-                                            <td>Damaged roads</td>
-                                            <td>Barangay Cabambangan (Pob.)</td>
-                                            <td>Sep 21, 2026</td>
-                                            <td>
-                                                <span class="status status-under-review">Under Review</span>
-                                            </td>
-                                            <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    View</button><button class="button button-small button-ghost" type="button">
-                                                    Update
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>CR-2026-0038</strong><br /><small>Request for additional collection schedule.</small>
-                                            </td>
-                                            <td>Garbage disposal</td>
-                                            <td>Barangay San Isidro</td>
-                                            <td>Sep 17, 2026</td>
-                                            <td>
-                                                <span class="status status-submitted">Submitted</span>
-                                            </td>
-                                            <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    View</button><button class="button button-small button-ghost" type="button">
-                                                    Update
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>CR-2026-0030</strong><br /><small>Drainage issue cleared after cleanup and
-                                                    desilting.</small>
-                                            </td>
-                                            <td>Flooding</td>
-                                            <td>Barangay Santa Barbara</td>
-                                            <td>Sep 07, 2026</td>
-                                            <td>
-                                                <span class="status status-resolved">Resolved</span>
-                                            </td>
-                                            <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    View</button><button class="button button-small button-ghost" type="button">
-                                                    Update
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>CR-2026-0022</strong><br /><small>Streetlight repaired and maintenance
-                                                    completed.</small>
-                                            </td>
-                                            <td>Streetlight concern</td>
-                                            <td>Barangay Poblacion</td>
-                                            <td>Aug 30, 2026</td>
-                                            <td><span class="status status-closed">Closed</span></td>
-                                            <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    View</button><button class="button button-small button-ghost" type="button">
-                                                    Update
-                                                </button>
-                                            </td>
-                                        </tr>
+                                    <tbody id="admin-reports-list">
+                                        <tr><td colspan="6">Loading reports...</td></tr>
                                     </tbody>
                                 </table>
                             </div>

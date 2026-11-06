@@ -2,9 +2,13 @@
 
 document.addEventListener("portal:ready", async () => {
   const portal = window.IBacolorPortal;
-  const tbody = document.querySelector("table tbody");
+  const tbody = document.getElementById("admin-reports-list");
   try {
     const { reports } = await portal.request("admin.reports");
+    if (!reports.length) {
+      tbody.innerHTML = "<tr><td colspan=\"6\">No community reports have been submitted.</td></tr>";
+      return;
+    }
     tbody.replaceChildren(...reports.map((report) => {
       const row = document.createElement("tr");
       row.innerHTML = `<td><strong>${portal.escape(report.reference)}</strong><br><small>${portal.escape(report.description)}</small></td>
@@ -42,6 +46,7 @@ document.addEventListener("portal:ready", async () => {
       return row;
     }));
   } catch (error) {
+    tbody.innerHTML = "<tr><td colspan=\"6\">Community reports could not be loaded.</td></tr>";
     portal.message(document.querySelector(".card"), error.message, true);
   }
 });

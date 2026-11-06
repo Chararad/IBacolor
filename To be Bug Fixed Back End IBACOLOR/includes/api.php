@@ -147,7 +147,7 @@ function apiDispatch(): never
         exit;
     }
 
-    $accountId = apiRole(str_starts_with($action, 'admin.') ? ['admin'] : ['resident']);
+    $accountId = apiRole(str_starts_with($action, 'admin.') ? ['admin'] : ['resident', 'admin']);
     if ($method === 'POST') {
         apiCsrf();
     }

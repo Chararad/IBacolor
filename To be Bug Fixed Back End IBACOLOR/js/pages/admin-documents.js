@@ -2,9 +2,13 @@
 
 document.addEventListener("portal:ready", async () => {
   const portal = window.IBacolorPortal;
-  const tbody = document.querySelector("table tbody");
+  const tbody = document.getElementById("admin-documents-list");
   try {
     const { documents } = await portal.request("admin.documents");
+    if (!documents.length) {
+      tbody.innerHTML = "<tr><td colspan=\"6\">No documents have been uploaded.</td></tr>";
+      return;
+    }
     tbody.replaceChildren(...documents.map((documentItem) => {
       const row = document.createElement("tr");
       row.innerHTML = `<td><strong>${portal.escape(documentItem.document_name)}</strong><br><small>${portal.escape(documentItem.reference)}</small></td>
@@ -26,6 +30,7 @@ document.addEventListener("portal:ready", async () => {
       return row;
     }));
   } catch (error) {
+    tbody.innerHTML = "<tr><td colspan=\"6\">Documents could not be loaded.</td></tr>";
     portal.message(document.querySelector(".card"), error.message, true);
   }
 });
