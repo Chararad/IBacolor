@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run iBacolor locally",
+			"type": "shell",
+			"command": "C:\\xampp\\php\\php.exe",
+			"args": [
+				"-S",
+				"127.0.0.1:8000",
+				"-t",
+				"C:\\xampp\\htdocs\\IBACOLOR\\IBacolor\\To be Bug Fixed Back End IBACOLOR"
+			],
+			"isBackground": true,
+			"problemMatcher": []
+		}
+	]
+}

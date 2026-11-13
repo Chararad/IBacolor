@@ -1,0 +1,86 @@
+@import "../style.css";
+@import "../components.css";
+@import "../responsive.css";
+
+.transparency-admin-layout {
+  display: grid;
+  gap: 24px;
+}
+.transparency-upload-form,
+.transparency-document-management {
+  display: grid;
+  gap: 18px;
+}
+.transparency-upload-form h2,
+.transparency-document-management h2 {
+  margin: 0;
+}
+.transparency-upload-form label,
+.transparency-filters label {
+  display: grid;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+.transparency-upload-form input,
+.transparency-upload-form select,
+.transparency-upload-form textarea,
+.transparency-filters input,
+.transparency-filters select {
+  width: 100%;
+}
+.transparency-upload-form small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+.transparency-form-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 16px;
+}
+.transparency-filters {
+  display: grid;
+  grid-template-columns: minmax(180px, 2fr) minmax(180px, 2fr) minmax(100px, 1fr) minmax(130px, 1fr) auto;
+  align-items: end;
+  gap: 12px;
+}
+.document-status {
+  display: inline-block;
+  padding: 5px 9px;
+  border-radius: 999px;
+  background: #f3ece7;
+  font-size: 12px;
+  font-weight: 700;
+}
+.document-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 220px;
+}
+.document-actions a,
+.document-actions button {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--red-dark);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+}
+@media (max-width: 900px) {
+  .transparency-filters {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 600px) {
+  .transparency-form-row,
+  .transparency-filters {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,44 @@
+@import "transparency.css";
+
+.transparency-public-filters {
+  display: grid;
+  grid-template-columns: minmax(220px, 2fr) minmax(140px, 1fr) auto;
+  align-items: end;
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.transparency-public-filters label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.transparency-public-filters input {
+  width: 100%;
+}
+.transparency-public-documents {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
+  gap: 18px;
+}
+.transparency-public-document h2 {
+  margin: 6px 0 10px;
+}
+.transparency-public-document > p:not(.eyebrow) {
+  color: var(--muted);
+  line-height: 1.6;
+}
+.transparency-public-date {
+  font-size: 13px;
+}
+.transparency-public-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+@media (max-width: 600px) {
+  .transparency-public-filters {
+    grid-template-columns: 1fr;
+  }
+}
