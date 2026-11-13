@@ -40,6 +40,49 @@ document.addEventListener("portal:ready", async () => {
         article.innerHTML = `<div class="report-heading"><strong>${portal.escape(report.reference)}</strong>${portal.status(report.status)}</div>
           <span>${portal.escape(report.category)} · ${portal.escape(report.barangay_name || "")} · Submitted ${portal.date(report.submitted_at)}</span>
           <p>${portal.escape(report.description)}</p><span>${portal.escape(report.location_details)}${report.frequency ? ` · ${portal.escape(report.frequency)}` : ""}</span>`;
+        const details = document.createElement("details");
+        details.className = "report-updates";
+        const summary = document.createElement("summary");
+        summary.textContent = "View photos and status updates";
+        details.append(summary);
+        const history = document.createElement("div");
+        history.className = "report-history";
+        if (report.history?.length) {
+          report.history.forEach((entry) => {
+            const update = document.createElement("p");
+            update.innerHTML = `${portal.status(entry.status)} <span>${portal.date(entry.changed_at)}</span>`;
+            if (entry.note) {
+              const note = document.createElement("span");
+              note.textContent = ` — ${entry.note}`;
+              update.append(note);
+            }
+            history.append(update);
+          });
+        } else {
+          history.textContent = "No updates have been posted.";
+        }
+        details.append(history);
+        (report.attachments || []).forEach((file) => {
+          const url = `../../includes/api.php?action=download&type=report&id=${encodeURIComponent(file.attachment_id)}&inline=1`;
+          if (file.mime_type.startsWith("image/")) {
+            const link = document.createElement("a");
+            link.href = url;
+            link.target = "_blank";
+            link.rel = "noopener";
+            const image = document.createElement("img");
+            image.className = "report-preview";
+            image.src = url;
+            image.alt = `Uploaded evidence: ${file.file_name}`;
+            link.append(image);
+            details.append(link);
+          } else {
+            const link = document.createElement("a");
+            link.href = url;
+            link.textContent = file.file_name;
+            details.append(link);
+          }
+        });
+        article.append(details);
         return article;
       }));
     } catch (error) {

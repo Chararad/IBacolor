@@ -59,26 +59,6 @@
     </head>
     <body data-page="login">
         <div id="app">
-            <header class="site-header">
-                <div class="container header-inner">
-                    <a class="brand" href="../main.php">
-                        <img class="brand-logo" src="../assets/bacolor-seal.webp" alt="" />
-                        <span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span>
-                    </a>
-                    <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button>
-                    <div id="main-nav">
-                        <nav class="site-nav" aria-label="public navigation">
-                            <div class="nav-links">
-                                <a href="../main.php">Home</a>
-                                <a href="services.php">Services</a>
-                                <a href="news.php">News</a>
-                                <a href="hotlines.php">Emergency Hotlines</a>
-                                <a href="transparency.php">Transparency</a>
-                            </div>
-                        </nav>
-                    </div>
-                </div>
-            </header>
             <main>
                 <section class="login-landing">
                     <div class="container login-landing-grid">

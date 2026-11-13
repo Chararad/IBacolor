@@ -13,31 +13,13 @@
                 <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
                 <p class="admin-label">Workspace</p>
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
-                <a href="../resident/dashboard.php">Resident portal</a>
                 <p class="admin-label">Content</p>
-                <a href="../admin/news.php">✦ News</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
+                <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">
                     <a href="../../main.php">← Public website</a>
                 </div>
             </aside>
-            <header class="site-header">
-                <div class="container header-inner">
-                    <a class="brand" href="../../main.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a><button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">
-                        Menu
-                    </button>
-                    <div id="main-nav">
-                        <nav class="site-nav" aria-label="admin navigation">
-                            <div class="nav-links">
-                                <a href="../admin/dashboard.php">Dashboard</a><a href="../admin/requests.php">Requests</a><a href="../admin/reports.php">Reports</a><a href="../admin/documents.php">Documents</a><a href="../admin/users.php">Users</a>
-                                <div class="nav-group">
-                                    <span>Content management</span><a href="../admin/news.php">News</a><a href="../admin/services.php">Services</a><a href="../admin/hotlines.php">Hotlines</a>
-                                </div>
-                            </div>
-                            <a class="button button-small button-outline" href="../../main.php">Sign out</a>
-                        </nav>
-                    </div>
-                </div>
-            </header>
+            <?php require __DIR__ . '/../../includes/site-header.php'; ?>
             <main>
                 <section class="page-header">
                     <div class="container">
@@ -54,7 +36,7 @@
                         <article class="card">
                             <div class="section-heading compact">
                                 <h2>Published news</h2>
-                                <button class="button" type="button">+ Add new</button>
+                                <button class="button" id="add-news-article" type="button">+ Add new</button>
                             </div>
                             <div class="table-wrap">
                                 <table>
@@ -66,64 +48,28 @@
                                             <th>Actions</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>
-                                                <strong>Bacolor launches iBacolor public service
-                                                    portal</strong>
-                                            </td>
-                                            <td>September 18, 2026</td>
-                                            <td>Announcement</td>
-                                            <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    Edit</button><button class="button button-small button-ghost" type="button">
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Scheduled maintenance of municipal offices</strong>
-                                            </td>
-                                            <td>September 12, 2026</td>
-                                            <td>Advisory</td>
-                                            <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    Edit</button><button class="button button-small button-ghost" type="button">
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Community clean-up drive this October</strong>
-                                            </td>
-                                            <td>September 05, 2026</td>
-                                            <td>Community</td>
-                                            <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    Edit</button><button class="button button-small button-ghost" type="button">
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <strong>Public health and safety reminders</strong>
-                                            </td>
-                                            <td>August 28, 2026</td>
-                                            <td>Health</td>
-                                            <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    Edit</button><button class="button button-small button-ghost" type="button">
-                                                    Delete
-                                                </button>
-                                            </td>
-                                        </tr>
+                                    <tbody id="admin-news-list">
+                                        <tr><td colspan="4">Loading news articles...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
                         </article>
+                        <form class="form-card" id="admin-news-form" hidden>
+                            <h2 id="news-form-heading">Add news article</h2>
+                            <input name="articleId" type="hidden" />
+                            <label>Title<input name="title" maxlength="255" required /></label>
+                            <label>Category<input name="category" maxlength="100" required /></label>
+                            <label>Article content<textarea name="content" rows="8" required></textarea></label>
+                            <label>Publication status<select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></label>
+                            <label>Publication date and time<input name="publishedAt" type="datetime-local" /></label>
+                            <label>Featured image<input name="image" type="file" accept="image/jpeg,image/png,image/webp" /></label>
+                            <img id="news-image-preview" alt="Featured image preview" hidden />
+                            <p id="news-form-message" class="notice notice-info" role="status" hidden></p>
+                            <div class="form-actions">
+                                <button class="button" type="submit">Save article</button>
+                                <button class="button button-outline" id="cancel-news-edit" type="button">Cancel</button>
+                            </div>
+                        </form>
                     </div>
                 </section>
             </main>

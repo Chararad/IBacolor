@@ -2739,6 +2739,143 @@ textarea:focus {
   min-width: 120px;
 }
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  gap: 12px;
+}
+.profile-link {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  gap: 8px;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+}
+.profile-menu {
+  position: relative;
+}
+.profile-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.profile-menu > summary::-webkit-details-marker {
+  display: none;
+}
+.profile-caret {
+  font-size: 11px;
+}
+.profile-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 20;
+  width: min(280px, calc(100vw - 32px));
+  padding: 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+.profile-dropdown p {
+  display: grid;
+  gap: 3px;
+  margin: 0;
+  padding: 8px;
+  border-bottom: 1px solid var(--line);
+  overflow-wrap: anywhere;
+}
+.profile-dropdown small {
+  color: var(--muted);
+}
+.profile-dropdown a {
+  display: block;
+  padding: 9px 8px;
+  border-radius: 4px;
+}
+.profile-dropdown a:hover {
+  background: var(--soft);
+  color: var(--red);
+}
+.admin-view .profile-link {
+  color: var(--ink);
+}
+.admin-view .profile-link img {
+  border-color: var(--line);
+}
+.profile-link img {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 50%;
+}
+.profile-name {
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.document-review,
+.appointment-entry,
+.report-history {
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+.document-review-form,
+.appointment-form {
+  display: grid;
+  gap: 10px;
+}
+.report-preview {
+  width: min(100%, 220px);
+  max-height: 180px;
+  margin: 8px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  object-fit: cover;
+}
+.report-updates,
+.report-history {
+  margin-top: 12px;
+}
+.header-actions > .button {
+  min-height: 38px;
+  border-color: rgba(255, 255, 255, 0.65);
+  background: transparent;
+  color: #fff;
+  box-shadow: none;
+}
+.header-actions > .button:hover {
+  background: #fff;
+  color: var(--navy);
+}
+@media (max-width: 1050px) {
+  .nav-links {
+    gap: 10px;
+  }
+  .nav-links > a {
+    font-size: 12px;
+  }
+  .header-actions {
+    gap: 8px;
+  }
+}
+@media (max-width: 760px) {
+  .header-actions {
+    justify-content: space-between;
+    flex-wrap: wrap;
+    margin-top: 13px;
+  }
+  .profile-dropdown {
+    right: auto;
+    left: 0;
+  }
+}
+
 @media (max-width: 760px) {
   .quick-grid,
   .transparency-grid,

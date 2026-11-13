@@ -9,21 +9,7 @@
     </head>
     <body data-page="resident/request-details">
         <div id="app">
-            <header class="site-header">
-                <div class="container header-inner">
-                    <a class="brand" href="../../main.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a><button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">
-                        Menu
-                    </button>
-                    <div id="main-nav">
-                        <nav class="site-nav" aria-label="resident navigation">
-                            <div class="nav-links">
-                                <a href="../resident/dashboard.php">Dashboard</a><a href="../resident/requests.php">My Requests</a><a href="../resident/reports.php">Community Reports</a><a href="../resident/profile.php">Profile</a><a href="../resident/settings.php">Settings</a>
-                            </div>
-                            <a class="button button-small button-outline" href="../../main.php">Sign out</a>
-                        </nav>
-                    </div>
-                </div>
-            </header>
+            <?php require __DIR__ . '/../../includes/site-header.php'; ?>
             <main>
                 <section class="page-header">
                     <div class="container">

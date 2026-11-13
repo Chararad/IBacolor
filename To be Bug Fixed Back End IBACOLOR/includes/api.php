@@ -41,6 +41,21 @@ function apiRole(array $allowed): int
     return (int) $accountId;
 }
 
+function apiRequireVerifiedResident(int $accountId): void
+{
+    global $iBacolorConnection;
+    if (($_SESSION['role'] ?? '') !== 'resident') {
+        apiResponse(403, ['error' => 'This action is available to verified residents only.']);
+    }
+    $statement = $iBacolorConnection->prepare(
+        'SELECT verification FROM resident_profiles WHERE account_id=:id LIMIT 1'
+    );
+    $statement->execute(['id' => $accountId]);
+    if ($statement->fetchColumn() !== 'verified') {
+        apiResponse(403, ['error' => 'Your resident account must be verified before using this feature.']);
+    }
+}
+
 function apiCsrf(): void
 {
     $token = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
@@ -90,6 +105,48 @@ function apiUpload(?array $file, array $types): ?array
     ];
 }
 
+function apiUploadAt(?array $files, int|string $index, array $types): ?array
+{
+    if (!$files || !is_array($files['name'] ?? null) || !array_key_exists($index, $files['name'])) {
+        return null;
+    }
+    $file = [];
+    foreach (['name', 'type', 'tmp_name', 'error', 'size'] as $field) {
+        $file[$field] = $files[$field][$index] ?? null;
+    }
+    return apiUpload($file, $types);
+}
+
+function apiUploadMany(?array $files, array $types, int $maxFiles): array
+{
+    if (!$files || !is_array($files['name'] ?? null)) {
+        return [];
+    }
+    $uploads = [];
+    try {
+        foreach (array_keys($files['name']) as $index) {
+            if (($files['error'][$index] ?? UPLOAD_ERR_NO_FILE) === UPLOAD_ERR_NO_FILE) {
+                continue;
+            }
+            if (count($uploads) >= $maxFiles) {
+                throw new RuntimeException("Upload no more than {$maxFiles} files.");
+            }
+            $upload = apiUploadAt($files, $index, $types);
+            if ($upload) {
+                $uploads[] = $upload;
+            }
+        }
+    } catch (Throwable $exception) {
+        foreach ($uploads as $upload) {
+            if (is_file($upload['path'])) {
+                unlink($upload['path']);
+            }
+        }
+        throw $exception;
+    }
+    return $uploads;
+}
+
 function apiReference(string $prefix): string
 {
     return $prefix . '-' . date('Y') . '-' . strtoupper(bin2hex(random_bytes(4)));
@@ -100,6 +157,43 @@ function apiDispatch(): never
     global $iBacolorConnection;
     $action = apiText($_GET['action'] ?? '', 80);
     $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
+
+    if ($action === 'news.public' && $method === 'GET') {
+        $articles = $iBacolorConnection->query(
+            "SELECT article_id,title,content,category,published_at,(image_storage_key IS NOT NULL) AS has_image
+             FROM news_articles
+             WHERE status='published' AND published_at<=UTC_TIMESTAMP()
+             ORDER BY published_at DESC,article_id DESC"
+        )->fetchAll();
+        apiResponse(200, ['articles' => $articles]);
+    }
+
+    if ($action === 'news.image' && $method === 'GET') {
+        $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
+        $isAdmin = ($_SESSION['role'] ?? '') === 'admin';
+        if ($isAdmin) {
+            apiRole(['admin']);
+        }
+        $query = $isAdmin
+            ? 'SELECT image_storage_key,image_mime_type FROM news_articles WHERE article_id=:id'
+            : "SELECT image_storage_key,image_mime_type FROM news_articles WHERE article_id=:id AND status='published' AND published_at<=UTC_TIMESTAMP()";
+        $statement = $iBacolorConnection->prepare($query);
+        $statement->execute(['id' => $id]);
+        $image = $statement->fetch();
+        if (!$image || !preg_match('/^[a-f0-9]{48}$/', (string) $image['image_storage_key'])) {
+            apiResponse(404, ['error' => 'Image not found.']);
+        }
+        $path = __DIR__ . '/storage/private/' . $image['image_storage_key'];
+        if (!is_file($path) || !in_array($image['image_mime_type'], ['image/jpeg', 'image/png', 'image/webp'], true)) {
+            apiResponse(404, ['error' => 'Image is unavailable.']);
+        }
+        header('Content-Type: ' . $image['image_mime_type']);
+        header('Content-Length: ' . filesize($path));
+        header('Content-Disposition: inline');
+        header('X-Content-Type-Options: nosniff');
+        readfile($path);
+        exit;
+    }
 
     if ($action === 'csrf' && $method === 'GET') {
         apiRole(['resident', 'admin']);
@@ -119,15 +213,18 @@ function apiDispatch(): never
         $accountId = apiRole(['resident', 'admin']);
         $type = apiText($_GET['type'] ?? '', 20);
         $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
-        if (!$id || !in_array($type, ['request', 'report'], true)) {
+        if (!$id || !in_array($type, ['request', 'report', 'verification'], true)) {
             apiResponse(404, ['error' => 'File not found.']);
         }
         if ($type === 'request') {
             $query = 'SELECT d.storage_key,d.document_name AS file_name,d.mime_type,sr.account_id
                 FROM request_documents d JOIN service_requests sr ON sr.request_id=d.request_id WHERE d.document_id=:id';
-        } else {
+        } elseif ($type === 'report') {
             $query = 'SELECT d.storage_key,d.file_name,d.mime_type,cr.account_id
                 FROM report_attachments d JOIN community_reports cr ON cr.report_id=d.report_id WHERE d.attachment_id=:id';
+        } else {
+            $query = 'SELECT storage_key,file_name,mime_type,account_id
+                FROM resident_verification_documents WHERE document_id=:id';
         }
         $statement = $iBacolorConnection->prepare($query);
         $statement->execute(['id' => $id]);
@@ -141,7 +238,11 @@ function apiDispatch(): never
         }
         header('Content-Type: ' . $file['mime_type']);
         header('Content-Length: ' . filesize($path));
-        header('Content-Disposition: attachment; filename="' . str_replace(['"', "\r", "\n"], '', basename($file['file_name'])) . '"');
+        $inlineFile = ($_GET['inline'] ?? '') === '1'
+            && in_array($file['mime_type'], ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'], true);
+        header($inlineFile
+            ? 'Content-Disposition: inline'
+            : 'Content-Disposition: attachment; filename="' . str_replace(['"', "\r", "\n"], '', basename($file['file_name'])) . '"');
         header('X-Content-Type-Options: nosniff');
         readfile($path);
         exit;
@@ -188,7 +289,22 @@ function apiDispatch(): never
             "SELECT service_id,name,category,office,description FROM services
              WHERE LOWER(status) IN ('available','active','published') ORDER BY name"
         );
-        apiResponse(200, ['services' => $statement->fetchAll()]);
+        $services = $statement->fetchAll();
+        $requirements = $iBacolorConnection->query(
+            'SELECT requirement_id,service_id,requirement,display_order FROM service_requirements ORDER BY display_order,requirement_id'
+        )->fetchAll();
+        $byService = [];
+        foreach ($requirements as $requirement) {
+            $byService[$requirement['service_id']][] = [
+                'requirement_id' => $requirement['requirement_id'],
+                'requirement' => $requirement['requirement'],
+            ];
+        }
+        foreach ($services as &$service) {
+            $service['requirements'] = $byService[$service['service_id']] ?? [];
+        }
+        unset($service);
+        apiResponse(200, ['services' => $services]);
     }
     if ($action === 'resident.barangays') {
         $statement = $iBacolorConnection->query('SELECT barangay_id,name FROM barangays ORDER BY name');
@@ -207,9 +323,25 @@ function apiDispatch(): never
         }
         $history = $iBacolorConnection->prepare('SELECT status,note,changed_at FROM request_status_history WHERE request_id=:id ORDER BY changed_at');
         $history->execute(['id' => $request['request_id']]);
-        $documents = $iBacolorConnection->prepare('SELECT document_id,document_name,review_status,review_note,uploaded_at FROM request_documents WHERE request_id=:id ORDER BY uploaded_at');
+        $documents = $iBacolorConnection->prepare(
+            'SELECT d.document_id,d.document_name,d.mime_type,d.review_status,d.review_note,d.uploaded_at,
+             NOT EXISTS(SELECT 1 FROM request_documents newer WHERE newer.request_id=d.request_id
+               AND newer.document_name=d.document_name
+               AND (newer.uploaded_at>d.uploaded_at OR (newer.uploaded_at=d.uploaded_at AND newer.document_id>d.document_id))) AS is_latest
+             FROM request_documents d WHERE d.request_id=:id ORDER BY d.uploaded_at'
+        );
         $documents->execute(['id' => $request['request_id']]);
-        apiResponse(200, ['request' => $request, 'history' => $history->fetchAll(), 'documents' => $documents->fetchAll()]);
+        $appointments = $iBacolorConnection->prepare(
+            'SELECT appointment_id,status,appointment_date,appointment_time,office,location,instructions,created_at
+             FROM request_appointments WHERE request_id=:id ORDER BY appointment_id DESC'
+        );
+        $appointments->execute(['id' => $request['request_id']]);
+        apiResponse(200, [
+            'request' => $request,
+            'history' => $history->fetchAll(),
+            'documents' => $documents->fetchAll(),
+            'appointments' => $appointments->fetchAll(),
+        ]);
     }
     if ($action === 'resident.reports') {
         $statement = $iBacolorConnection->prepare(
@@ -218,32 +350,124 @@ function apiDispatch(): never
              WHERE cr.account_id=:id ORDER BY cr.submitted_at DESC'
         );
         $statement->execute(['id' => $accountId]);
-        apiResponse(200, ['reports' => $statement->fetchAll()]);
+        $reports = $statement->fetchAll();
+        $historyQuery = $iBacolorConnection->prepare(
+            'SELECT status,note,changed_at FROM report_status_history WHERE report_id=:id ORDER BY changed_at'
+        );
+        $attachmentsQuery = $iBacolorConnection->prepare(
+            'SELECT attachment_id,file_name,mime_type,uploaded_at FROM report_attachments WHERE report_id=:id ORDER BY uploaded_at'
+        );
+        foreach ($reports as &$report) {
+            $findId = $iBacolorConnection->prepare(
+                'SELECT report_id FROM community_reports WHERE reference=:reference AND account_id=:id'
+            );
+            $findId->execute(['reference' => $report['reference'], 'id' => $accountId]);
+            $reportId = (int) $findId->fetchColumn();
+            $historyQuery->execute(['id' => $reportId]);
+            $attachmentsQuery->execute(['id' => $reportId]);
+            $report['history'] = $historyQuery->fetchAll();
+            $report['attachments'] = $attachmentsQuery->fetchAll();
+        }
+        unset($report);
+        apiResponse(200, ['reports' => $reports]);
     }
     if ($action === 'resident.profile') {
         $statement = $iBacolorConnection->prepare(
-            'SELECT a.email,a.created_at,rp.first_name,rp.middle_name,rp.last_name,rp.mobile_number,rp.barangay_id,b.name AS barangay_name,rp.address,
+            "SELECT a.email,a.created_at,rp.first_name,rp.middle_name,rp.last_name,rp.mobile_number,rp.barangay_id,b.name AS barangay_name,rp.address,
+             COALESCE((SELECT vh.status FROM resident_verification_history vh WHERE vh.account_id=a.account_id
+                       ORDER BY vh.changed_at DESC,vh.history_id DESC LIMIT 1),rp.verification) AS verification_status,
+             (SELECT vh.note FROM resident_verification_history vh WHERE vh.account_id=a.account_id
+              ORDER BY vh.changed_at DESC,vh.history_id DESC LIMIT 1) AS verification_note,
              COALESCE(np.request_updates,1) AS request_updates,COALESCE(np.announcement_updates,1) AS announcement_updates
              FROM accounts a JOIN resident_profiles rp ON rp.account_id=a.account_id
              LEFT JOIN barangays b ON b.barangay_id=rp.barangay_id
-             LEFT JOIN notification_preferences np ON np.account_id=a.account_id WHERE a.account_id=:id'
+             LEFT JOIN notification_preferences np ON np.account_id=a.account_id WHERE a.account_id=:id"
         );
         $statement->execute(['id' => $accountId]);
         apiResponse(200, ['profile' => $statement->fetch()]);
     }
+    if ($action === 'resident.verification-documents') {
+        $statement = $iBacolorConnection->prepare(
+            'SELECT document_id,file_name,mime_type,uploaded_at FROM resident_verification_documents
+             WHERE account_id=:id ORDER BY uploaded_at DESC'
+        );
+        $statement->execute(['id' => $accountId]);
+        apiResponse(200, ['documents' => $statement->fetchAll()]);
+    }
+    if ($action === 'resident.upload-verification-documents' && $method === 'POST') {
+        if (($_SESSION['role'] ?? '') !== 'resident') {
+            apiResponse(403, ['error' => 'Only residents can submit verification documents.']);
+        }
+        try {
+            $uploads = apiUploadMany($_FILES['documents'] ?? null, ['application/pdf','image/jpeg','image/png'], 5);
+        } catch (RuntimeException $exception) {
+            apiResponse(422, ['error' => $exception->getMessage()]);
+        }
+        if (!$uploads) {
+            apiResponse(422, ['error' => 'Choose at least one verification document.']);
+        }
+        try {
+            $insert = $iBacolorConnection->prepare(
+                'INSERT INTO resident_verification_documents(account_id,uploaded_by,file_name,storage_key,mime_type,uploaded_at)
+                 VALUES(:account_id,:uploaded_by,:file_name,:storage_key,:mime_type,UTC_TIMESTAMP())'
+            );
+            foreach ($uploads as $upload) {
+                $insert->execute([
+                    'account_id' => $accountId, 'uploaded_by' => $accountId, 'file_name' => $upload['name'],
+                    'storage_key' => $upload['key'], 'mime_type' => $upload['mime'],
+                ]);
+            }
+        } catch (Throwable $exception) {
+            foreach ($uploads as $upload) {
+                if (is_file($upload['path'])) {
+                    unlink($upload['path']);
+                }
+            }
+            throw $exception;
+        }
+        apiResponse(201, ['message' => 'Verification documents submitted.']);
+    }
 
     if ($action === 'resident.submit-request' && $method === 'POST') {
+        apiRequireVerifiedResident($accountId);
         $serviceId = filter_var($_POST['service'] ?? null, FILTER_VALIDATE_INT);
         $details = apiText($_POST['details'] ?? '', 256);
         if (!$serviceId || $details === '' || mb_strlen($details) > 255) {
             apiResponse(422, ['error' => 'Choose a service and enter request details (maximum 255 characters).']);
         }
-        $service = $iBacolorConnection->prepare('SELECT service_id FROM services WHERE service_id=:id');
+        $service = $iBacolorConnection->prepare(
+            "SELECT service_id FROM services WHERE service_id=:id AND LOWER(status) IN ('available','active','published')"
+        );
         $service->execute(['id' => $serviceId]);
         if (!$service->fetchColumn()) {
             apiResponse(422, ['error' => 'Choose a valid service.']);
         }
-        $upload = apiUpload($_FILES['documents'] ?? null, ['application/pdf','image/jpeg','image/png']);
+        $requirements = $iBacolorConnection->prepare(
+            'SELECT requirement_id,requirement FROM service_requirements WHERE service_id=:service_id ORDER BY display_order,requirement_id'
+        );
+        $requirements->execute(['service_id' => $serviceId]);
+        $requiredDocuments = $requirements->fetchAll();
+        $uploads = [];
+        try {
+            foreach ($requiredDocuments as $requiredDocument) {
+                $upload = apiUploadAt($_FILES['documents'] ?? null, (int) $requiredDocument['requirement_id'], ['application/pdf','image/jpeg','image/png']);
+                if (!$upload) {
+                    throw new RuntimeException('Upload every document required for the selected service.');
+                }
+                $upload['document_name'] = $requiredDocument['requirement'];
+                $uploads[] = $upload;
+            }
+        } catch (Throwable $exception) {
+            foreach ($uploads as $existingUpload) {
+                if (is_file($existingUpload['path'])) {
+                    unlink($existingUpload['path']);
+                }
+            }
+            if ($exception instanceof RuntimeException) {
+                apiResponse(422, ['error' => $exception->getMessage()]);
+            }
+            throw $exception;
+        }
         $reference = apiReference('IB');
         try {
             $iBacolorConnection->beginTransaction();
@@ -258,17 +482,26 @@ function apiDispatch(): never
                  VALUES(:id,:changed_by,'Submitted','Request received.',UTC_TIMESTAMP())"
             );
             $history->execute(['id'=>$requestId,'changed_by'=>$accountId]);
-            if ($upload) {
+            if ($uploads) {
                 $document = $iBacolorConnection->prepare(
                     "INSERT INTO request_documents(request_id,uploaded_by,document_name,storage_key,mime_type,review_status,uploaded_at)
                      VALUES(:id,:user,:name,:key,:mime,'submitted',UTC_TIMESTAMP())"
                 );
-                $document->execute(['id'=>$requestId,'user'=>$accountId,'name'=>$upload['name'],'key'=>$upload['key'],'mime'=>$upload['mime']]);
+                foreach ($uploads as $upload) {
+                    $document->execute([
+                        'id' => $requestId, 'user' => $accountId, 'name' => $upload['document_name'],
+                        'key' => $upload['key'], 'mime' => $upload['mime'],
+                    ]);
+                }
             }
             $iBacolorConnection->commit();
         } catch (Throwable $exception) {
             if ($iBacolorConnection->inTransaction()) $iBacolorConnection->rollBack();
-            if ($upload && is_file($upload['path'])) unlink($upload['path']);
+            foreach ($uploads as $upload) {
+                if (is_file($upload['path'])) {
+                    unlink($upload['path']);
+                }
+            }
             throw $exception;
         }
         apiResponse(201, ['reference'=>$reference]);
@@ -278,7 +511,11 @@ function apiDispatch(): never
         $lookup->execute(['reference'=>apiText($_POST['reference'] ?? '',100),'id'=>$accountId]);
         $requestId = $lookup->fetchColumn();
         if (!$requestId) apiResponse(404,['error'=>'Request not found.']);
-        $upload = apiUpload($_FILES['document'] ?? null,['application/pdf','image/jpeg','image/png']);
+        try {
+            $upload = apiUpload($_FILES['document'] ?? null,['application/pdf','image/jpeg','image/png']);
+        } catch (RuntimeException $exception) {
+            apiResponse(422,['error'=>$exception->getMessage()]);
+        }
         if (!$upload) apiResponse(422,['error'=>'Choose a file to upload.']);
         try {
             $insert = $iBacolorConnection->prepare(
@@ -292,7 +529,56 @@ function apiDispatch(): never
         }
         apiResponse(201,['message'=>'Document uploaded.']);
     }
+    if ($action === 'resident.replace-document' && $method === 'POST') {
+        $documentId = filter_var($_POST['documentId'] ?? null, FILTER_VALIDATE_INT);
+        if (!$documentId) {
+            apiResponse(422, ['error' => 'Choose a document to replace.']);
+        }
+        $lookup = $iBacolorConnection->prepare(
+            "SELECT d.request_id,d.document_name,d.review_status
+             FROM request_documents d JOIN service_requests sr ON sr.request_id=d.request_id
+             WHERE d.document_id=:id AND sr.account_id=:account_id LIMIT 1"
+        );
+        $lookup->execute(['id' => $documentId, 'account_id' => $accountId]);
+        $oldDocument = $lookup->fetch();
+        if (!$oldDocument || $oldDocument['review_status'] !== 'needs correction') {
+            apiResponse(404, ['error' => 'The document cannot be replaced.']);
+        }
+        $latest = $iBacolorConnection->prepare(
+            'SELECT document_id FROM request_documents WHERE request_id=:request_id AND document_name=:name
+             ORDER BY uploaded_at DESC,document_id DESC LIMIT 1'
+        );
+        $latest->execute(['request_id' => $oldDocument['request_id'], 'name' => $oldDocument['document_name']]);
+        if ((int) $latest->fetchColumn() !== $documentId) {
+            apiResponse(409, ['error' => 'A newer version of this document has already been submitted.']);
+        }
+        try {
+            $upload = apiUpload($_FILES['document'] ?? null, ['application/pdf', 'image/jpeg', 'image/png']);
+        } catch (RuntimeException $exception) {
+            apiResponse(422, ['error' => $exception->getMessage()]);
+        }
+        if (!$upload) {
+            apiResponse(422, ['error' => 'Choose a replacement file.']);
+        }
+        try {
+            $insert = $iBacolorConnection->prepare(
+                "INSERT INTO request_documents(request_id,uploaded_by,document_name,storage_key,mime_type,review_status,uploaded_at)
+                 VALUES(:request_id,:user,:name,:key,:mime,'submitted',UTC_TIMESTAMP())"
+            );
+            $insert->execute([
+                'request_id' => $oldDocument['request_id'], 'user' => $accountId,
+                'name' => $oldDocument['document_name'], 'key' => $upload['key'], 'mime' => $upload['mime'],
+            ]);
+        } catch (Throwable $exception) {
+            if (is_file($upload['path'])) {
+                unlink($upload['path']);
+            }
+            throw $exception;
+        }
+        apiResponse(201, ['message' => 'Replacement document submitted for review.']);
+    }
     if ($action === 'resident.submit-report' && $method === 'POST') {
+        apiRequireVerifiedResident($accountId);
         $category=apiText($_POST['category'] ?? '',256);
         $barangay=filter_var($_POST['barangay'] ?? null,FILTER_VALIDATE_INT);
         $location=apiText($_POST['location'] ?? '',2000);
@@ -310,7 +596,11 @@ function apiDispatch(): never
             $date->setTimezone(new DateTimeZone('UTC'));
             $observed=$date->format('Y-m-d H:i:s');
         }
-        $upload=apiUpload($_FILES['attachment'] ?? null,['application/pdf','image/jpeg','image/png','image/webp']);
+        try {
+            $uploads=apiUploadMany($_FILES['attachments'] ?? null,['application/pdf','image/jpeg','image/png','image/webp'],5);
+        } catch (RuntimeException $exception) {
+            apiResponse(422,['error'=>$exception->getMessage()]);
+        }
         $reference=apiReference('CR');
         try {
             $iBacolorConnection->beginTransaction();
@@ -325,7 +615,7 @@ function apiDispatch(): never
                  VALUES(:id,:changed_by,'Submitted','Report received.',UTC_TIMESTAMP())"
             );
             $history->execute(['id'=>$reportId,'changed_by'=>$accountId]);
-            if ($upload) {
+            foreach ($uploads as $upload) {
                 $attachment=$iBacolorConnection->prepare(
                     'INSERT INTO report_attachments(report_id,uploaded_by,file_name,storage_key,mime_type,uploaded_at)
                      VALUES(:id,:user,:name,:key,:mime,UTC_TIMESTAMP())'
@@ -335,7 +625,11 @@ function apiDispatch(): never
             $iBacolorConnection->commit();
         } catch(Throwable $exception) {
             if($iBacolorConnection->inTransaction()) $iBacolorConnection->rollBack();
-            if($upload && is_file($upload['path'])) unlink($upload['path']);
+            foreach ($uploads as $upload) {
+                if (is_file($upload['path'])) {
+                    unlink($upload['path']);
+                }
+            }
             throw $exception;
         }
         apiResponse(201,['reference'=>$reference]);
@@ -404,6 +698,105 @@ function apiDispatch(): never
         )->fetchAll();
         apiResponse(200,['requests'=>$requests,'reports'=>$reports,'residents'=>$residents,'recent'=>$recent]);
     }
+    if ($action === 'admin.news') {
+        $articles = $iBacolorConnection->query(
+            'SELECT article_id,title,content,category,published_at,status,(image_storage_key IS NOT NULL) AS has_image,created_at,updated_at
+             FROM news_articles ORDER BY updated_at DESC,article_id DESC'
+        )->fetchAll();
+        apiResponse(200, ['articles' => $articles]);
+    }
+    if ($action === 'admin.save-news' && $method === 'POST') {
+        $input = apiInput();
+        $id = filter_var($input['articleId'] ?? null, FILTER_VALIDATE_INT) ?: null;
+        $title = apiText($input['title'] ?? '', 256);
+        $content = apiText($input['content'] ?? '', 100000);
+        $category = apiText($input['category'] ?? '', 101);
+        $status = apiText($input['status'] ?? 'draft', 20);
+        $publishedAtInput = apiText($input['publishedAt'] ?? '', 30);
+        if ($title === '' || $content === '' || $category === '' || mb_strlen($title) > 255 || mb_strlen($category) > 100
+            || !in_array($status, ['draft', 'published'], true)) {
+            apiResponse(422, ['error' => 'Enter a title, article content, category, and valid publication status.']);
+        }
+        $publishedAt = null;
+        if ($status === 'published') {
+            if ($publishedAtInput === '') {
+                $publishedAt = gmdate('Y-m-d H:i:s');
+            } else {
+                $date = DateTime::createFromFormat('Y-m-d\TH:i', $publishedAtInput, new DateTimeZone('Asia/Manila'));
+                if (!$date) {
+                    apiResponse(422, ['error' => 'Enter a valid publication date and time.']);
+                }
+                $date->setTimezone(new DateTimeZone('UTC'));
+                $publishedAt = $date->format('Y-m-d H:i:s');
+            }
+        }
+        $upload = apiUpload($_FILES['image'] ?? null, ['image/jpeg', 'image/png', 'image/webp']);
+        $oldImageKey = null;
+        try {
+            if ($id) {
+                $existing = $iBacolorConnection->prepare('SELECT image_storage_key FROM news_articles WHERE article_id=:id');
+                $existing->execute(['id' => $id]);
+                $oldImageKey = $existing->fetchColumn();
+                if ($oldImageKey === false) {
+                    if ($upload && is_file($upload['path'])) {
+                        unlink($upload['path']);
+                    }
+                    apiResponse(404, ['error' => 'News article not found.']);
+                }
+                $statement = $iBacolorConnection->prepare(
+                    'UPDATE news_articles SET title=:title,content=:content,category=:category,published_at=:published_at,status=:status,
+                     image_storage_key=COALESCE(:image_key,image_storage_key),image_mime_type=COALESCE(:image_mime,image_mime_type)
+                     WHERE article_id=:id'
+                );
+                $statement->execute([
+                    'title' => $title, 'content' => $content, 'category' => $category, 'published_at' => $publishedAt,
+                    'status' => $status, 'image_key' => $upload['key'] ?? null, 'image_mime' => $upload['mime'] ?? null, 'id' => $id,
+                ]);
+            } else {
+                $statement = $iBacolorConnection->prepare(
+                    'INSERT INTO news_articles(title,content,category,published_at,status,image_storage_key,image_mime_type,created_by)
+                     VALUES(:title,:content,:category,:published_at,:status,:image_key,:image_mime,:created_by)'
+                );
+                $statement->execute([
+                    'title' => $title, 'content' => $content, 'category' => $category, 'published_at' => $publishedAt,
+                    'status' => $status, 'image_key' => $upload['key'] ?? null, 'image_mime' => $upload['mime'] ?? null, 'created_by' => $accountId,
+                ]);
+                $id = (int) $iBacolorConnection->lastInsertId();
+            }
+        } catch (Throwable $exception) {
+            if ($upload && is_file($upload['path'])) {
+                unlink($upload['path']);
+            }
+            throw $exception;
+        }
+        if ($upload && $oldImageKey && $oldImageKey !== $upload['key']) {
+            $oldPath = __DIR__ . '/storage/private/' . $oldImageKey;
+            if (is_file($oldPath)) {
+                unlink($oldPath);
+            }
+        }
+        apiResponse(200, ['message' => 'News article saved.', 'articleId' => $id]);
+    }
+    if ($action === 'admin.delete-news' && $method === 'POST') {
+        $input = apiInput();
+        $id = filter_var($input['articleId'] ?? null, FILTER_VALIDATE_INT);
+        if (!$id) {
+            apiResponse(422, ['error' => 'Choose a valid news article.']);
+        }
+        $find = $iBacolorConnection->prepare('SELECT image_storage_key FROM news_articles WHERE article_id=:id');
+        $find->execute(['id' => $id]);
+        $imageKey = $find->fetchColumn();
+        if ($imageKey === false) {
+            apiResponse(404, ['error' => 'News article not found.']);
+        }
+        $delete = $iBacolorConnection->prepare('DELETE FROM news_articles WHERE article_id=:id');
+        $delete->execute(['id' => $id]);
+        $imagePath = __DIR__ . '/storage/private/' . $imageKey;
+        if ($imageKey && is_file($imagePath)) {
+            unlink($imagePath);
+        }
+        apiResponse(200, ['message' => 'News article deleted.']);
+    }
     if ($action === 'admin.requests') {
         $rows=$iBacolorConnection->query(
             "SELECT sr.reference,sr.status,sr.submitted_at,s.name service_name,
@@ -415,7 +808,7 @@ function apiDispatch(): never
     }
     if ($action === 'admin.reports') {
         $rows=$iBacolorConnection->query(
-            "SELECT cr.reference,cr.category,cr.location_details,cr.description,cr.status,cr.submitted_at,b.name barangay_name,
+            "SELECT cr.reference,cr.category,cr.location_details,cr.description,cr.observed_at,cr.frequency,cr.status,cr.submitted_at,b.name barangay_name,
              COALESCE(NULLIF(CONCAT_WS(' ',rp.first_name,rp.last_name),''),a.email) applicant_name
              FROM community_reports cr JOIN accounts a ON a.account_id=cr.account_id
              LEFT JOIN resident_profiles rp ON rp.account_id=a.account_id LEFT JOIN barangays b ON b.barangay_id=cr.barangay_id
@@ -443,7 +836,7 @@ function apiDispatch(): never
     }
     if ($action === 'admin.request') {
         $statement=$iBacolorConnection->prepare(
-            "SELECT sr.request_id,sr.reference,sr.details,sr.status,sr.submitted_at,sr.updated_at,s.name service_name,
+            "SELECT sr.request_id,sr.reference,sr.details,sr.status,sr.submitted_at,sr.updated_at,sr.service_id,s.name service_name,
              COALESCE(NULLIF(CONCAT_WS(' ',rp.first_name,rp.last_name),''),a.email) applicant_name,rp.mobile_number,b.name barangay_name
              FROM service_requests sr JOIN accounts a ON a.account_id=sr.account_id
              LEFT JOIN resident_profiles rp ON rp.account_id=a.account_id LEFT JOIN barangays b ON b.barangay_id=rp.barangay_id
@@ -454,9 +847,24 @@ function apiDispatch(): never
         if(!$request) apiResponse(404,['error'=>'Request not found.']);
         $history=$iBacolorConnection->prepare('SELECT status,note,changed_at FROM request_status_history WHERE request_id=:id ORDER BY changed_at');
         $history->execute(['id'=>$request['request_id']]);
-        $documents=$iBacolorConnection->prepare('SELECT document_id,document_name,review_status,review_note,uploaded_at FROM request_documents WHERE request_id=:id ORDER BY uploaded_at');
+        $documents=$iBacolorConnection->prepare('SELECT document_id,document_name,mime_type,review_status,review_note,uploaded_at FROM request_documents WHERE request_id=:id ORDER BY uploaded_at');
         $documents->execute(['id'=>$request['request_id']]);
-        apiResponse(200,['request'=>$request,'history'=>$history->fetchAll(),'documents'=>$documents->fetchAll()]);
+        $requirements = $iBacolorConnection->prepare(
+            'SELECT requirement_id,requirement,display_order FROM service_requirements WHERE service_id=:service_id ORDER BY display_order,requirement_id'
+        );
+        $requirements->execute(['service_id' => $request['service_id']]);
+        $appointments = $iBacolorConnection->prepare(
+            'SELECT appointment_id,status,appointment_date,appointment_time,office,location,instructions,created_at
+             FROM request_appointments WHERE request_id=:id ORDER BY appointment_id DESC'
+        );
+        $appointments->execute(['id' => $request['request_id']]);
+        apiResponse(200, [
+            'request' => $request,
+            'history' => $history->fetchAll(),
+            'documents' => $documents->fetchAll(),
+            'requirements' => $requirements->fetchAll(),
+            'appointments' => $appointments->fetchAll(),
+        ]);
     }
     if ($action === 'admin.update-request' && $method === 'POST') {
         $input=apiInput();
@@ -468,6 +876,7 @@ function apiDispatch(): never
         ][$statusInput] ?? '';
         $note=apiText($input['note'] ?? '',2000);
         if(!in_array($status,['Submitted','Under Review','In Progress','For Revision','Completed','Rejected'],true)) apiResponse(422,['error'=>'Choose a valid request status.']);
+        if($status==='Rejected' && $note==='') apiResponse(422,['error'=>'Enter a rejection reason before rejecting the request.']);
         $iBacolorConnection->beginTransaction();
         $find=$iBacolorConnection->prepare('SELECT request_id FROM service_requests WHERE reference=:reference FOR UPDATE');
         $find->execute(['reference'=>$reference]);
@@ -480,13 +889,113 @@ function apiDispatch(): never
         $iBacolorConnection->commit();
         apiResponse(200,['message'=>'Request updated.']);
     }
+    if ($action === 'admin.schedule-appointment' && $method === 'POST') {
+        $input = apiInput();
+        $reference = apiText($input['reference'] ?? '', 100);
+        $dateInput = apiText($input['date'] ?? '', 10);
+        $timeInput = apiText($input['time'] ?? '', 5);
+        $office = apiText($input['office'] ?? '', 256);
+        $location = apiText($input['location'] ?? '', 256);
+        $instructions = apiText($input['instructions'] ?? '', 2000);
+        $date = DateTime::createFromFormat('!Y-m-d', $dateInput);
+        $time = DateTime::createFromFormat('!H:i', $timeInput);
+        if (!$reference || !$date || $date->format('Y-m-d') !== $dateInput
+            || !$time || $time->format('H:i') !== $timeInput
+            || $office === '' || $location === ''
+            || mb_strlen($office) > 255 || mb_strlen($location) > 255) {
+            apiResponse(422, ['error' => 'Enter a valid appointment date, time, office, and location.']);
+        }
+        $iBacolorConnection->beginTransaction();
+        $requestLookup = $iBacolorConnection->prepare(
+            'SELECT request_id FROM service_requests WHERE reference=:reference FOR UPDATE'
+        );
+        $requestLookup->execute(['reference' => $reference]);
+        $requestId = $requestLookup->fetchColumn();
+        if (!$requestId) {
+            $iBacolorConnection->rollBack();
+            apiResponse(404, ['error' => 'Request not found.']);
+        }
+        $current = $iBacolorConnection->prepare(
+            "SELECT appointment_id FROM request_appointments
+             WHERE request_id=:id AND status IN ('scheduled','rescheduled')
+             ORDER BY appointment_id DESC LIMIT 1 FOR UPDATE"
+        );
+        $current->execute(['id' => $requestId]);
+        $currentId = $current->fetchColumn();
+        $status = 'scheduled';
+        if ($currentId) {
+            $markRescheduled = $iBacolorConnection->prepare(
+                "UPDATE request_appointments SET status='rescheduled' WHERE appointment_id=:id"
+            );
+            $markRescheduled->execute(['id' => $currentId]);
+        }
+        $insert = $iBacolorConnection->prepare(
+            'INSERT INTO request_appointments(request_id,changed_by,status,appointment_date,appointment_time,office,location,instructions)
+             VALUES(:request_id,:changed_by,:status,:appointment_date,:appointment_time,:office,:location,:instructions)'
+        );
+        $insert->execute([
+            'request_id' => $requestId, 'changed_by' => $accountId, 'status' => $status,
+            'appointment_date' => $dateInput, 'appointment_time' => $timeInput . ':00',
+            'office' => $office, 'location' => $location, 'instructions' => $instructions ?: null,
+        ]);
+        $iBacolorConnection->commit();
+        apiResponse(201, ['message' => 'Appointment saved.', 'status' => $status]);
+    }
+    if ($action === 'admin.update-appointment' && $method === 'POST') {
+        $input = apiInput();
+        $appointmentId = filter_var($input['appointmentId'] ?? null, FILTER_VALIDATE_INT);
+        $status = apiText($input['status'] ?? '', 20);
+        if (!$appointmentId || !in_array($status, ['cancelled', 'completed'], true)) {
+            apiResponse(422, ['error' => 'Choose a valid appointment action.']);
+        }
+        $appointment = $iBacolorConnection->prepare(
+            'SELECT request_id FROM request_appointments WHERE appointment_id=:id'
+        );
+        $appointment->execute(['id' => $appointmentId]);
+        $requestId = $appointment->fetchColumn();
+        if (!$requestId) {
+            apiResponse(404, ['error' => 'Active appointment not found.']);
+        }
+        $iBacolorConnection->beginTransaction();
+        $requestLock = $iBacolorConnection->prepare(
+            'SELECT request_id FROM service_requests WHERE request_id=:id FOR UPDATE'
+        );
+        $requestLock->execute(['id' => $requestId]);
+        if (!$requestLock->fetchColumn()) {
+            $iBacolorConnection->rollBack();
+            apiResponse(404, ['error' => 'Active appointment not found.']);
+        }
+        $current = $iBacolorConnection->prepare(
+            "SELECT appointment_id FROM request_appointments
+             WHERE request_id=:id AND status IN ('scheduled','rescheduled')
+             ORDER BY appointment_id DESC LIMIT 1 FOR UPDATE"
+        );
+        $current->execute(['id' => $requestId]);
+        if ((int) $current->fetchColumn() !== (int) $appointmentId) {
+            $iBacolorConnection->rollBack();
+            apiResponse(409, ['error' => 'Only the current active appointment can be updated.']);
+        }
+        $update = $iBacolorConnection->prepare(
+            "UPDATE request_appointments SET status=:status,changed_by=:changed_by
+             WHERE appointment_id=:id AND status IN ('scheduled','rescheduled')"
+        );
+        $update->execute(['status' => $status, 'changed_by' => $accountId, 'id' => $appointmentId]);
+        if (!$update->rowCount()) {
+            $iBacolorConnection->rollBack();
+            apiResponse(404, ['error' => 'Active appointment not found.']);
+        }
+        $iBacolorConnection->commit();
+        apiResponse(200, ['message' => 'Appointment updated.']);
+    }
     if ($action === 'admin.review-document' && $method === 'POST') {
         $input=apiInput();
         $id=filter_var($input['documentId'] ?? null,FILTER_VALIDATE_INT);
         $status=apiText($input['status'] ?? '',30);
         if(!$id || !in_array($status,['submitted','accepted','needs correction'],true)) apiResponse(422,['error'=>'Choose a valid document review status.']);
+        $note=apiText($input['note'] ?? '',2000);
+        if($status==='needs correction' && $note==='') apiResponse(422,['error'=>'Explain what needs to be corrected for this document.']);
         $update=$iBacolorConnection->prepare('UPDATE request_documents SET review_status=:status,review_note=:note WHERE document_id=:id');
-        $update->execute(['status'=>$status,'note'=>apiText($input['note'] ?? '',2000) ?: null,'id'=>$id]);
+        $update->execute(['status'=>$status,'note'=>$note ?: null,'id'=>$id]);
         if(!$update->rowCount()) {
             $check=$iBacolorConnection->prepare('SELECT 1 FROM request_documents WHERE document_id=:id');
             $check->execute(['id'=>$id]);
@@ -498,9 +1007,10 @@ function apiDispatch(): never
         $input=apiInput();
         $reference=apiText($input['reference'] ?? '',100);
         $statusInput=strtolower(apiText($input['status'] ?? '',50));
-        $status=['submitted'=>'Submitted','under review'=>'Under Review','in progress'=>'In Progress','resolved'=>'Resolved','closed'=>'Closed'][$statusInput] ?? '';
+        $status=['submitted'=>'Submitted','under review'=>'Under Review','in progress'=>'In Progress','resolved'=>'Resolved','closed'=>'Closed','rejected'=>'Rejected'][$statusInput] ?? '';
         $note=apiText($input['note'] ?? '',2000);
-        if(!in_array($status,['Submitted','Under Review','In Progress','Resolved','Closed'],true)) apiResponse(422,['error'=>'Choose a valid report status.']);
+        if(!in_array($status,['Submitted','Under Review','In Progress','Resolved','Closed','Rejected'],true)) apiResponse(422,['error'=>'Choose a valid report status.']);
+        if($status==='Rejected' && $note==='') apiResponse(422,['error'=>'Enter a reason before rejecting the report.']);
         $iBacolorConnection->beginTransaction();
         $find=$iBacolorConnection->prepare('SELECT report_id FROM community_reports WHERE reference=:reference FOR UPDATE');
         $find->execute(['reference'=>$reference]);
@@ -515,25 +1025,71 @@ function apiDispatch(): never
     }
     if ($action === 'admin.users') {
         $rows=$iBacolorConnection->query(
-            "SELECT a.account_id,a.email,a.status,a.created_at,rp.first_name,rp.last_name,rp.verification,b.name barangay_name
+            "SELECT a.account_id,a.email,a.status,a.created_at,rp.first_name,rp.last_name,
+             COALESCE((SELECT vh.status FROM resident_verification_history vh WHERE vh.account_id=a.account_id
+                       ORDER BY vh.changed_at DESC,vh.history_id DESC LIMIT 1),rp.verification) verification,
+             (SELECT vh.note FROM resident_verification_history vh WHERE vh.account_id=a.account_id
+              ORDER BY vh.changed_at DESC,vh.history_id DESC LIMIT 1) verification_note,
+             b.name barangay_name
              FROM accounts a JOIN resident_profiles rp ON rp.account_id=a.account_id
              LEFT JOIN barangays b ON b.barangay_id=rp.barangay_id WHERE a.roles='resident' ORDER BY a.created_at DESC"
         )->fetchAll();
         apiResponse(200,['users'=>$rows]);
     }
+    if ($action === 'admin.user-documents') {
+        $target = filter_var($_GET['accountId'] ?? null, FILTER_VALIDATE_INT);
+        if (!$target) {
+            apiResponse(422, ['error' => 'Choose a valid resident account.']);
+        }
+        $statement = $iBacolorConnection->prepare(
+            "SELECT d.document_id,d.file_name,d.mime_type,d.uploaded_at
+             FROM resident_verification_documents d
+             JOIN accounts a ON a.account_id=d.account_id
+             WHERE d.account_id=:id AND a.roles='resident'
+             ORDER BY d.uploaded_at DESC"
+        );
+        $statement->execute(['id' => $target]);
+        apiResponse(200, ['documents' => $statement->fetchAll()]);
+    }
     if ($action === 'admin.update-user' && $method === 'POST') {
         $input=apiInput();
         $target=filter_var($input['accountId'] ?? null,FILTER_VALIDATE_INT);
+        $hasStatus = array_key_exists('status', $input);
+        $hasVerification = array_key_exists('verification', $input);
         $status=apiText($input['status'] ?? '',20);
         $verification=apiText($input['verification'] ?? '',20);
-        if(!$target || !in_array($status,['active','pending','suspended'],true) || !in_array($verification,['pending','verified'],true)) apiResponse(422,['error'=>'Choose valid account and verification statuses.']);
+        $note=apiText($input['note'] ?? '',2000);
+        if(!$target || (!$hasStatus && !$hasVerification)
+            || ($hasStatus && !in_array($status,['active','pending','suspended'],true))
+            || ($hasVerification && !in_array($verification,['pending','verified','rejected'],true))
+            || ($verification==='rejected' && $note==='')) {
+            apiResponse(422,['error'=>'Choose valid account and verification statuses. A rejection requires a reason.']);
+        }
         $iBacolorConnection->beginTransaction();
-        $update=$iBacolorConnection->prepare("UPDATE accounts SET status=:status WHERE account_id=:id AND roles='resident'");
-        $update->execute(['status'=>$status,'id'=>$target]);
-        $profile=$iBacolorConnection->prepare('UPDATE resident_profiles SET verification=:verification WHERE account_id=:id');
-        $profile->execute(['verification'=>$verification,'id'=>$target]);
+        $exists=$iBacolorConnection->prepare("SELECT 1 FROM accounts WHERE account_id=:id AND roles='resident' FOR UPDATE");
+        $exists->execute(['id'=>$target]);
+        if(!$exists->fetchColumn()) {
+            $iBacolorConnection->rollBack();
+            apiResponse(404,['error'=>'Resident account not found.']);
+        }
+        if ($hasStatus) {
+            $update=$iBacolorConnection->prepare("UPDATE accounts SET status=:status WHERE account_id=:id AND roles='resident'");
+            $update->execute(['status'=>$status,'id'=>$target]);
+        }
+        if ($hasVerification) {
+            $profileStatus = $verification === 'verified' ? 'verified' : 'pending';
+            $profile=$iBacolorConnection->prepare('UPDATE resident_profiles SET verification=:verification WHERE account_id=:id');
+            $profile->execute(['verification'=>$profileStatus,'id'=>$target]);
+            $history=$iBacolorConnection->prepare(
+                'INSERT INTO resident_verification_history(account_id,changed_by,status,note,changed_at)
+                 VALUES(:account_id,:changed_by,:status,:note,UTC_TIMESTAMP())'
+            );
+            $history->execute([
+                'account_id'=>$target,'changed_by'=>$accountId,'status'=>$verification,'note'=>$note ?: null,
+            ]);
+        }
         $iBacolorConnection->commit();
-        apiResponse(200,['message'=>'Resident account updated.']);
+        apiResponse(200,['message'=>$hasVerification ? 'Resident verification updated.' : 'Account status updated.']);
     }
     if ($action === 'admin.services') {
         $rows=$iBacolorConnection->query(

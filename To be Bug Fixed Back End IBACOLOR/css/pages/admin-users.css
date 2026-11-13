@@ -3,3 +3,14 @@
 @import "../responsive.css";
 
 /* Add styles specific to the admin-users page below. */
+.user-filters {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.user-filters label {
+    display: grid;
+    gap: 0.4rem;
+}

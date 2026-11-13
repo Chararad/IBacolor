@@ -25,26 +25,84 @@ document.addEventListener("portal:ready", async () => {
       return li;
     }));
     const card = Array.from(container.querySelectorAll(".card")).find((element) => /uploaded documents/i.test(element.textContent));
-    const files = document.createElement("div");
-    files.innerHTML = data.documents.map((doc) => `<div class="file-row"><a href="../../includes/api.php?action=download&type=request&id=${doc.document_id}">${portal.escape(doc.document_name)}</a>${portal.status(doc.review_status)}</div>`).join("") || "<p>No documents uploaded.</p>";
-    const form = document.createElement("form");
-    form.className = "form-card";
-    form.innerHTML = `<input type="hidden" name="reference" value="${portal.escape(reference)}">
-      <label>Upload another document<input type="file" name="document" accept=".pdf,image/jpeg,image/png" required></label>
+    const documentsHeading = card.querySelector("h3");
+    card.replaceChildren(documentsHeading);
+    if (!data.documents.length) {
+      card.insertAdjacentHTML("beforeend", "<p>No documents uploaded.</p>");
+    }
+    data.documents.forEach((doc) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "request-document";
+      wrapper.innerHTML = `<div class="file-row"><a href="../../includes/api.php?action=download&type=request&id=${encodeURIComponent(doc.document_id)}">${portal.escape(doc.document_name)}</a>${portal.status(doc.review_status)}</div>`;
+      if (doc.review_note) {
+        const note = document.createElement("p");
+        note.className = "notice notice-warning";
+        note.textContent = doc.review_note;
+        wrapper.append(note);
+      }
+      if (doc.review_status === "needs correction" && Number(doc.is_latest) === 1) {
+        const replaceForm = document.createElement("form");
+        replaceForm.className = "document-replacement-form";
+        replaceForm.innerHTML = `<input type="hidden" name="documentId" value="${doc.document_id}">
+          <label>Replace ${portal.escape(doc.document_name)}<input name="document" type="file" accept=".pdf,image/jpeg,image/png" required></label>
+          <button class="button button-small button-outline" type="submit">Upload replacement</button>
+          <p class="form-help" role="status" hidden></p>`;
+        replaceForm.addEventListener("submit", async (event) => {
+          event.preventDefault();
+          if (!replaceForm.reportValidity()) return;
+          const button = replaceForm.querySelector("button");
+          button.disabled = true;
+          try {
+            await portal.request("resident.replace-document", { method: "POST", body: new FormData(replaceForm) });
+            portal.message(replaceForm.querySelector(".form-help"), "Replacement submitted for review.");
+            window.setTimeout(() => location.reload(), 500);
+          } catch (error) {
+            portal.message(replaceForm.querySelector(".form-help"), error.message, true);
+            button.disabled = false;
+          }
+        });
+        wrapper.append(replaceForm);
+      }
+      card.append(wrapper);
+    });
+
+    const extraUpload = document.createElement("form");
+    extraUpload.className = "document-replacement-form";
+    extraUpload.innerHTML = `<input type="hidden" name="reference" value="${portal.escape(reference)}">
+      <label>Upload an additional supporting document<input type="file" name="document" accept=".pdf,image/jpeg,image/png" required></label>
       <button class="button button-outline button-block" type="submit">Upload document</button>
       <p class="form-help" role="status" hidden></p>`;
-    card.replaceChildren(card.querySelector("h3"), files, form);
-    form.addEventListener("submit", async (event) => {
+    extraUpload.addEventListener("submit", async (event) => {
       event.preventDefault();
-      const notice = form.querySelector(".form-help");
+      if (!extraUpload.reportValidity()) return;
+      const button = extraUpload.querySelector("button");
+      button.disabled = true;
       try {
-        await portal.request("resident.upload-document", { method: "POST", body: new FormData(form) });
-        portal.message(notice, "Document uploaded for review.");
+        await portal.request("resident.upload-document", { method: "POST", body: new FormData(extraUpload) });
+        portal.message(extraUpload.querySelector(".form-help"), "Document uploaded for review.");
         window.setTimeout(() => location.reload(), 500);
       } catch (error) {
-        portal.message(notice, error.message, true);
+        portal.message(extraUpload.querySelector(".form-help"), error.message, true);
+        button.disabled = false;
       }
     });
+    card.append(extraUpload);
+
+    const appointments = document.createElement("article");
+    appointments.className = "card";
+    appointments.innerHTML = "<h3>Physical document appointments</h3>";
+    if (!data.appointments.length) {
+      appointments.insertAdjacentHTML("beforeend", "<p>No physical document appointment has been scheduled.</p>");
+    }
+    data.appointments.forEach((appointment) => {
+      const entry = document.createElement("div");
+      entry.className = "appointment-entry";
+      entry.innerHTML = `<p>${portal.status(appointment.status)} <strong>${portal.escape(appointment.appointment_date)} ${portal.escape(appointment.appointment_time.slice(0, 5))}</strong></p>
+        <p>${portal.escape(appointment.office)} · ${portal.escape(appointment.location)}</p>
+        <p>${portal.escape(appointment.instructions || "")}</p>`;
+      appointments.append(entry);
+    });
+    container.querySelector("aside").append(appointments);
   } catch (error) {
     portal.message(container, error.message, true);
   }

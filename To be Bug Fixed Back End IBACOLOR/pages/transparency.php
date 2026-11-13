@@ -12,27 +12,7 @@
     </head>
     <body data-page="transparency">
         <div id="app">
-            <header class="site-header">
-                <div class="container header-inner">
-                    <a class="brand" href="../main.php">
-                        <img class="brand-logo" src="../assets/bacolor-seal.webp" alt="" />
-                        <span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span>
-                    </a>
-                    <button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">Menu</button>
-                    <div id="main-nav">
-                        <nav class="site-nav" aria-label="public navigation">
-                            <div class="nav-links">
-                                <a href="../main.php">Home</a>
-                                <a href="services.php">Services</a>
-                                <a href="news.php">News</a>
-                                <a href="hotlines.php">Emergency Hotlines</a>
-                                <a href="transparency.php">Transparency</a>
-                            </div>
-                            <a id="resident-login-button" class="button button-small" href="login.php" data-authenticated="<?= $isAuthenticated ? 'true' : 'false' ?>" data-logout-href="logout.php">Resident sign in</a>
-                        </nav>
-                    </div>
-                </div>
-            </header>
+            <?php require __DIR__ . '/../includes/site-header.php'; ?>
             <main>
                 <section class="page-header">
                     <div class="container">
@@ -50,37 +30,37 @@
                                 <span class="transparency-icon" aria-hidden="true">₱</span>
                                 <h2>Budget allocations</h2>
                                 <p>Approved budgets, appropriations, and allocation summaries.</p>
-                                <span class="status status-pending">Publication pending</span>
+                                <a class="status status-pending" href="transparency-documents.php?category=<?= rawurlencode('Budget allocations') ?>">Browse documents</a>
                             </article>
                             <article class="card transparency-card">
                                 <span class="transparency-icon" aria-hidden="true">▤</span>
                                 <h2>Financial statements</h2>
                                 <p>Audited statements, financial reports, and public expenditure records.</p>
-                                <span class="status status-pending">Publication pending</span>
+                                <a class="status status-pending" href="transparency-documents.php?category=<?= rawurlencode('Financial statements') ?>">Browse documents</a>
                             </article>
                             <article class="card transparency-card">
                                 <span class="transparency-icon" aria-hidden="true">⌂</span>
                                 <h2>Projects and updates</h2>
                                 <p>Project descriptions, timelines, implementation status, and progress updates.</p>
-                                <span class="status status-pending">Publication pending</span>
+                                <a class="status status-pending" href="transparency-documents.php?category=<?= rawurlencode('Projects and updates') ?>">Browse documents</a>
                             </article>
                             <article class="card transparency-card">
                                 <span class="transparency-icon" aria-hidden="true">✓</span>
                                 <h2>Accomplishment reports</h2>
                                 <p>Annual and program-level accomplishments and performance reports.</p>
-                                <span class="status status-pending">Publication pending</span>
+                                <a class="status status-pending" href="transparency-documents.php?category=<?= rawurlencode('Accomplishment reports') ?>">Browse documents</a>
                             </article>
                             <article class="card transparency-card">
                                 <span class="transparency-icon" aria-hidden="true">▣</span>
                                 <h2>Procurement records</h2>
                                 <p>Procurement plans, bid opportunities, awards, and contract information.</p>
-                                <span class="status status-pending">Publication pending</span>
+                                <a class="status status-pending" href="transparency-documents.php?category=<?= rawurlencode('Procurement records') ?>">Browse documents</a>
                             </article>
                             <article class="card transparency-card">
                                 <span class="transparency-icon" aria-hidden="true">▧</span>
                                 <h2>Official publications</h2>
                                 <p>Ordinances, resolutions, notices, and other public government records.</p>
-                                <span class="status status-pending">Publication pending</span>
+                                <a class="status status-pending" href="transparency-documents.php?category=<?= rawurlencode('Official publications') ?>">Browse documents</a>
                             </article>
                         </div>
                         <article class="card transparency-contact">

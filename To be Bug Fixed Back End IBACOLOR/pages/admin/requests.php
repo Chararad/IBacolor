@@ -13,31 +13,13 @@
                 <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
                 <p class="admin-label">Workspace</p>
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
-                <a href="../resident/dashboard.php">Resident portal</a>
                 <p class="admin-label">Content</p>
-                <a href="../admin/news.php">✦ News</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
+                <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">
                     <a href="../../main.php">← Public website</a>
                 </div>
             </aside>
-            <header class="site-header">
-                <div class="container header-inner">
-                    <a class="brand" href="../../main.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a><button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">
-                        Menu
-                    </button>
-                    <div id="main-nav">
-                        <nav class="site-nav" aria-label="admin navigation">
-                            <div class="nav-links">
-                                <a href="../admin/dashboard.php">Dashboard</a><a href="../admin/requests.php">Requests</a><a href="../admin/reports.php">Reports</a><a href="../admin/documents.php">Documents</a><a href="../admin/users.php">Users</a>
-                                <div class="nav-group">
-                                    <span>Content management</span><a href="../admin/news.php">News</a><a href="../admin/services.php">Services</a><a href="../admin/hotlines.php">Hotlines</a>
-                                </div>
-                            </div>
-                            <a class="button button-small button-outline" href="../../main.php">Sign out</a>
-                        </nav>
-                    </div>
-                </div>
-            </header>
+            <?php require __DIR__ . '/../../includes/site-header.php'; ?>
             <main>
                 <section class="page-header">
                     <div class="container">

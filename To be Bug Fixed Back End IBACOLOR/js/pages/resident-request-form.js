@@ -6,6 +6,7 @@ document.addEventListener("portal:ready", async () => {
   if (!form) return;
   const confirmation = document.getElementById("request-confirmation");
   const serviceSelect = form.elements.service;
+  const requirementsContainer = document.getElementById("document-requirements");
   try {
     const [{ services }, { profile }] = await Promise.all([
       portal.request("resident.services"),
@@ -13,6 +14,44 @@ document.addEventListener("portal:ready", async () => {
     ]);
     serviceSelect.replaceChildren(new Option("Select a service", ""));
     services.forEach((service) => serviceSelect.add(new Option(service.name, service.service_id)));
+    const renderRequirements = () => {
+      requirementsContainer.replaceChildren();
+      const selectedService = services.find((service) => Number(service.service_id) === Number(serviceSelect.value));
+      if (!selectedService) {
+        const prompt = document.createElement("p");
+        prompt.className = "form-help";
+        prompt.textContent = "Select a service to see its required documents.";
+        requirementsContainer.append(prompt);
+        return;
+      }
+      if (!selectedService.requirements.length) {
+        const message = document.createElement("p");
+        message.className = "form-help";
+        message.textContent = "No supporting documents are required for this service.";
+        requirementsContainer.append(message);
+        return;
+      }
+      selectedService.requirements.forEach((requirement) => {
+        const label = document.createElement("label");
+        label.append(document.createTextNode(requirement.requirement));
+        const help = document.createElement("small");
+        help.className = "form-help";
+        help.textContent = "Required. PDF, JPG, or PNG, up to 10 MB.";
+        const input = document.createElement("input");
+        input.type = "file";
+        input.name = `documents[${requirement.requirement_id}]`;
+        input.accept = ".pdf,image/jpeg,image/png,application/pdf";
+        input.required = true;
+        input.addEventListener("change", () => {
+          const file = input.files[0];
+          input.setCustomValidity(file && file.size > 10 * 1024 * 1024 ? "Choose a file that is 10 MB or smaller." : "");
+        });
+        label.append(help, input);
+        requirementsContainer.append(label);
+      });
+    };
+    serviceSelect.addEventListener("change", renderRequirements);
+    renderRequirements();
     if (profile) {
       form.elements.firstName.value = profile.first_name || "";
       form.elements.lastName.value = profile.last_name || "";

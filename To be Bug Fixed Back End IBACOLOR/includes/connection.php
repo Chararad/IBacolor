@@ -8,7 +8,7 @@ $password = '';
 
 try {
     $iBacolorConnection = new PDO(
-        "mysql:host={$host};dbname={$dbname};charset=utf8mb4",
+        "mysql:host={$host};port=3307;dbname={$dbname};charset=utf8mb4",
         $username,
         $password,
         [

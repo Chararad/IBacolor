@@ -3,3 +3,10 @@
 @import "../responsive.css";
 
 /* Add styles specific to the admin-news page below. */
+#news-image-preview {
+  display: block;
+  max-width: 100%;
+  max-height: 320px;
+  margin: 12px 0;
+  object-fit: contain;
+}

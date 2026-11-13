@@ -9,21 +9,7 @@
     </head>
     <body data-page="resident/reports">
         <div id="app">
-            <header class="site-header">
-                <div class="container header-inner">
-                    <a class="brand" href="../../main.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a><button class="menu-toggle" aria-expanded="false" aria-controls="main-nav">
-                        Menu
-                    </button>
-                    <div id="main-nav">
-                        <nav class="site-nav" aria-label="resident navigation">
-                            <div class="nav-links">
-                                <a href="../resident/dashboard.php">Dashboard</a><a href="../resident/requests.php">My Requests</a><a href="../resident/reports.php">Community Reports</a><a href="../resident/profile.php">Profile</a><a href="../resident/settings.php">Settings</a>
-                            </div>
-                            <a class="button button-small button-outline" href="../../main.php">Sign out</a>
-                        </nav>
-                    </div>
-                </div>
-            </header>
+            <?php require __DIR__ . '/../../includes/site-header.php'; ?>
             <main>
                 <section class="page-header">
                     <div class="container">
@@ -69,9 +55,9 @@
                                     <small class="form-help">Choose how often you notice this issue.</small>
                                 </label>
                             </div>
-                            <label>Photo or document (optional)<input name="attachment" type="file" accept="image/jpeg,image/png,image/webp,.pdf" />
+                            <label>Photos or documents (optional)<input name="attachments[]" type="file" accept="image/jpeg,image/png,image/webp,.pdf" multiple />
                                 <small class="form-help">Choose a photo or document to describe the issue. This
-                                    file is stored privately with your report.</small>
+                                    file is stored privately with your report. Up to five files, maximum 10 MB each.</small>
                             </label>
                             <div id="report-confirmation" class="notice notice-info" role="status" hidden></div>
                             <button class="button" type="submit">Submit report</button>
