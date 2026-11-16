@@ -101,7 +101,11 @@
                                             <p><strong>How to apply:</strong> <?= htmlspecialchars($service['instructions'], ENT_QUOTES, 'UTF-8') ?></p>
                                         <?php endif; ?>
                                     </details>
-                                    <a class="button button-outline" href="resident/request-form.php?service=<?= htmlspecialchars(rawurlencode($service['code']), ENT_QUOTES, 'UTF-8') ?>">Start request</a>
+                                    <?php if (in_array(strtolower($service['status']), ['available', 'active', 'published'], true)): ?>
+                                        <a class="button button-outline" href="resident/request-form.php?service=<?= htmlspecialchars(rawurlencode($service['code']), ENT_QUOTES, 'UTF-8') ?>">Start request</a>
+                                    <?php else: ?>
+                                        <button class="button button-outline" type="button" disabled>Currently unavailable</button>
+                                    <?php endif; ?>
                                 </article>
                             <?php endforeach; ?>
                         </div>

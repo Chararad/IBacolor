@@ -3,3 +3,8 @@
 @import "../responsive.css";
 
 /* Add styles specific to the resident-profile page below. */
+
+.avatar-wrap { display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+.avatar { overflow: hidden; }
+.avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.avatar-change { padding: .25rem .75rem; font-size: .85rem; }

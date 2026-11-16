@@ -28,9 +28,49 @@ document.addEventListener("portal:ready", async () => {
     if (name) name.textContent = `${profile.first_name} ${profile.last_name}`;
     const memberSince = document.querySelector(".profile-banner p");
     if (memberSince) memberSince.textContent = `Resident account · Member since ${portal.date(profile.created_at)}`;
+    const verificationState = profile.verification_status || "pending";
+    const avatar = document.getElementById("profile-avatar");
+    const avatarInput = document.getElementById("avatar-input");
+    const avatarStatus = document.getElementById("avatar-status");
+    const showAvatar = (url) => {
+      if (!avatar) return;
+      avatar.replaceChildren();
+      if (!url) { avatar.textContent = "iB"; return; }
+      const img = document.createElement("img");
+      img.src = url.startsWith("blob:") ? url : `../../includes/${url}`;
+      img.alt = "Profile photo";
+      avatar.append(img);
+    };
+    let currentAvatar = profile.avatar_url;
+    showAvatar(currentAvatar);
+    document.getElementById("avatar-change")?.addEventListener("click", () => avatarInput.click());
+    avatarInput?.addEventListener("change", async () => {
+      const file = avatarInput.files[0];
+      if (!file) return;
+      const bad = !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+        ? "Choose a JPG, PNG, or WebP image."
+        : file.size > 2 * 1024 * 1024 ? "Photo must be 2 MB or smaller." : "";
+      if (bad) { portal.message(avatarStatus, bad, true); avatarInput.value = ""; return; }
+      const preview = URL.createObjectURL(file);
+      showAvatar(preview);
+      try {
+        const body = new FormData();
+        body.append("avatar", file);
+        const result = await portal.request("resident.upload-avatar", { method: "POST", body });
+        currentAvatar = result.avatar_url;
+        showAvatar(currentAvatar);
+        portal.message(avatarStatus, "Profile photo updated.");
+      } catch (error) {
+        showAvatar(currentAvatar);
+        portal.message(avatarStatus, error.message, true);
+      } finally {
+        URL.revokeObjectURL(preview);
+        avatarInput.value = "";
+      }
+    });
     const verificationNotice = document.getElementById("resident-verification-status");
     if (verificationNotice) {
-      const verification = profile.verification_status || "pending";
+      const verification = verificationState;
       const labels = {
         pending: "Resident verification is pending review.",
         verified: "Your resident account is verified.",
@@ -40,6 +80,8 @@ document.addEventListener("portal:ready", async () => {
       verificationNotice.classList.toggle("notice-warning", verification !== "verified");
       verificationNotice.classList.toggle("notice-info", verification === "verified");
     }
+    const docsCard = document.getElementById("verification-documents-card");
+    if (docsCard) docsCard.hidden = verificationState === "verified";
     const documentList = document.getElementById("verification-documents-list");
     const renderVerificationDocuments = (items) => {
       documentList.replaceChildren();

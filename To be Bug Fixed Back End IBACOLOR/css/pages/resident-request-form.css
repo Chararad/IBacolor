@@ -3,3 +3,12 @@
 @import "../responsive.css";
 
 /* Add styles specific to the resident-request-form page below. */
+
+.selected-service { display: grid; gap: .25rem; padding: .75rem 1rem; border: 1px solid var(--border, #d8dee6); border-radius: 8px; background: var(--surface-muted, #f5f7fa); }
+.selected-service small { color: var(--muted, #5b6675); }
+
+.success-dialog { max-width: 26rem; width: calc(100% - 2rem); padding: 2rem 1.5rem; border: 0; border-radius: 12px; text-align: center; box-shadow: 0 20px 60px rgba(0, 0, 0, .25); }
+.success-dialog::backdrop { background: rgba(0, 0, 0, .5); }
+.success-dialog-icon { width: 3.5rem; height: 3.5rem; margin: 0 auto 1rem; border-radius: 50%; background: #e3f4e8; color: #1f7a3d; font-size: 1.75rem; line-height: 3.5rem; font-weight: 700; }
+.success-dialog h2 { margin: 0 0 .5rem; }
+.success-dialog-reference { margin: 1rem 0 1.5rem; padding: .5rem; border-radius: 8px; background: #f5f7fa; font-weight: 700; letter-spacing: .04em; }

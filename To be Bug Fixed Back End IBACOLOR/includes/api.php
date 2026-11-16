@@ -213,7 +213,7 @@ function apiDispatch(): never
         $accountId = apiRole(['resident', 'admin']);
         $type = apiText($_GET['type'] ?? '', 20);
         $id = filter_var($_GET['id'] ?? null, FILTER_VALIDATE_INT);
-        if (!$id || !in_array($type, ['request', 'report', 'verification'], true)) {
+        if (!$id || !in_array($type, ['request', 'report', 'verification', 'avatar'], true)) {
             apiResponse(404, ['error' => 'File not found.']);
         }
         if ($type === 'request') {
@@ -222,6 +222,9 @@ function apiDispatch(): never
         } elseif ($type === 'report') {
             $query = 'SELECT d.storage_key,d.file_name,d.mime_type,cr.account_id
                 FROM report_attachments d JOIN community_reports cr ON cr.report_id=d.report_id WHERE d.attachment_id=:id';
+        } elseif ($type === 'avatar') {
+            $query = "SELECT profile_image_key AS storage_key,'avatar' AS file_name,'application/octet-stream' AS mime_type,account_id
+                FROM resident_profiles WHERE account_id=:id AND profile_image_key IS NOT NULL";
         } else {
             $query = 'SELECT storage_key,file_name,mime_type,account_id
                 FROM resident_verification_documents WHERE document_id=:id';
@@ -235,6 +238,12 @@ function apiDispatch(): never
         $path = __DIR__ . '/storage/private/' . $file['storage_key'];
         if (!is_file($path)) {
             apiResponse(404, ['error' => 'File is unavailable.']);
+        }
+        if ($type === 'avatar') {
+            $file['mime_type'] = (new finfo(FILEINFO_MIME_TYPE))->file($path);
+            if (!in_array($file['mime_type'], ['image/jpeg', 'image/png', 'image/webp'], true)) {
+                apiResponse(404, ['error' => 'File not found.']);
+            }
         }
         header('Content-Type: ' . $file['mime_type']);
         header('Content-Length: ' . filesize($path));
@@ -286,7 +295,7 @@ function apiDispatch(): never
     }
     if ($action === 'resident.services') {
         $statement = $iBacolorConnection->query(
-            "SELECT service_id,name,category,office,description FROM services
+            "SELECT service_id,code,name,category,office,description FROM services
              WHERE LOWER(status) IN ('available','active','published') ORDER BY name"
         );
         $services = $statement->fetchAll();
@@ -373,7 +382,7 @@ function apiDispatch(): never
     }
     if ($action === 'resident.profile') {
         $statement = $iBacolorConnection->prepare(
-            "SELECT a.email,a.created_at,rp.first_name,rp.middle_name,rp.last_name,rp.mobile_number,rp.barangay_id,b.name AS barangay_name,rp.address,
+            "SELECT a.email,a.created_at,rp.first_name,rp.middle_name,rp.last_name,rp.mobile_number,rp.barangay_id,b.name AS barangay_name,rp.address,rp.profile_image_key AS avatar_key,
              COALESCE((SELECT vh.status FROM resident_verification_history vh WHERE vh.account_id=a.account_id
                        ORDER BY vh.changed_at DESC,vh.history_id DESC LIMIT 1),rp.verification) AS verification_status,
              (SELECT vh.note FROM resident_verification_history vh WHERE vh.account_id=a.account_id
@@ -384,7 +393,14 @@ function apiDispatch(): never
              LEFT JOIN notification_preferences np ON np.account_id=a.account_id WHERE a.account_id=:id"
         );
         $statement->execute(['id' => $accountId]);
-        apiResponse(200, ['profile' => $statement->fetch()]);
+        $profile = $statement->fetch();
+        if ($profile) {
+            $profile['avatar_url'] = $profile['avatar_key']
+                ? 'api.php?action=download&type=avatar&inline=1&id=' . $accountId . '&v=' . substr($profile['avatar_key'], 0, 12)
+                : null;
+            unset($profile['avatar_key']);
+        }
+        apiResponse(200, ['profile' => $profile]);
     }
     if ($action === 'resident.verification-documents') {
         $statement = $iBacolorConnection->prepare(
@@ -397,6 +413,11 @@ function apiDispatch(): never
     if ($action === 'resident.upload-verification-documents' && $method === 'POST') {
         if (($_SESSION['role'] ?? '') !== 'resident') {
             apiResponse(403, ['error' => 'Only residents can submit verification documents.']);
+        }
+        $check = $iBacolorConnection->prepare('SELECT verification FROM resident_profiles WHERE account_id=:id LIMIT 1');
+        $check->execute(['id' => $accountId]);
+        if ($check->fetchColumn() === 'verified') {
+            apiResponse(409, ['error' => 'Your account is already verified.']);
         }
         try {
             $uploads = apiUploadMany($_FILES['documents'] ?? null, ['application/pdf','image/jpeg','image/png'], 5);
@@ -426,6 +447,51 @@ function apiDispatch(): never
             throw $exception;
         }
         apiResponse(201, ['message' => 'Verification documents submitted.']);
+    }
+
+    if ($action === 'resident.upload-avatar' && $method === 'POST') {
+        if (($_SESSION['role'] ?? '') !== 'resident') {
+            apiResponse(403, ['error' => 'Only residents can change a profile photo.']);
+        }
+        $file = $_FILES['avatar'] ?? null;
+        if ($file && ($file['size'] ?? 0) > 2 * 1024 * 1024) {
+            apiResponse(422, ['error' => 'Photo must be 2 MB or smaller.']);
+        }
+        try {
+            $upload = apiUpload($file, ['image/jpeg', 'image/png', 'image/webp']);
+        } catch (RuntimeException $exception) {
+            apiResponse(422, ['error' => $exception->getMessage()]);
+        }
+        if (!$upload || @getimagesize($upload['path']) === false) {
+            if ($upload && is_file($upload['path'])) {
+                unlink($upload['path']);
+            }
+            apiResponse(422, ['error' => 'Choose a valid JPG, PNG, or WebP image.']);
+        }
+        try {
+            $old = $iBacolorConnection->prepare('SELECT profile_image_key FROM resident_profiles WHERE account_id=:id LIMIT 1');
+            $old->execute(['id' => $accountId]);
+            $oldKey = $old->fetchColumn();
+            $update = $iBacolorConnection->prepare(
+                'UPDATE resident_profiles SET profile_image_key=:key WHERE account_id=:id'
+            );
+            $update->execute(['key' => $upload['key'], 'id' => $accountId]);
+        } catch (Throwable $exception) {
+            if (is_file($upload['path'])) {
+                unlink($upload['path']);
+            }
+            throw $exception;
+        }
+        if (is_string($oldKey) && preg_match('/^[a-f0-9]{48}$/', $oldKey)) {
+            $oldPath = __DIR__ . '/storage/private/' . $oldKey;
+            if (is_file($oldPath)) {
+                unlink($oldPath);
+            }
+        }
+        apiResponse(200, [
+            'message' => 'Profile photo updated.',
+            'avatar_url' => 'api.php?action=download&type=avatar&inline=1&id=' . $accountId . '&v=' . substr($upload['key'], 0, 12),
+        ]);
     }
 
     if ($action === 'resident.submit-request' && $method === 'POST') {
