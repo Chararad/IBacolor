@@ -7,6 +7,34 @@ document.addEventListener("portal:ready", async () => {
   const confirmation = document.getElementById("request-confirmation");
   const serviceSelect = form.elements.service;
   const requirementsContainer = document.getElementById("document-requirements");
+  const showSuccessDialog = (reference) => {
+    const detailsUrl = `request-details.php?reference=${encodeURIComponent(reference)}`;
+    const dialog = document.createElement("dialog");
+    dialog.className = "success-dialog";
+    dialog.setAttribute("aria-labelledby", "success-dialog-title");
+    const icon = document.createElement("div");
+    icon.className = "success-dialog-icon";
+    icon.setAttribute("aria-hidden", "true");
+    icon.textContent = "✓";
+    const title = document.createElement("h2");
+    title.id = "success-dialog-title";
+    title.textContent = "Request submitted";
+    const text = document.createElement("p");
+    text.textContent = "Your request was received. Keep your reference number to track its status.";
+    const ref = document.createElement("p");
+    ref.className = "success-dialog-reference";
+    ref.textContent = reference;
+    const action = document.createElement("a");
+    action.className = "button";
+    action.href = detailsUrl;
+    action.textContent = "View request details";
+    dialog.append(icon, title, text, ref, action);
+    dialog.addEventListener("cancel", () => location.assign(detailsUrl));
+    document.body.append(dialog);
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+    action.focus();
+  };
   try {
     const [{ services }, { profile }] = await Promise.all([
       portal.request("resident.services"),
@@ -51,6 +79,30 @@ document.addEventListener("portal:ready", async () => {
       });
     };
     serviceSelect.addEventListener("change", renderRequirements);
+    const requestedCode = new URLSearchParams(window.location.search).get("service");
+    const preselected = requestedCode ? services.find((service) => service.code === requestedCode) : null;
+    if (requestedCode && !preselected) {
+      portal.message(confirmation, "That service is currently unavailable or could not be found. Please choose another service.", true);
+    }
+    if (preselected) {
+      serviceSelect.value = preselected.service_id;
+      serviceSelect.closest("label").hidden = true;
+      const fieldset = serviceSelect.closest("fieldset");
+      const legend = fieldset.querySelector("legend");
+      if (legend) legend.textContent = "Step 1: Selected service";
+      const summary = document.createElement("div");
+      summary.className = "selected-service";
+      const name = document.createElement("strong");
+      name.textContent = preselected.name;
+      const meta = document.createElement("small");
+      meta.textContent = [preselected.category, preselected.office].filter(Boolean).join(" · ");
+      const change = document.createElement("a");
+      change.className = "text-link";
+      change.href = "../services.php";
+      change.textContent = "Choose a different service";
+      summary.append(name, meta, change);
+      fieldset.append(summary);
+    }
     renderRequirements();
     if (profile) {
       form.elements.firstName.value = profile.first_name || "";
@@ -70,14 +122,15 @@ document.addEventListener("portal:ready", async () => {
     if (!form.reportValidity()) return;
     const submit = form.querySelector('[type="submit"]');
     submit.disabled = true;
+    let submitted = false;
     try {
       const result = await portal.request("resident.submit-request", { method: "POST", body: new FormData(form) });
-      portal.message(confirmation, `Request ${result.reference} submitted successfully.`);
-      window.setTimeout(() => location.assign(`request-details.php?reference=${encodeURIComponent(result.reference)}`), 700);
+      submitted = true;
+      showSuccessDialog(result.reference);
     } catch (error) {
       portal.message(confirmation, error.message, true);
     } finally {
-      submit.disabled = false;
+      if (!submitted) submit.disabled = false;
     }
   });
 });

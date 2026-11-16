@@ -26,10 +26,15 @@
                         <form class="form-card" id="profile-form">
                             <div id="resident-verification-status" class="notice notice-info" role="status"></div>
                             <div class="profile-banner">
-                                <span class="avatar">iB</span>
+                                <span class="avatar-wrap">
+                                    <span class="avatar" id="profile-avatar" data-profile-avatar>iB</span>
+                                    <input type="file" id="avatar-input" accept="image/jpeg,image/png,image/webp" hidden />
+                                    <button class="button button-outline avatar-change" id="avatar-change" type="button">Change photo</button>
+                                </span>
                                 <div>
                                     <h2 data-profile-name>Resident account</h2>
                                     <p>Resident account · Member since September 2026</p>
+                                    <small id="avatar-status" class="form-help" role="status" hidden></small>
                                 </div>
                             </div>
                             <div class="form-grid">
@@ -61,7 +66,7 @@
                             <div id="profile-status" class="notice notice-info" role="status" hidden></div>
                             <a class="button button-outline" href="settings.php">Settings</a>
                         </form>
-                        <article class="card">
+                        <article class="card" id="verification-documents-card">
                             <h2>Resident verification documents</h2>
                             <p>Submit supporting documents for administrator review. Files are stored privately.</p>
                             <div id="verification-documents-list"></div>
