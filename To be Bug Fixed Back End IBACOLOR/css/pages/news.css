@@ -3,3 +3,15 @@
 @import "../responsive.css";
 
 /* Add styles specific to the news page below. */
+
+.news-card-clickable { cursor: pointer; }
+.news-read-more { margin-top: auto; }
+body.news-dialog-open { overflow: hidden; }
+.news-dialog { width: min(42rem, calc(100% - 2rem)); max-height: calc(100vh - 3rem); padding: 0; border: 0; border-radius: 12px; box-shadow: 0 20px 60px rgba(0, 0, 0, .3); overflow: hidden; }
+.news-dialog[open] { display: flex; flex-direction: column; }
+.news-dialog::backdrop { background: rgba(0, 0, 0, .55); }
+.news-dialog-close { position: absolute; top: .5rem; right: .75rem; z-index: 1; width: 2.25rem; height: 2.25rem; border: 0; border-radius: 50%; background: rgba(255, 255, 255, .9); font-size: 1.5rem; line-height: 1; cursor: pointer; }
+.news-dialog-body { padding: 1.5rem; overflow-y: auto; }
+.news-dialog-body h2 { margin: .5rem 0 1rem; }
+.news-dialog-body .announcement-image { display: block; width: 100%; max-height: 22rem; margin: 0 0 1rem; object-fit: cover; border-radius: 8px; }
+.news-dialog-content { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.6; }

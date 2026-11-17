@@ -9,10 +9,63 @@
   const emptyState = document.getElementById("news-empty");
   if (!grid || !categoryFilter || !fromDate || !toDate || !resultCount || !emptyState) return;
 
+  const ANNOUNCEMENT_TYPES = [
+    "Legal and Regulatory Notices",
+    "Government and Administrative Announcements",
+    "Public Safety and Emergency Advisories",
+    "Community and Cultural Events",
+  ];
+
+  const dialog = document.createElement("dialog");
+  dialog.className = "news-dialog";
+  dialog.setAttribute("aria-labelledby", "news-dialog-title");
+  dialog.innerHTML = `<button class="news-dialog-close" type="button" aria-label="Close">×</button>
+    <div class="news-dialog-body">
+      <span class="tag" data-dialog-tag></span>
+      <time class="meta" data-dialog-date></time>
+      <h2 id="news-dialog-title" data-dialog-title></h2>
+      <img class="announcement-image" data-dialog-image alt="" hidden />
+      <div class="news-dialog-content" data-dialog-content></div>
+    </div>`;
+  document.body.append(dialog);
+  let lastTrigger = null;
+  const openArticle = (article, trigger) => {
+    lastTrigger = trigger;
+    const publishedDate = String(article.published_at || "").slice(0, 10);
+    dialog.querySelector("[data-dialog-tag]").textContent = article.category;
+    const time = dialog.querySelector("[data-dialog-date]");
+    time.textContent = publishedDate
+      ? new Intl.DateTimeFormat(undefined, { dateStyle: "long", timeZone: "UTC" }).format(new Date(`${publishedDate}T00:00:00Z`))
+      : "";
+    time.dateTime = publishedDate;
+    dialog.querySelector("[data-dialog-title]").textContent = article.title;
+    const image = dialog.querySelector("[data-dialog-image]");
+    if (Number(article.has_image) === 1) {
+      image.src = `../includes/api.php?action=news.image&id=${encodeURIComponent(article.article_id)}`;
+      image.alt = `Image for ${article.title}`;
+      image.hidden = false;
+    } else {
+      image.removeAttribute("src");
+      image.hidden = true;
+    }
+    dialog.querySelector("[data-dialog-content]").textContent = article.content;
+    dialog.querySelector(".news-dialog-body").scrollTop = 0;
+    if (typeof dialog.showModal === "function") dialog.showModal();
+    else dialog.setAttribute("open", "");
+    document.body.classList.add("news-dialog-open");
+  };
+  dialog.querySelector(".news-dialog-close").addEventListener("click", () => dialog.close());
+  dialog.addEventListener("click", (event) => { if (event.target === dialog) dialog.close(); });
+  dialog.addEventListener("close", () => {
+    document.body.classList.remove("news-dialog-open");
+    lastTrigger?.focus();
+  });
+
   const render = (articles) => {
-    const categories = [...new Set(articles.map((article) => article.category))].sort();
+    const extraCategories = [...new Set(articles.map((article) => article.category))]
+      .filter((category) => !ANNOUNCEMENT_TYPES.includes(category)).sort();
     categoryFilter.replaceChildren(new Option("All announcements", ""));
-    categories.forEach((category) => categoryFilter.add(new Option(category, category)));
+    [...ANNOUNCEMENT_TYPES, ...extraCategories].forEach((category) => categoryFilter.add(new Option(category, category)));
     grid.replaceChildren(...articles.map((article) => {
       const card = document.createElement("article");
       const publishedDate = String(article.published_at || "").slice(0, 10);
@@ -34,22 +87,13 @@
       title.textContent = article.title;
       const summary = document.createElement("p");
       summary.textContent = article.content.length > 240 ? `${article.content.slice(0, 240).trim()}…` : article.content;
-      const details = document.createElement("details");
-      details.className = "news-details";
-      const disclosure = document.createElement("summary");
-      disclosure.textContent = "Read full announcement";
-      const content = document.createElement("p");
-      content.textContent = article.content;
-      details.append(disclosure);
-      if (Number(article.has_image) === 1) {
-        const image = document.createElement("img");
-        image.className = "announcement-image";
-        image.src = `../includes/api.php?action=news.image&id=${encodeURIComponent(article.article_id)}`;
-        image.alt = `Image for ${article.title}`;
-        details.append(image);
-      }
-      details.append(content);
-      card.append(tag, time, title, summary, details);
+      const readMore = document.createElement("button");
+      readMore.type = "button";
+      readMore.className = "button button-outline news-read-more";
+      readMore.textContent = "Read full announcement";
+      card.classList.add("news-card-clickable");
+      card.addEventListener("click", () => openArticle(article, readMore));
+      card.append(tag, time, title, summary, readMore);
       return card;
     }));
 

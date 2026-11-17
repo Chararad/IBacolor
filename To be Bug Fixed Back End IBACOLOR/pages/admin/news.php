@@ -58,7 +58,7 @@
                             <h2 id="news-form-heading">Add news article</h2>
                             <input name="articleId" type="hidden" />
                             <label>Title<input name="title" maxlength="255" required /></label>
-                            <label>Category<input name="category" maxlength="100" required /></label>
+                            <label>Announcement type<select name="category" required><option value="">Select announcement type</option><option value="Legal and Regulatory Notices">Legal and Regulatory Notices</option><option value="Government and Administrative Announcements">Government and Administrative Announcements</option><option value="Public Safety and Emergency Advisories">Public Safety and Emergency Advisories</option><option value="Community and Cultural Events">Community and Cultural Events</option></select></label>
                             <label>Article content<textarea name="content" rows="8" required></textarea></label>
                             <label>Publication status<select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></label>
                             <label>Publication date and time<input name="publishedAt" type="datetime-local" /></label>

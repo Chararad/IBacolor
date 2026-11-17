@@ -30,7 +30,14 @@ document.addEventListener("portal:ready", async () => {
     form.reset();
     form.elements.articleId.value = article?.article_id || "";
     form.elements.title.value = article?.title || "";
-    form.elements.category.value = article?.category || "";
+    const categorySelect = form.elements.category;
+    categorySelect.querySelectorAll("option[data-legacy]").forEach((option) => option.remove());
+    if (article?.category && !Array.from(categorySelect.options).some((option) => option.value === article.category)) {
+      const legacy = new Option(`${article.category} (old type, please choose a new one)`, "");
+      legacy.dataset.legacy = "";
+      categorySelect.add(legacy, 1);
+    }
+    categorySelect.value = Array.from(categorySelect.options).some((option) => option.value === article?.category) ? article.category : "";
     form.elements.content.value = article?.content || "";
     form.elements.status.value = article?.status || "draft";
     if (article?.published_at) {

@@ -1,6 +1,10 @@
 <?php
     session_start();
     $isAuthenticated = isset($_SESSION['account_id']) && in_array($_SESSION['role'] ?? '', ['resident', 'admin'], true);
+    $assetVersion = static function (string $path): int {
+        $file = __DIR__ . '/../' . $path;
+        return is_file($file) ? (int) filemtime($file) : 0;
+    };
 ?>
 <!doctype html>
 <html lang="en">
@@ -8,7 +12,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>News | iBacolor</title>
-        <link rel="stylesheet" href="../css/pages/news.css" />
+        <link rel="stylesheet" href="../css/pages/news.css?v=<?= $assetVersion('css/pages/news.css') ?>" />
     </head>
     <body data-page="news">
         <div id="app">
@@ -25,7 +29,13 @@
                 <section class="section">
                     <div class="container">
                         <div class="filter-bar news-filter-bar">
-                            <label>Announcement type<select id="news-category-filter"><option value="">All announcements</option></select></label>
+                            <label>Announcement type<select id="news-category-filter">
+                                <option value="">All announcements</option>
+                                <option>Legal and Regulatory Notices</option>
+                                <option>Government and Administrative Announcements</option>
+                                <option>Public Safety and Emergency Advisories</option>
+                                <option>Community and Cultural Events</option>
+                            </select></label>
                             <label>From date<input id="news-date-from" type="date" /></label>
                             <label>To date<input id="news-date-to" type="date" /></label>
                         </div>
@@ -130,7 +140,7 @@
             </nav>
         </div>
         <script src="../js/navigation.js"></script>
-        <script src="../js/news.js"></script>
+        <script src="../js/news.js?v=<?= $assetVersion('js/news.js') ?>"></script>
         <script src="../js/helper.js"></script>
     </body>
 </html>

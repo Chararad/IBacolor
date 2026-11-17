@@ -783,6 +783,14 @@ function apiDispatch(): never
             || !in_array($status, ['draft', 'published'], true)) {
             apiResponse(422, ['error' => 'Enter a title, article content, category, and valid publication status.']);
         }
+        if (!in_array($category, [
+            'Legal and Regulatory Notices',
+            'Government and Administrative Announcements',
+            'Public Safety and Emergency Advisories',
+            'Community and Cultural Events',
+        ], true)) {
+            apiResponse(422, ['error' => 'Choose a valid announcement type.']);
+        }
         $publishedAt = null;
         if ($status === 'published') {
             if ($publishedAtInput === '') {
