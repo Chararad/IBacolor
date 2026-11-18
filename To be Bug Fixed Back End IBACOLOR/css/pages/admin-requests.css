@@ -2,4 +2,67 @@
 @import "../components.css";
 @import "../responsive.css";
 
-/* Add styles specific to the admin-requests page below. */
+/* Admin sidebar: highlight the section you are currently in. */
+.admin-sidebar > a[aria-current="page"] {
+  border-left-color: var(--accent-gold);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-weight: 800;
+}
+
+/* Manage requests: queue tabs */
+.queue-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.queue-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #fffdfb;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+.queue-tab strong {
+  display: inline-grid;
+  place-items: center;
+  min-width: 26px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  background: #f0e7e2;
+  color: var(--red);
+  font-size: 0.75rem;
+}
+.queue-tab:hover {
+  border-color: var(--red);
+}
+.queue-tab[aria-pressed="true"] {
+  border-color: var(--red);
+  background: var(--red);
+  color: #fff;
+}
+.queue-tab[aria-pressed="true"] strong {
+  background: #fff;
+  color: var(--red);
+}
+
+/* Manage requests: quick status update */
+.quick-update {
+  white-space: nowrap;
+}
+.quick-update select {
+  display: inline-block;
+  width: auto;
+  min-width: 130px;
+  margin: 0 8px 0 0;
+  padding: 7px 10px;
+  font-size: 0.8125rem;
+}

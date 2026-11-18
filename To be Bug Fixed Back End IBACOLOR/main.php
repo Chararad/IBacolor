@@ -7,6 +7,70 @@ $servicesQuery = 'SELECT code, name, description, category, office FROM services
 $servicesStatement = $iBacolorConnection->prepare($servicesQuery);
 $servicesStatement->execute();
 $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
+
+function home_escape(?string $value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
+
+// ---- Site search (?q=...) ----------------------------------------------
+$searchQuery = trim((string) ($_GET['q'] ?? ''));
+$searchQuery = function_exists('mb_substr') ? mb_substr($searchQuery, 0, 100) : substr($searchQuery, 0, 100);
+$searchServices = [];
+$searchPages = [];
+
+if ($searchQuery !== '') {
+    $searchTerms = array_slice(array_values(array_filter(preg_split('/\s+/', $searchQuery) ?: [], 'strlen')), 0, 5);
+
+    // Services: every term must match at least one column.
+    $searchConditions = [];
+    $searchParams = [];
+    foreach ($searchTerms as $termIndex => $term) {
+        $like = '%' . addcslashes($term, '\\%_') . '%';
+        $searchConditions[] = "(name LIKE :t{$termIndex}a OR description LIKE :t{$termIndex}b OR category LIKE :t{$termIndex}c OR office LIKE :t{$termIndex}d OR code LIKE :t{$termIndex}e)";
+        foreach (['a', 'b', 'c', 'd', 'e'] as $suffix) {
+            $searchParams["t{$termIndex}{$suffix}"] = $like;
+        }
+    }
+    if ($searchConditions) {
+        $searchStatement = $iBacolorConnection->prepare(
+            'SELECT code, name, description, category, office FROM services WHERE '
+            . implode(' AND ', $searchConditions)
+            . ' ORDER BY name LIMIT 12'
+        );
+        $searchStatement->execute($searchParams);
+        $searchServices = $searchStatement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Site pages and announcements.
+    $siteSearchIndex = [
+        ['title' => 'Municipal services', 'url' => 'pages/services.php', 'description' => 'Requirements, responsible offices and application guidance.', 'keywords' => 'services permits taxes requirements office apply'],
+        ['title' => 'News and announcements', 'url' => 'pages/news.php', 'description' => 'Municipal announcements, advisories and community updates.', 'keywords' => 'news announcements advisory updates events'],
+        ['title' => 'Emergency hotlines', 'url' => 'pages/hotlines.php', 'description' => 'Emergency numbers and municipal office contacts.', 'keywords' => 'emergency hotline contact phone mdrrmo police fire health office directory barangay'],
+        ['title' => 'Transparency', 'url' => 'pages/transparency.php', 'description' => 'Public reports, budgets and projects.', 'keywords' => 'transparency budget reports projects documents public'],
+        ['title' => 'Community Report', 'url' => 'pages/resident/reports.php', 'description' => 'Report a community concern to the municipality.', 'keywords' => 'report issue concern complaint community'],
+        ['title' => 'My request status', 'url' => 'pages/resident/requests.php', 'description' => 'Track the status of your service requests.', 'keywords' => 'request status track application'],
+        ['title' => 'History of Bacolor', 'url' => 'main.php#history', 'description' => 'Learn about the history of the municipality.', 'keywords' => 'history heritage capital pampanga lahar pinatubo church'],
+        ['title' => 'Bacolor launches iBacolor public service portal', 'url' => 'pages/news.php', 'description' => 'Announcement, September 18, 2026.', 'keywords' => 'portal launch announcement'],
+        ['title' => 'Scheduled maintenance of municipal offices', 'url' => 'pages/news.php', 'description' => 'Advisory, September 12, 2026.', 'keywords' => 'maintenance offices hours advisory'],
+        ['title' => 'Community clean-up drive this October', 'url' => 'pages/news.php', 'description' => 'Community, September 05, 2026.', 'keywords' => 'clean-up cleanup barangay environment'],
+        ['title' => 'Public health and safety reminders', 'url' => 'pages/news.php', 'description' => 'Health, August 28, 2026.', 'keywords' => 'health safety rural health unit records'],
+    ];
+    foreach ($siteSearchIndex as $entry) {
+        $haystack = $entry['title'] . ' ' . $entry['description'] . ' ' . $entry['keywords'];
+        $allTermsMatch = true;
+        foreach ($searchTerms as $term) {
+            if (stripos($haystack, $term) === false) {
+                $allTermsMatch = false;
+                break;
+            }
+        }
+        if ($allTermsMatch) {
+            $searchPages[] = $entry;
+        }
+    }
+}
+$searchTotal = count($searchServices) + count($searchPages);
 ?>
 <!doctype html>
 <html lang="en">
@@ -18,6 +82,7 @@ $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
     </head>
     <body data-page="home">
         <div id="app">
+            <?php include __DIR__ . '/includes/site-header.php'; ?>
             <main>
                 <section class="hero">
                     <div class="container hero-grid">
@@ -25,13 +90,14 @@ $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
                             <p class="eyebrow">Municipality of Bacolor · Pampanga</p>
                             <h1>Bacolor’s services and updates, in one place.</h1>
                             <p class="hero-copy">Pay taxes, apply for permits, request assistance and report concerns with guidance from your municipal government.</p>
-                            <form class="home-search" action="pages/services.php" method="GET">
+                            <form class="home-search" action="main.php#search-results" method="GET" role="search">
                                 <label class="visually-hidden" for="home-service-search">Search municipal services, offices and requirements </label>
                                 <span>
                                     <span class="icon" aria-hidden="true">⌕</span>
                                 </span>
-                                <input id="home-service-search" name="q" type="search" aria-label="Search municipal services, offices and requirements" placeholder="Search services, offices or requirements"/>
+                                <input id="home-service-search" name="q" type="search" aria-label="Search municipal services, offices and requirements" placeholder="Search services, offices or requirements" value="<?= home_escape($searchQuery) ?>" maxlength="100" autocomplete="off"/>
                                 <button type="submit" aria-label="Search">
+                                    <span class="search-label">Search</span>
                                     <span class="icon" aria-hidden="true">→</span>
                                 </button>
                             </form>
@@ -68,6 +134,56 @@ $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
                         </aside>
                     </div>
                 </section>
+                <?php if ($searchQuery !== ''): ?>
+                <section class="section search-results-section" id="search-results" aria-labelledby="search-results-title">
+                    <div class="container">
+                        <div class="section-heading">
+                            <div>
+                                <p class="eyebrow">Site search</p>
+                                <h2 id="search-results-title">Results for “<?= home_escape($searchQuery) ?>”</h2>
+                                <p class="section-intro"><?= $searchTotal === 0 ? 'No results found.' : $searchTotal . ($searchTotal === 1 ? ' result found.' : ' results found.') ?></p>
+                            </div>
+                            <a class="text-link" href="main.php">Clear search</a>
+                        </div>
+                        <?php if ($searchTotal === 0): ?>
+                            <p class="empty-state">Nothing matched your search. Try a different keyword, or <a class="text-link" href="pages/services.php">browse all services</a>.</p>
+                        <?php endif; ?>
+                        <?php if ($searchServices): ?>
+                            <div class="search-result-group">
+                                <h3>Services</h3>
+                                <ul class="search-result-list">
+                                    <?php foreach ($searchServices as $result): ?>
+                                        <li>
+                                            <span class="tag"><?= home_escape($result['category']) ?></span>
+                                            <h4><?= home_escape($result['name']) ?></h4>
+                                            <p><?= home_escape($result['description']) ?></p>
+                                            <a class="text-link" href="pages/services.php?service=<?= home_escape(rawurlencode((string) $result['code'])) ?>">View service details
+                                                <span class="icon" aria-hidden="true">→</span>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                        <?php if ($searchPages): ?>
+                            <div class="search-result-group">
+                                <h3>Pages and announcements</h3>
+                                <ul class="search-result-list">
+                                    <?php foreach ($searchPages as $result): ?>
+                                        <li>
+                                            <h4><?= home_escape($result['title']) ?></h4>
+                                            <p><?= home_escape($result['description']) ?></p>
+                                            <a class="text-link" href="<?= home_escape($result['url']) ?>">Open
+                                                <span class="icon" aria-hidden="true">→</span>
+                                            </a>
+                                        </li>
+                                    <?php endforeach; ?>
+                                </ul>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                </section>
+                <?php endif; ?>
                 <section class="section quick-services-section">
                     <div class="container">
                         <div class="section-heading">
@@ -104,11 +220,6 @@ $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
                                 <span aria-hidden="true">▧</span>
                                 <strong>Transparency</strong>
                                 <small>Public reports, budgets and projects</small>
-                            </a>
-                            <a href="pages/login.php?next=resident/profile.php">
-                                <span aria-hidden="true">◯</span>
-                                <strong>Profile &amp; settings</strong>
-                                <small>Sign in to manage your resident account</small> 
                             </a>
                         </div>
                     </div>
@@ -202,6 +313,23 @@ $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
                     </div>
                 </div>
             </section>
+            <section class="section history-section" id="history" aria-labelledby="history-title">
+                <div class="container history-layout">
+                    <div class="history-copy">
+                        <p class="eyebrow">Our heritage</p>
+                        <h2 id="history-title">History of Bacolor</h2>
+                        <p class="section-intro">Once the capital of Pampanga, Bacolor has long been a center of faith, governance and culture, and a community that rebuilt itself after the 1991 Mount Pinatubo lahar.</p>
+                        <details class="history-details">
+                            <summary class="button button-outline">Read more</summary>
+                            <div class="history-more">
+                                <p>Bacolor served as the capital of Pampanga from 1756 until the provincial seat moved to San Fernando in 1904. During the British occupation of Manila in 1762, the town became the base of Spanish resistance under Simón de Anda.</p>
+                                <p>In the 1990s, lahar flows from Mount Pinatubo buried large parts of the town, including part of the San Guillermo Parish Church. Today the partly buried church stands as a reminder of the community’s resilience.</p>
+                            </div>
+                        </details>
+                    </div>
+                    <img class="history-image" src="assets/bacolor-church.png" alt="The Bacolor church, a landmark of the town’s history" loading="lazy" />
+                </div>
+            </section>
             <section class="section municipality-section">
                 <div class="container municipality-layout">
                     <div>
@@ -259,6 +387,7 @@ $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
                     <a href="pages/news.php">News and announcements</a>
                     <a href="pages/hotlines.php">Emergency hotlines</a>
                     <a href="pages/transparency.php">Transparency</a>
+                    <a href="pages/resident/reports.php">Community Report</a>
                 </div>
                 <div>
                     <h3>Need assistance?</h3>
@@ -269,6 +398,10 @@ $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
                 <span>© 2026 Municipality of Bacolor</span>
             </div>
         </footer>
+        <div class="cookie-banner" id="cookie-banner" role="region" aria-label="Cookie consent" hidden>
+            <p>iBacolor uses cookies to keep you signed in and to improve your experience on this site.</p>
+            <button class="button button-light" type="button" id="cookie-accept">Accept cookies</button>
+        </div>
         <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-hidden="true">
             <div class="modal-content">
                 <button class="modal-close" type="button" aria-label="Close">
@@ -303,5 +436,7 @@ $services = $servicesStatement->fetchAll(PDO::FETCH_ASSOC);
     </div>
 
     <script src="js/helper.js"></script>
+    <script src="js/navigation.js"></script>
+    <script src="main.js"></script>
 </body>
 </html>

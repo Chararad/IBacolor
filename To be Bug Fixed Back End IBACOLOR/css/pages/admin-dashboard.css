@@ -2,4 +2,10 @@
 @import "../components.css";
 @import "../responsive.css";
 
-/* Add styles specific to the admin-dashboard page below. */
+/* Admin sidebar: highlight the section you are currently in. */
+.admin-sidebar > a[aria-current="page"] {
+  border-left-color: var(--accent-gold);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-weight: 800;
+}

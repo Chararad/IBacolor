@@ -14,11 +14,19 @@ document.addEventListener("portal:ready", async () => {
   ["Roads and transportation", "Garbage disposal", "Drainage and flooding", "Street lighting", "Public safety", "Other"].forEach((value) => category.add(new Option(value, value)));
   const customLabel = document.getElementById("custom-report-category-label");
   const customInput = document.getElementById("custom-report-category");
+  const categoryIcon = document.getElementById("report-category-icon");
+  const icons = window.IBacolorReportIcons;
+  // Show the icon that matches the chosen category (empty until one is chosen).
+  const updateCategoryIcon = () => {
+    if (!categoryIcon || !icons) return;
+    categoryIcon.innerHTML = category.value ? icons.svg(category.value) : "";
+  };
   category.addEventListener("change", () => {
     const custom = category.value === "Other";
     customLabel.hidden = !custom;
     customInput.disabled = !custom;
     customInput.required = custom;
+    updateCategoryIcon();
   });
   try {
     const { barangays } = await portal.request("resident.barangays");
@@ -38,7 +46,7 @@ document.addEventListener("portal:ready", async () => {
         const article = document.createElement("article");
         article.className = "report-item";
         article.innerHTML = `<div class="report-heading"><strong>${portal.escape(report.reference)}</strong>${portal.status(report.status)}</div>
-          <span>${portal.escape(report.category)} · ${portal.escape(report.barangay_name || "")} · Submitted ${portal.date(report.submitted_at)}</span>
+          <span class="report-category">${icons ? icons.badge(report.category, "category-icon-sm") : ""}<span>${portal.escape(report.category)} · ${portal.escape(report.barangay_name || "")} · Submitted ${portal.date(report.submitted_at)}</span></span>
           <p>${portal.escape(report.description)}</p><span>${portal.escape(report.location_details)}${report.frequency ? ` · ${portal.escape(report.frequency)}` : ""}</span>`;
         const details = document.createElement("details");
         details.className = "report-updates";
@@ -101,6 +109,7 @@ document.addEventListener("portal:ready", async () => {
       const result = await portal.request("resident.submit-report", { method: "POST", body: data });
       portal.message(notice, `Report ${result.reference} submitted successfully.`);
       form.reset();
+      updateCategoryIcon();
       customLabel.hidden = true;
       customInput.disabled = true;
       await render();

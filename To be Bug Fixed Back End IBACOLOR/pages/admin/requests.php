@@ -12,7 +12,7 @@
             <aside class="admin-sidebar">
                 <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
                 <p class="admin-label">Workspace</p>
-                <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
+                <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php" aria-current="page">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">
@@ -24,31 +24,39 @@
                 <section class="page-header">
                     <div class="container">
                         <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span>Requests
+                            <a href="../../main.php">Home</a><span>/</span><a href="dashboard.php">Dashboard</a><span>/</span>Manage requests
                         </div>
                         <p class="eyebrow">Administration</p>
-                        <h1>Service requests</h1>
-                        <p class="lead">Review and manage resident service requests.</p>
+                        <h1>Manage requests</h1>
+                        <p class="lead">Work through the request queue: see what needs action, update statuses, and open a request to review documents or schedule an appointment.</p>
                     </div>
                 </section>
                 <section class="section">
                     <div class="container">
+                        <div class="queue-tabs" role="group" aria-label="Request queue">
+                            <button class="queue-tab" type="button" data-queue="needs-action" aria-pressed="true">
+                                <span>Needs action</span><strong data-queue-count="needs-action">0</strong>
+                            </button>
+                            <button class="queue-tab" type="button" data-queue="in-progress" aria-pressed="false">
+                                <span>In progress</span><strong data-queue-count="in-progress">0</strong>
+                            </button>
+                            <button class="queue-tab" type="button" data-queue="completed" aria-pressed="false">
+                                <span>Completed</span><strong data-queue-count="completed">0</strong>
+                            </button>
+                            <button class="queue-tab" type="button" data-queue="rejected" aria-pressed="false">
+                                <span>Rejected</span><strong data-queue-count="rejected">0</strong>
+                            </button>
+                            <button class="queue-tab" type="button" data-queue="all" aria-pressed="false">
+                                <span>All requests</span><strong data-queue-count="all">0</strong>
+                            </button>
+                        </div>
                         <article class="card">
                             <div class="filter-bar">
-                                <label>Search requests<input id="admin-request-search" type="search" placeholder="Reference, resident or service" />
-                                </label>
-                                <label>Status<select id="admin-request-status">
-                                        <option>All statuses</option>
-                                        <option>Under Review</option>
-                                        <option>Resolved</option>
-                                        <option>Submitted</option>
-                                        <option>In Progress</option>
-                                        <option>For Revision</option>
-                                        <option>Rejected</option>
-                                    </select>
+                                <label>Search this view<input id="admin-request-search" type="search" placeholder="Reference, resident or service" />
                                 </label>
                             </div>
-                            <p id="admin-request-count" class="results-count" aria-live="polite">4 of 4 requests shown</p>
+                            <p id="admin-request-feedback" class="notice notice-info" role="status" hidden></p>
+                            <p id="admin-request-count" class="results-count" aria-live="polite"></p>
                             <div class="table-wrap">
                                 <table>
                                     <thead>
@@ -58,69 +66,16 @@
                                             <th>Service</th>
                                             <th>Submitted</th>
                                             <th>Status</th>
-                                            <th>Actions</th>
+                                            <th>Update status</th>
+                                            <th>Details</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td><strong>IB-2026-00124</strong></td>
-                                            <td>Maria Santos</td>
-                                            <td>Business Permit</td>
-                                            <td>Sep 20, 2026</td>
-                                            <td>
-                                                <span class="status status-under-review">Under Review</span>
-                                            </td>
-                                            <td class="table-actions">
-                                                <a class="button button-small button-outline" href="request-details.php">View</a><button class="button button-small button-ghost" type="button">
-                                                    Update
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>IB-2026-00118</strong></td>
-                                            <td>Maria Santos</td>
-                                            <td>Barangay Clearance</td>
-                                            <td>Sep 15, 2026</td>
-                                            <td>
-                                                <span class="status status-resolved">Resolved</span>
-                                            </td>
-                                            <td class="table-actions">
-                                                <a class="button button-small button-outline" href="request-details.php">View</a><button class="button button-small button-ghost" type="button">
-                                                    Update
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>IB-2026-00105</strong></td>
-                                            <td>Jose Dela Cruz</td>
-                                            <td>Civil Registry Certificate</td>
-                                            <td>Sep 08, 2026</td>
-                                            <td>
-                                                <span class="status status-submitted">Submitted</span>
-                                            </td>
-                                            <td class="table-actions">
-                                                <a class="button button-small button-outline" href="request-details.php">View</a><button class="button button-small button-ghost" type="button">
-                                                    Update
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td><strong>IB-2026-00098</strong></td>
-                                            <td>Ana Reyes</td>
-                                            <td>Building Permit</td>
-                                            <td>Sep 01, 2026</td>
-                                            <td>
-                                                <span class="status status-in-progress">In Progress</span>
-                                            </td>
-                                            <td class="table-actions">
-                                                <a class="button button-small button-outline" href="request-details.php">View</a><button class="button button-small button-ghost" type="button">
-                                                    Update
-                                                </button>
-                                            </td>
-                                        </tr>
+                                    <tbody id="admin-request-list">
+                                        <tr><td colspan="7">Loading requests...</td></tr>
                                     </tbody>
                                 </table>
                             </div>
+                            <p class="form-help">To reject a request, open it with Manage &mdash; a rejection needs a written reason.</p>
                         </article>
                     </div>
                 </section>

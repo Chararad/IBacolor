@@ -17,6 +17,7 @@ $headerIsAuthenticated = $headerAccountId !== false
     && in_array($headerRole, ['resident', 'admin'], true);
 $headerProfileName = '';
 $headerEmail = '';
+$headerDashboardHref = $headerBasePath . ($headerRole === 'admin' ? 'pages/admin/dashboard.php' : 'pages/resident/dashboard.php');
 
 if ($headerIsAuthenticated) {
     require_once __DIR__ . '/connection.php';
@@ -61,13 +62,17 @@ if ($headerIsAuthenticated) {
                     <?php if ($headerIsAuthenticated): ?>
                         <details class="profile-menu">
                             <summary class="profile-link">
-                                <img src="<?= $headerBasePath ?>assets/default-profile.svg" alt="" />
                                 <span class="profile-name"><?= htmlspecialchars($headerProfileName, ENT_QUOTES, 'UTF-8') ?></span>
+                                <img src="<?= $headerBasePath ?>assets/default-profile.svg" alt="" />
                                 <span class="profile-caret" aria-hidden="true">▾</span>
                             </summary>
                             <div class="profile-dropdown">
                                 <p><strong><?= htmlspecialchars($headerProfileName, ENT_QUOTES, 'UTF-8') ?></strong><small><?= htmlspecialchars($headerEmail, ENT_QUOTES, 'UTF-8') ?></small></p>
                                 <a href="<?= $headerBasePath ?>pages/resident/profile.php">Profile</a>
+                                <a href="<?= htmlspecialchars($headerDashboardHref, ENT_QUOTES, 'UTF-8') ?>">Dashboard</a>
+                                <?php if ($headerRole === 'resident'): ?>
+                                    <a href="<?= $headerBasePath ?>pages/resident/settings.php">Settings</a>
+                                <?php endif; ?>
                                 <a href="<?= $headerBasePath ?>pages/logout.php">Sign out</a>
                             </div>
                         </details>

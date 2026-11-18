@@ -26,9 +26,9 @@
                         <form class="form-card" id="community-report-form">
                             <p class="eyebrow">New report</p>
                             <h2>Report an issue</h2>
-                            <label>Category<select id="report-category" name="category" required="">
+                            <label>Category<span class="category-select-row"><span class="category-icon" id="report-category-icon" aria-hidden="true"></span><select id="report-category" name="category" required="">
                                     <option value="">Select a category</option>
-                                </select>
+                                </select></span>
                             </label>
                             <label id="custom-report-category-label" hidden>Enter a category<input id="custom-report-category" name="categoryOther" disabled /></label>
                             <label>Barangay<select name="barangay" data-barangays data-placeholder="Select barangay" required="">
@@ -116,6 +116,7 @@
         </div>
     
         <script src="../../js/portal.js"></script>
+        <script src="../../js/report-icons.js"></script>
         <script src="../../js/pages/resident-reports.js"></script>
 </body>
 </html>
