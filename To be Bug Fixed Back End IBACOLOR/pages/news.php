@@ -20,7 +20,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs"><a href="../main.php">Home</a><span>/</span>News</div>
                         <p class="eyebrow">Stay informed</p>
                         <h1>News and announcements</h1>
                         <p class="lead">Read municipal advisories, announcements, and community updates from Bacolor.</p>

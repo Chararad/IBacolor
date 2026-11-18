@@ -13,9 +13,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span>Resident Dashboard
-                        </div>
                         <p class="eyebrow">Resident portal</p>
                         <h1 data-resident-greeting>Welcome back</h1>
                         <p class="lead">Your municipal requests and community updates, at a glance.</p>

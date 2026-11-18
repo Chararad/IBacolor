@@ -16,7 +16,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs"><a href="../main.php">Home</a><span>/</span>Transparency</div>
                         <p class="eyebrow">Open information</p>
                         <h1>Transparency and public records</h1>
                         <p class="lead">A centralized platform for public access to government reports, public documents, and official records—supporting accountability, openness, and informed public participation.</p>

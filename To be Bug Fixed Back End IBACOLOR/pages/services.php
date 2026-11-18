@@ -39,7 +39,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs"><a href="../main.php">Home</a><span>/</span>Services</div>
                         <p class="eyebrow">Public services</p>
                         <h1>Municipal services</h1>
                         <p class="lead">Find the right service, review requirements, and start a request when you are ready.</p>

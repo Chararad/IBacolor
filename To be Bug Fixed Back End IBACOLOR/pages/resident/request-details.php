@@ -13,10 +13,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span>My Requests /
-                            Details
-                        </div>
                         <p class="eyebrow">Request tracking</p>
                         <h1>Business permit request</h1>
                         <p class="lead">Review request information, requirements, and the latest status update.</p>

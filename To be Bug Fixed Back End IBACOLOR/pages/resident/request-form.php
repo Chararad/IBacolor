@@ -13,9 +13,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span>Services / Request
-                        </div>
                         <p class="eyebrow">Resident portal</p>
                         <h1>Start a service request</h1>
                         <p class="lead">Complete the request details and attach the required documents.</p>

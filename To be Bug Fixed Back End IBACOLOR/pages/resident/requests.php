@@ -13,9 +13,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span>My Requests
-                        </div>
                         <p class="eyebrow">Resident portal</p>
                         <h1>My requests</h1>
                         <p class="lead">Track the status of your submitted municipal service requests.</p>

@@ -13,9 +13,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span><a href="profile.php">Profile</a><span>/</span>Settings
-                        </div>
                         <p class="eyebrow">Resident portal</p>
                         <h1>Account settings</h1>
                         <p class="lead">Manage your notification preferences and account password.</p>

@@ -13,9 +13,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span>Community Reports
-                        </div>
                         <p class="eyebrow">Resident portal</p>
                         <h1>Community reports</h1>
                         <p class="lead">Report a local issue and follow up on concerns submitted to the municipality.</p>

@@ -72,7 +72,6 @@
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs"><a href="../main.php">Home</a><span>/</span>Emergency Hotlines</div>
                         <p class="eyebrow">Help when you need it</p>
                         <h1>Emergency hotlines</h1>
                         <p class="lead">For immediate danger, call the appropriate office below. Keep these contacts within reach.</p>
