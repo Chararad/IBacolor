@@ -1,0 +1,83 @@
+@import "../style.css";
+@import "../components.css";
+@import "../responsive.css?v=admin-sidebar-12";
+
+.admin-sidebar > a[aria-current="page"] {
+  border-left-color: var(--accent-gold);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-weight: 800;
+}
+
+.history-card {
+  overflow: hidden;
+}
+
+.history-count,
+.history-source {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.history-table {
+  min-width: 900px;
+}
+
+.history-table td {
+  vertical-align: top;
+}
+
+.history-table td strong,
+.history-table td small {
+  display: block;
+}
+
+.history-table td small {
+  margin-top: 0.25rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.history-source {
+  display: inline-block;
+  margin-bottom: 0.3rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  background: var(--soft);
+}
+
+.history-details {
+  max-width: 30rem;
+}
+
+.history-details summary {
+  cursor: pointer;
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.history-details pre {
+  max-width: 100%;
+  margin: 0.5rem 0 0;
+  padding: 0.65rem;
+  overflow: auto;
+  border-radius: 0.4rem;
+  background: #f5f7f9;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font: 0.8rem/1.45 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.history-empty,
+.history-muted {
+  color: var(--muted);
+}
+
+@media (max-width: 600px) {
+  .history-card .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}

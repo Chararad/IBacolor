@@ -32,6 +32,15 @@ if (!$account || !in_array($account['roles'], $allowedRoles, true) || $account['
     exit;
 }
 
+if ($requiredRole === 'admin') {
+    require_once __DIR__ . '/admin-authorization.php';
+    if (!adminCanOpenPage($iBacolorConnection, (int) $accountId, basename($_SERVER['SCRIPT_NAME'] ?? ''))) {
+        http_response_code(403);
+        require __DIR__ . '/../pages/admin/403.php';
+        exit;
+    }
+}
+
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 header('Pragma: no-cache');
 header('Expires: 0');

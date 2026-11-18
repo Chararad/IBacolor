@@ -3,15 +3,21 @@
 document.addEventListener("portal:ready", async () => {
   const portal = window.IBacolorPortal;
   const form = document.getElementById("admin-news-form");
+  const modal = document.getElementById("news-editor-modal");
   const tbody = document.getElementById("admin-news-list");
+  const categoryFilter = document.getElementById("admin-news-category");
   const preview = document.getElementById("news-image-preview");
   const addButton = document.getElementById("add-news-article");
-  const cancelButton = document.getElementById("cancel-news-edit");
   const message = document.getElementById("news-form-message");
-  if (!form || !tbody || !preview || !addButton || !cancelButton || !message) return;
+  if (!form || !modal || !tbody || !categoryFilter || !preview || !addButton || !message) return;
 
+  const defaultCategoryOptions = Array.from(categoryFilter.options).slice(1).map((option) => ({
+    label: option.textContent,
+    value: option.value
+  }));
   let articles = [];
   let previewUrl = "";
+  let formTrigger = null;
 
   const showPreview = (url) => {
     if (previewUrl.startsWith("blob:")) URL.revokeObjectURL(previewUrl);
@@ -19,21 +25,25 @@ document.addEventListener("portal:ready", async () => {
     preview.src = previewUrl;
     preview.hidden = !previewUrl;
   };
-  const closeForm = () => {
+  const closeForm = (restoreFocus = true) => {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
     form.reset();
     form.elements.articleId.value = "";
-    form.hidden = true;
     message.hidden = true;
     showPreview("");
+    if (restoreFocus) (formTrigger?.isConnected ? formTrigger : addButton).focus();
+    formTrigger = null;
   };
-  const editArticle = (article = null) => {
+  const editArticle = (article = null, trigger = addButton) => {
+    formTrigger = trigger;
     form.reset();
     form.elements.articleId.value = article?.article_id || "";
     form.elements.title.value = article?.title || "";
     const categorySelect = form.elements.category;
     categorySelect.querySelectorAll("option[data-legacy]").forEach((option) => option.remove());
     if (article?.category && !Array.from(categorySelect.options).some((option) => option.value === article.category)) {
-      const legacy = new Option(`${article.category} (old type, please choose a new one)`, "");
+      const legacy = new Option(`${article.category} (legacy category)`, article.category);
       legacy.dataset.legacy = "";
       categorySelect.add(legacy, 1);
     }
@@ -51,16 +61,68 @@ document.addEventListener("portal:ready", async () => {
     showPreview(article?.has_image
       ? `../../includes/api.php?action=news.image&id=${encodeURIComponent(article.article_id)}`
       : "");
-    form.hidden = false;
-    form.scrollIntoView({ behavior: "smooth", block: "start" });
+    modal.classList.add("is-open");
+    modal.setAttribute("aria-hidden", "false");
+    form.elements.title.focus();
+  };
+
+  modal.querySelectorAll("[data-close-news-editor]").forEach((button) => {
+    button.addEventListener("click", () => closeForm());
+  });
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closeForm();
+  });
+  modal.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      closeForm();
+      return;
+    }
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(form.querySelectorAll(
+      'button:not([disabled]), input:not([type="hidden"]):not([disabled]), select:not([disabled]), textarea:not([disabled])'
+    ));
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  });
+
+  const updateCategoryOptions = () => {
+    const selectedCategory = categoryFilter.value;
+    const knownCategories = new Set(defaultCategoryOptions.map((option) => option.value));
+    const categories = [...new Set(articles.map((article) => article.category).filter(Boolean))]
+      .filter((category) => !knownCategories.has(category))
+      .sort((left, right) => left.localeCompare(right));
+    categoryFilter.replaceChildren(
+      new Option("All news", ""),
+      ...defaultCategoryOptions.map((option) => new Option(option.label, option.value)),
+      ...categories.map((category) => new Option(category, category))
+    );
+    categoryFilter.value = knownCategories.has(selectedCategory) || categories.includes(selectedCategory)
+      ? selectedCategory
+      : "";
   };
 
   const render = () => {
+    updateCategoryOptions();
+    const visibleArticles = categoryFilter.value
+      ? articles.filter((article) => article.category === categoryFilter.value)
+      : articles;
     if (!articles.length) {
       tbody.innerHTML = '<tr><td colspan="4">No news articles yet.</td></tr>';
       return;
     }
-    tbody.replaceChildren(...articles.map((article) => {
+    if (!visibleArticles.length) {
+      tbody.innerHTML = '<tr><td colspan="4">No articles in this category.</td></tr>';
+      return;
+    }
+    tbody.replaceChildren(...visibleArticles.map((article) => {
       const row = document.createElement("tr");
       row.innerHTML = `<td><strong>${portal.escape(article.title)}</strong></td>
         <td>${portal.date(article.published_at || article.updated_at)}</td>
@@ -68,7 +130,7 @@ document.addEventListener("portal:ready", async () => {
         <td class="table-actions"><button class="button button-small button-outline" type="button">Edit</button>
         <button class="button button-small button-ghost" type="button">Delete</button></td>`;
       const [editButton, deleteButton] = row.querySelectorAll("button");
-      editButton.addEventListener("click", () => editArticle(article));
+      editButton.addEventListener("click", () => editArticle(article, editButton));
       deleteButton.addEventListener("click", async () => {
         if (!window.confirm(`Delete "${article.title}"?`)) return;
         deleteButton.disabled = true;
@@ -85,8 +147,8 @@ document.addEventListener("portal:ready", async () => {
     }));
   };
 
-  addButton.addEventListener("click", () => editArticle());
-  cancelButton.addEventListener("click", closeForm);
+  addButton.addEventListener("click", () => editArticle(null, addButton));
+  categoryFilter.addEventListener("change", render);
   form.elements.image.addEventListener("change", () => {
     const file = form.elements.image.files[0];
     if (file) showPreview(URL.createObjectURL(file));
@@ -99,10 +161,15 @@ document.addEventListener("portal:ready", async () => {
     message.hidden = true;
     try {
       await portal.request("admin.save-news", { method: "POST", body: new FormData(form) });
-      closeForm();
-      const result = await portal.request("admin.news");
-      articles = result.articles;
-      render();
+      closeForm(false);
+      addButton.focus();
+      try {
+        const result = await portal.request("admin.news");
+        articles = result.articles;
+        render();
+      } catch (error) {
+        portal.message(document.querySelector(".card"), `Article saved, but the list could not be refreshed: ${error.message}`, true);
+      }
     } catch (error) {
       portal.message(message, error.message, true);
     } finally {

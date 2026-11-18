@@ -18,6 +18,9 @@
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
+                <p class="admin-label">System</p>
+                <a href="../admin/history.php">◷ History logs</a>
+                <?php if (adminIsMasterAdmin($iBacolorConnection, (int) $accountId)): ?><a href="../admin/authorization.php">⚙ Admin access</a><?php endif; ?>
                 <div class="admin-sidebar-footer">
                     <a href="../logout.php">Sign out</a>
                 </div>
@@ -31,7 +34,7 @@
                         </div>
                         <p class="eyebrow">Administration</p>
                         <h1>Community reports</h1>
-                        <p class="lead">Review and respond to issues submitted by residents.</p>
+                        <p class="lead">Review resident issues and route reports to the responsible department.</p>
                     </div>
                 </section>
                 <section class="section">

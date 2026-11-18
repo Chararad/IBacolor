@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Manage News | iBacolor</title>
-        <link rel="stylesheet" href="../../css/pages/admin-news.css?v=admin-sidebar-12" />
+        <link rel="stylesheet" href="../../css/pages/admin-news.css?v=admin-news-filter-5" />
     </head>
     <body data-page="admin/news" class="admin-view">
         <div id="app">
@@ -18,6 +18,9 @@
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
+                <p class="admin-label">System</p>
+                <a href="../admin/history.php">◷ History logs</a>
+                <?php if (adminIsMasterAdmin($iBacolorConnection, (int) $accountId)): ?><a href="../admin/authorization.php">⚙ Admin access</a><?php endif; ?>
                 <div class="admin-sidebar-footer">
                     <a href="../logout.php">Sign out</a>
                 </div>
@@ -37,9 +40,23 @@
                 <section class="section">
                     <div class="container">
                         <article class="card">
-                            <div class="section-heading compact">
-                                <h2>Published news</h2>
-                                <button class="button" id="add-news-article" type="button">+ Add new</button>
+                            <div class="section-heading compact news-list-heading">
+                                <h2>News articles</h2>
+                                <div class="news-list-actions">
+                                    <div class="news-category-filter">
+                                        <label for="admin-news-category">Category
+                                            <select id="admin-news-category">
+                                                <option value="">All news</option>
+                                                <option value="Legal and Regulatory Notices">Legal and Regulatory Notices</option>
+                                                <option value="Government and Administrative Announcements">Government and Administrative Announcements</option>
+                                                <option value="Public Safety and Emergency Advisories">Public Safety and Emergency Advisories</option>
+                                                <option value="Community and Cultural Events">Community and Cultural Events</option>
+                                                <option value="Scholarship">Scholarship</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                    <button class="button" id="add-news-article" type="button">+ Add new</button>
+                                </div>
                             </div>
                             <div class="table-wrap">
                                 <table>
@@ -57,22 +74,25 @@
                                 </table>
                             </div>
                         </article>
-                        <form class="form-card" id="admin-news-form" hidden>
-                            <h2 id="news-form-heading">Add news article</h2>
-                            <input name="articleId" type="hidden" />
-                            <label>Title<input name="title" maxlength="255" required /></label>
-                            <label>Announcement type<select name="category" required><option value="">Select announcement type</option><option value="Legal and Regulatory Notices">Legal and Regulatory Notices</option><option value="Government and Administrative Announcements">Government and Administrative Announcements</option><option value="Public Safety and Emergency Advisories">Public Safety and Emergency Advisories</option><option value="Community and Cultural Events">Community and Cultural Events</option></select></label>
-                            <label>Article content<textarea name="content" rows="8" required></textarea></label>
-                            <label>Publication status<select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></label>
-                            <label>Publication date and time<input name="publishedAt" type="datetime-local" /></label>
-                            <label>Featured image<input name="image" type="file" accept="image/jpeg,image/png,image/webp" /></label>
-                            <img id="news-image-preview" alt="Featured image preview" hidden />
-                            <p id="news-form-message" class="notice notice-info" role="status" hidden></p>
-                            <div class="form-actions">
-                                <button class="button" type="submit">Save article</button>
-                                <button class="button button-outline" id="cancel-news-edit" type="button">Cancel</button>
-                            </div>
-                        </form>
+                        <div class="modal" id="news-editor-modal" role="dialog" aria-modal="true" aria-labelledby="news-form-heading" aria-hidden="true">
+                            <form class="modal-content form-card news-editor-modal" id="admin-news-form">
+                                <button class="modal-close" type="button" aria-label="Close news editor" data-close-news-editor>×</button>
+                                <h2 id="news-form-heading">Add news article</h2>
+                                <input name="articleId" type="hidden" />
+                                <label>Title<input name="title" maxlength="255" required /></label>
+                                <label>Announcement type<select name="category" required><option value="">Select announcement type</option><option value="Legal and Regulatory Notices">Legal and Regulatory Notices</option><option value="Government and Administrative Announcements">Government and Administrative Announcements</option><option value="Public Safety and Emergency Advisories">Public Safety and Emergency Advisories</option><option value="Community and Cultural Events">Community and Cultural Events</option><option value="Scholarship">Scholarship</option></select></label>
+                                <label>Article content<textarea name="content" rows="8" required></textarea></label>
+                                <label>Publication status<select name="status"><option value="draft">Draft</option><option value="published">Published</option></select></label>
+                                <label>Publication date and time<input name="publishedAt" type="datetime-local" /></label>
+                                <label>Featured image<input name="image" type="file" accept="image/jpeg,image/png,image/webp" /></label>
+                                <img id="news-image-preview" alt="Featured image preview" hidden />
+                                <p id="news-form-message" class="notice notice-info" role="status" hidden></p>
+                                <div class="form-actions">
+                                    <button class="button" type="submit">Save article</button>
+                                    <button class="button button-outline" id="cancel-news-edit" type="button" data-close-news-editor>Cancel</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </section>
             </main>
@@ -107,6 +127,6 @@
         </div>
     
         <script src="../../js/portal.js?v=admin-sidebar-6"></script>
-        <script src="../../js/pages/admin-news.js"></script>
+        <script src="../../js/pages/admin-news.js?v=news-edit-filter-3"></script>
 </body>
 </html>

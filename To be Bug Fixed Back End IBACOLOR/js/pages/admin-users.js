@@ -158,7 +158,7 @@ document.addEventListener("portal:ready", async () => {
         <td>${portal.date(user.created_at)}</td>
         <td>${portal.status(user.status)} ${portal.status(user.verification)}</td>
         <td class="table-actions"><button class="button button-small button-outline" type="button">Account status</button>
-          <button class="button button-small button-ghost" type="button">Review resident</button>
+          <button class="button button-small button-outline" type="button">Review resident</button>
           <button class="button button-small button-outline" type="button">Verification documents</button></td>`;
       const [accountButton, verificationButton, documentsButton] = row.querySelectorAll("button");
       const openResidentDetails = () => {

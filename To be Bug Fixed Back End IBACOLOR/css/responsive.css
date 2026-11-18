@@ -514,11 +514,38 @@
 }
 
 @media (max-width: 760px) {
-  .admin-view .header-inner {
-    gap: 12px;
+  .admin-view .site-header .header-inner {
+    gap: 8px;
+    padding-right: 12px;
+    padding-left: 12px;
+  }
+  .admin-view .site-header .brand {
+    min-width: 0;
+    flex: 0 1 auto;
+    gap: 8px;
+  }
+  .admin-view .site-header .brand-logo {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+  }
+  .admin-view .site-header .brand > span {
+    min-width: 0;
   }
   .admin-view .site-header .brand small {
     display: none;
+  }
+  .admin-view .header-actions {
+    flex-wrap: nowrap;
+    gap: 4px;
+    margin-top: 0;
+  }
+  .admin-view .profile-name {
+    display: none;
+  }
+  .admin-view .site-header .profile-dropdown {
+    right: 0;
+    left: auto;
   }
 }
 

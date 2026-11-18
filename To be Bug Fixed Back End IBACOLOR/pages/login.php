@@ -1,6 +1,7 @@
 <?php
     session_start();
     require_once '../includes/connection.php';
+    require_once '../includes/audit-history.php';
 
     if (!isset($_SESSION['login_csrf_token'])) {
         $_SESSION['login_csrf_token'] = bin2hex(random_bytes(32));
@@ -29,12 +30,48 @@
             $account = $loginStatement->fetch(PDO::FETCH_ASSOC);
 
             if (!$account || !password_verify($password, $account['password_hash'])) {
+                recordAdminAuditHistory(
+                    $iBacolorConnection,
+                    $account ? (int) $account['account_id'] : null,
+                    $account ? (string) $account['roles'] : 'anonymous',
+                    'login_failed',
+                    'authentication',
+                    $account ? (int) $account['account_id'] : 'unmatched',
+                    ['reason' => 'invalid_credentials']
+                );
                 $loginError = 'The email or password is incorrect.';
             } elseif ($account['status'] !== 'active') {
+                recordAdminAuditHistory(
+                    $iBacolorConnection,
+                    (int) $account['account_id'],
+                    (string) $account['roles'],
+                    'login_failed',
+                    'authentication',
+                    (int) $account['account_id'],
+                    ['reason' => 'inactive_account']
+                );
                 $loginError = 'This account is not active. Please contact the administrator.';
             } elseif (!in_array($account['roles'], ['resident', 'admin'], true)) {
+                recordAdminAuditHistory(
+                    $iBacolorConnection,
+                    (int) $account['account_id'],
+                    (string) $account['roles'],
+                    'login_failed',
+                    'authentication',
+                    (int) $account['account_id'],
+                    ['reason' => 'role_not_allowed']
+                );
                 $loginError = 'This account cannot sign in. Please contact the administrator.';
             } else {
+                recordAdminAuditHistory(
+                    $iBacolorConnection,
+                    (int) $account['account_id'],
+                    (string) $account['roles'],
+                    'login_succeeded',
+                    'authentication',
+                    (int) $account['account_id'],
+                    []
+                );
                 session_regenerate_id(true);
                 $_SESSION['account_id'] = (int) $account['account_id'];
                 $_SESSION['role'] = $account['roles'];

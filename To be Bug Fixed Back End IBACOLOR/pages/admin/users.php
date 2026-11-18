@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Users | iBacolor</title>
-        <link rel="stylesheet" href="../../css/pages/admin-users.css?v=admin-users-row-profile-3" />
+        <link rel="stylesheet" href="../../css/pages/admin-users.css?v=admin-users-row-profile-5" />
     </head>
     <body data-page="admin/users" class="admin-view">
         <div id="app">
@@ -18,6 +18,9 @@
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
+                <p class="admin-label">System</p>
+                <a href="../admin/history.php">◷ History logs</a>
+                <?php if (adminIsMasterAdmin($iBacolorConnection, (int) $accountId)): ?><a href="../admin/authorization.php">⚙ Admin access</a><?php endif; ?>
                 <div class="admin-sidebar-footer">
                     <a href="../logout.php">Sign out</a>
                 </div>
@@ -150,6 +153,6 @@
         </div>
     
         <script src="../../js/portal.js?v=admin-sidebar-6"></script>
-        <script src="../../js/pages/admin-users.js?v=resident-row-profile-2"></script>
+        <script src="../../js/pages/admin-users.js?v=resident-row-profile-3"></script>
 </body>
 </html>

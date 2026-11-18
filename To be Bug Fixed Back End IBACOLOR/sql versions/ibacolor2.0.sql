@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Generation Time: Nov 13, 2026 at 11:30 AM
+-- Host: 127.0.0.1
+-- Generation Time: Nov 18, 2026 at 07:07 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,14 +42,264 @@ CREATE TABLE `accounts` (
 
 INSERT INTO `accounts` (`account_id`, `email`, `password_hash`, `roles`, `status`, `created_at`) VALUES
 (1, 'ralchad20067@gmail.com', '$2y$10$BM12aw52WNzqnaH6G7rDE.mTNjCXNdy.zkKvwnuq3xTQPPxMJA3Xi', 'admin', 'active', '2026-11-06 03:07:51'),
-(2, '2024310485@pampangastateu.edu.ph', '$2y$10$tBpJBUS/GYksl3vYyiQp.u9m9PzyxhZb4bWvU1krb32Mbt9kIsva2', 'resident', 'active', '2026-11-13 09:26:50'),
-(3, 'test@gmail.com', '$2y$10$UGF./2RZADJmeAmcyz/8zelaY7wlUL2tIiDxAWBIAJmoxq6VFH.Sy', 'resident', 'active', '2026-11-06 07:39:37'),
-(4, 'asdasdas@gmail.com', '$2y$10$a6/522x5a8vGRcOtFnSdSuItV31Xf29HRvhuc4nBtNeb/td42TB6y', 'resident', 'active', '2026-11-06 13:25:07'),
 (5, '2024304413@pampangastateu.edu.ph', '$2y$10$WyUZtCtwTn75zwbtVVF8v.Al.G4kM6c0SqcVVLC9izEg7X3y5xh3S', 'admin', 'active', '2026-11-13 08:32:53'),
-(6, 'irina@gmail.com', '$2y$10$6i60o0kPFw2hl4DdN3cMxeGa4XbgkpK.BhgmtJwqzKSxuDEGWGegO', 'resident', 'active', '2026-11-13 02:41:58'),
 (7, 'cheskasitchon@gmail.com', '$2y$10$k59Nn6wlKbzCcvW8qMdKdeJkiWvSMB.8uco4UMSdm8MOutu3pyeIW', 'admin', 'active', '2026-11-13 06:21:22'),
-(8, 'pagal.jannanicole.d@gmail.com', '$2y$10$SJ2NpuXutiKWRw637dHg4Opd4WbMU1g3UyfShPuMjVucshFVQCSEu', 'resident', 'active', '2026-11-13 06:58:09'),
-(9, 'aquinojerome120905@gmail.com', '$2y$10$zbPSG7w.utvQD2k6bH6tMeBV7IfBcNn05Ia9zVTwhcxXzY99mxERO', 'resident', 'active', '2026-11-13 08:41:09');
+(10, 'main.admin@gmail.com', '$2y$10$5UbsslbxiVbe2Y8bFxVcZeG45MSD9dsm5JbNl/l3xWULSLAwExJmm', 'admin', 'active', '2026-11-18 17:00:23'),
+(11, 'assessor.admin@gmail.com', '$2y$10$zOeNrj/UzqX2T1Up.oqbGeZqnovRSNjhgsqWX00zQm01LLCEwBUvC', 'admin', 'active', '2026-11-18 17:21:23'),
+(12, 'treasurer.admin@gmail.com', '$2y$10$19x5md0na2N0k8ZinhGoI.VLq1verReYK6yaKpbikYS6RpwmyHN4.', 'admin', 'active', '2026-11-18 17:00:23'),
+(13, 'engineering.admin@gmail.com', '$2y$10$9KN9bLXJPOs6eF/p1opWXO648oVugXdi5n9XaFECe1zEyYm4LMDdm', 'admin', 'active', '2026-11-18 17:00:23'),
+(14, 'swdo.admin@gmail.com', '$2y$10$5rxbn1pNUad3jkoHXf9MXuLktQUEZsBURrBHxtzGhRCfIAGHRFmjG', 'admin', 'active', '2026-11-18 17:00:23'),
+(15, 'PandD.admin@gmail.com', '$2y$10$sMcb1rtG27fjL/.5YoXYpu9XOYbi629h3uDICXsnBZ5wMKTVEqmQi', 'admin', 'active', '2026-11-18 17:00:23'),
+(16, 'health.admin@gmail.com', '$2y$10$uxZw9CVeDT8V5m7nsNeJRuKjNKklUkK6dTwBuxXLAOwlht2EXfrdW', 'admin', 'active', '2026-11-18 17:00:24'),
+(18, '2024310485@pampangastateu.edu.ph', '$2y$10$lIn3JhNKTOCgRnfcabWa3eWzMPAt9awEE/BG5nJmEwDyCK6IgPtx6', 'resident', 'active', '2026-11-18 17:30:57');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_account_roles`
+--
+
+CREATE TABLE `admin_account_roles` (
+  `account_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `granted_by` int(11) DEFAULT NULL,
+  `granted_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_account_roles`
+--
+
+INSERT INTO `admin_account_roles` (`account_id`, `role_id`, `granted_by`, `granted_at`) VALUES
+(1, 1, NULL, '2026-11-18 16:47:27'),
+(5, 1, NULL, '2026-11-18 16:47:27'),
+(7, 1, NULL, '2026-11-18 16:47:27'),
+(10, 2, NULL, '2026-11-18 16:52:12'),
+(11, 3, NULL, '2026-11-18 16:52:12'),
+(12, 4, NULL, '2026-11-18 16:52:12'),
+(13, 5, NULL, '2026-11-18 16:52:12'),
+(14, 6, NULL, '2026-11-18 16:52:12'),
+(15, 7, NULL, '2026-11-18 16:52:12'),
+(16, 8, NULL, '2026-11-18 16:52:12');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_authorization_audit`
+--
+
+CREATE TABLE `admin_authorization_audit` (
+  `audit_id` bigint(20) NOT NULL,
+  `actor_account_id` int(11) DEFAULT NULL,
+  `target_account_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `action` enum('role_assigned','role_revoked') NOT NULL,
+  `changed_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `note` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_permissions`
+--
+
+CREATE TABLE `admin_permissions` (
+  `permission_id` int(11) NOT NULL,
+  `permission_code` varchar(100) NOT NULL,
+  `permission_description` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_permissions`
+--
+
+INSERT INTO `admin_permissions` (`permission_id`, `permission_code`, `permission_description`) VALUES
+(1, 'dashboard.view', 'View the admin dashboard.'),
+(2, 'news.manage', 'Create and manage news.'),
+(3, 'services.manage', 'Manage municipal services.'),
+(4, 'hotlines.manage', 'Manage emergency hotlines.'),
+(5, 'users.manage', 'Manage registered user accounts.'),
+(6, 'transparency_documents.manage', 'Manage published transparency documents.'),
+(7, 'community_reports.view_all', 'View all community reports.'),
+(8, 'community_reports.manage', 'Manage community reports.'),
+(9, 'community_reports.route', 'Assign community reports to departments or services.'),
+(10, 'community_reports.view_assigned', 'View community reports assigned to the admin\'s department.'),
+(11, 'service_requests.view', 'View service requests in the permitted service scope.'),
+(12, 'service_requests.update', 'Update service requests in the permitted service scope.'),
+(13, 'documents.review', 'Review documents in the permitted service scope.'),
+(14, 'authorization.manage', 'Grant and revoke admin role assignments.');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_roles`
+--
+
+CREATE TABLE `admin_roles` (
+  `role_id` int(11) NOT NULL,
+  `role_code` varchar(64) NOT NULL,
+  `role_name` varchar(150) NOT NULL,
+  `role_description` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_roles`
+--
+
+INSERT INTO `admin_roles` (`role_id`, `role_code`, `role_name`, `role_description`) VALUES
+(1, 'master_admin', 'Master Admin', 'Manages admin role assignments and authorizations.'),
+(2, 'main_website_admin', 'Main Website Admin', 'Manages shared website administration modules.'),
+(3, 'municipal_assessor', 'Municipal Assessor\'s Office', 'Access limited to assigned property tax and tax declaration requests.'),
+(4, 'municipal_treasurer', 'Municipal Treasurer\'s Office', 'Access limited to assigned treasurer service requests.'),
+(5, 'municipal_engineering', 'Municipal Engineering Office', 'Access limited to building and occupancy permit requests.'),
+(6, 'municipal_social_welfare', 'Municipal Social Welfare and Development Office', 'Access limited to assigned social assistance requests.'),
+(7, 'municipal_planning', 'Municipal Planning and Development Office', 'Access limited to locational and zoning clearance requests.'),
+(8, 'municipal_health', 'Municipal Health Office', 'Access limited to health certificate requests.');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_role_permissions`
+--
+
+CREATE TABLE `admin_role_permissions` (
+  `role_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_role_permissions`
+--
+
+INSERT INTO `admin_role_permissions` (`role_id`, `permission_id`) VALUES
+(1, 1),
+(1, 14),
+(2, 1),
+(2, 2),
+(2, 3),
+(2, 4),
+(2, 5),
+(2, 6),
+(2, 7),
+(2, 8),
+(2, 9),
+(3, 1),
+(3, 10),
+(4, 1),
+(4, 10),
+(5, 1),
+(5, 10),
+(6, 1),
+(6, 10),
+(7, 1),
+(7, 10),
+(8, 1),
+(8, 10);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `admin_role_service_permissions`
+--
+
+CREATE TABLE `admin_role_service_permissions` (
+  `role_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_role_service_permissions`
+--
+
+INSERT INTO `admin_role_service_permissions` (`role_id`, `permission_id`, `service_id`) VALUES
+(3, 11, 9),
+(3, 12, 9),
+(3, 13, 9),
+(4, 11, 1),
+(4, 11, 5),
+(4, 11, 9),
+(4, 12, 1),
+(4, 12, 5),
+(4, 12, 9),
+(4, 13, 1),
+(4, 13, 5),
+(4, 13, 9),
+(5, 11, 4),
+(5, 11, 10),
+(5, 12, 4),
+(5, 12, 10),
+(5, 13, 4),
+(5, 13, 10),
+(6, 11, 7),
+(6, 11, 8),
+(6, 11, 12),
+(6, 12, 7),
+(6, 12, 8),
+(6, 12, 12),
+(6, 13, 7),
+(6, 13, 8),
+(6, 13, 12),
+(7, 11, 11),
+(7, 12, 11),
+(7, 13, 11),
+(8, 11, 6),
+(8, 12, 6),
+(8, 13, 6);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `audit_history`
+--
+
+CREATE TABLE `audit_history` (
+  `history_id` bigint(20) UNSIGNED NOT NULL,
+  `actor_account_id` int(11) DEFAULT NULL,
+  `actor_role` varchar(20) NOT NULL,
+  `event_type` varchar(64) NOT NULL,
+  `entity_type` varchar(64) NOT NULL,
+  `entity_id` varchar(64) NOT NULL,
+  `details` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`details`)),
+  `created_at` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `audit_history`
+--
+
+INSERT INTO `audit_history` (`history_id`, `actor_account_id`, `actor_role`, `event_type`, `entity_type`, `entity_id`, `details`, `created_at`) VALUES
+(1, NULL, 'system', 'updated', 'account', '10', '{\"role\":\"admin\",\"authorization_roles\":[\"main_website_admin\"]}', '2026-11-18 17:00:23'),
+(2, NULL, 'system', 'updated', 'account', '11', '{\"role\":\"admin\",\"authorization_roles\":[\"municipal_assessor\"]}', '2026-11-18 17:00:23'),
+(3, NULL, 'system', 'updated', 'account', '12', '{\"role\":\"admin\",\"authorization_roles\":[\"municipal_treasurer\"]}', '2026-11-18 17:00:23'),
+(4, NULL, 'system', 'updated', 'account', '13', '{\"role\":\"admin\",\"authorization_roles\":[\"municipal_engineering\"]}', '2026-11-18 17:00:23'),
+(5, NULL, 'system', 'updated', 'account', '14', '{\"role\":\"admin\",\"authorization_roles\":[\"municipal_social_welfare\"]}', '2026-11-18 17:00:23'),
+(6, NULL, 'system', 'updated', 'account', '15', '{\"role\":\"admin\",\"authorization_roles\":[\"municipal_planning\"]}', '2026-11-18 17:00:23'),
+(7, NULL, 'system', 'updated', 'account', '16', '{\"role\":\"admin\",\"authorization_roles\":[\"municipal_health\"]}', '2026-11-18 17:00:24'),
+(8, 1, 'admin', 'login_succeeded', 'authentication', '1', '[]', '2026-11-18 17:02:35'),
+(9, 1, 'admin', 'logout', 'authentication', '1', '[]', '2026-11-18 17:08:43'),
+(10, 11, 'admin', 'login_succeeded', 'authentication', '11', '[]', '2026-11-18 17:09:07'),
+(11, 11, 'admin', 'logout', 'authentication', '11', '[]', '2026-11-18 17:10:32'),
+(12, 1, 'admin', 'login_succeeded', 'authentication', '1', '[]', '2026-11-18 17:10:49'),
+(13, 10, 'admin', 'login_succeeded', 'authentication', '10', '[]', '2026-11-18 17:13:26'),
+(14, 1, 'admin', 'admin_status_changed', 'admin_account', '11', '{\"previous_status\":\"active\",\"status\":\"suspended\"}', '2026-11-18 17:21:20'),
+(15, 1, 'admin', 'admin_status_changed', 'admin_account', '11', '{\"previous_status\":\"suspended\",\"status\":\"active\"}', '2026-11-18 17:21:23'),
+(16, 1, 'admin', 'login_succeeded', 'authentication', '1', '[]', '2026-11-18 17:24:35'),
+(17, 1, 'admin', 'logout', 'authentication', '1', '[]', '2026-11-18 17:26:04'),
+(18, 1, 'admin', 'logout', 'authentication', '1', '[]', '2026-11-18 17:26:04'),
+(19, 18, 'resident', 'registered', 'account', '18', '{\"role\":\"resident\",\"status\":\"active\",\"verification\":\"pending\"}', '2026-11-18 17:30:57'),
+(20, 1, 'admin', 'logout', 'authentication', '1', '[]', '2026-11-18 17:33:07'),
+(21, 11, 'admin', 'login_succeeded', 'authentication', '11', '[]', '2026-11-18 17:33:09'),
+(22, 11, 'admin', 'logout', 'authentication', '11', '[]', '2026-11-18 17:34:02'),
+(23, 13, 'admin', 'login_failed', 'authentication', '13', '{\"reason\":\"invalid_credentials\"}', '2026-11-18 17:34:18'),
+(24, 13, 'admin', 'login_succeeded', 'authentication', '13', '[]', '2026-11-18 17:34:26'),
+(25, 13, 'admin', 'logout', 'authentication', '13', '[]', '2026-11-18 17:34:39'),
+(26, 11, 'admin', 'login_succeeded', 'authentication', '11', '[]', '2026-11-18 17:34:41'),
+(27, 1, 'admin', 'login_succeeded', 'authentication', '1', '[]', '2026-11-18 17:35:19'),
+(28, 1, 'admin', 'logout', 'authentication', '1', '[]', '2026-11-18 17:40:59'),
+(29, 1, 'admin', 'login_succeeded', 'authentication', '1', '[]', '2026-11-18 17:41:14'),
+(30, 1, 'admin', 'login_succeeded', 'authentication', '1', '[]', '2026-11-18 17:48:01');
 
 -- --------------------------------------------------------
 
@@ -110,16 +360,21 @@ CREATE TABLE `community_reports` (
   `reference` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `community_reports`
+-- Table structure for table `community_report_assignments`
 --
 
-INSERT INTO `community_reports` (`report_id`, `account_id`, `category`, `barangay_id`, `location_details`, `description`, `observed_at`, `frequency`, `status`, `submitted_at`, `updated_at`, `reference`) VALUES
-(1, 2, 'Roads and transportation', 20, 'fsdfsdfsd', 'sfsdfsdfsdf', '2026-11-10 14:14:00', 'During heavy rain', 'In Progress', '2026-11-06 06:15:06', '2026-11-12 19:36:39', 'CR-2026-F85BF58C'),
-(2, 5, 'Garbage disposal', 16, '343r3w', 'dsgdsfsdfs', NULL, 'Daily', 'Submitted', '2026-11-12 19:45:43', '2026-11-12 19:45:43', 'CR-2026-C9DB9703'),
-(3, 2, 'Roads and transportation', 10, 'sssss', 'nasira po yung road naging dagat', '2026-11-13 07:07:00', 'One-time', 'Submitted', '2026-11-12 23:08:05', '2026-11-12 23:08:05', 'CR-2026-0C17AAAF'),
-(4, 2, 'Drainage and flooding', 5, 'vvfsds', 'Bumaha napo nang kagandahan', '2026-11-25 07:10:00', 'During heavy rain', 'Submitted', '2026-11-12 23:11:23', '2026-11-12 23:11:23', 'CR-2026-184326F6'),
-(5, 8, 'Street lighting', 9, 'Zone 2', 'Here', '2026-11-13 07:22:00', 'Daily', 'Resolved', '2026-11-12 23:22:47', '2026-11-13 01:35:10', 'CR-2026-CE6D62A6');
+CREATE TABLE `community_report_assignments` (
+  `assignment_id` int(11) NOT NULL,
+  `report_id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `service_id` int(11) DEFAULT NULL,
+  `assigned_by` int(11) NOT NULL,
+  `assigned_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `assignment_note` varchar(500) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -146,7 +401,8 @@ CREATE TABLE `news_articles` (
 --
 
 INSERT INTO `news_articles` (`article_id`, `title`, `content`, `category`, `published_at`, `status`, `image_storage_key`, `image_mime_type`, `created_by`, `created_at`, `updated_at`) VALUES
-(2, 'Scholarship Grants 2026', '🎓 SCHOLARSHIP APPLICATIONS ARE NOW OPEN! \r\n\r\nAre you a passionate and deserving student looking for financial assistance? This is your opportunity!\r\n\r\nWe invite eligible students to apply for our scholarship program and take one step closer to achieving their academic dreams.\r\n\r\nBenefits: Financial assistance for qualified scholars.\r\n\r\nWho can apply: Eligible students who meet the scholarship requirements.\r\n\r\nApplication Period: November 24, 2026\r\n\r\nDon\'t miss this opportunity! Apply now and invest in your future. 🌟\r\n\r\nFor more information and inquiries, please contact 09xxxxxx.', 'Scholarship', '2026-11-13 07:29:00', 'published', '7ed2a3483535ea778bb03a14f4009c7c264711eb29d041ab', 'image/jpeg', 1, '2026-11-13 07:30:35', '2026-11-13 07:31:43');
+(2, 'Scholarship Grants 2026', '🎓 SCHOLARSHIP APPLICATIONS ARE NOW OPEN! \r\n\r\nAre you a passionate and deserving student looking for financial assistance? This is your opportunity!\r\n\r\nWe invite eligible students to apply for our scholarship program and take one step closer to achieving their academic dreams.\r\n\r\nBenefits: Financial assistance for qualified scholars.\r\n\r\nWho can apply: Eligible students who meet the scholarship requirements.\r\n\r\nApplication Period: November 24, 2026\r\n\r\nDon\'t miss this opportunity! Apply now and invest in your future. 🌟\r\n\r\nFor more information and inquiries, please contact 09xxxxxx.', 'Legal and Regulatory Notices', '2026-11-13 07:29:00', 'published', '7ed2a3483535ea778bb03a14f4009c7c264711eb29d041ab', 'image/jpeg', 1, '2026-11-13 07:30:35', '2026-11-18 10:25:24'),
+(3, 'Trump Visited Philippines', 'Trump visited philippines for ASEAN SUMMIT 2026', 'Government and Administrative Announcements', '2026-11-18 10:35:21', 'published', '93f277209455d9b446e846131bf0dea042c77ac900786aed', 'image/png', 1, '2026-11-18 10:34:08', '2026-11-18 10:35:21');
 
 -- --------------------------------------------------------
 
@@ -166,14 +422,16 @@ CREATE TABLE `notification_preferences` (
 
 INSERT INTO `notification_preferences` (`account_id`, `request_updates`, `announcement_updates`) VALUES
 (1, 1, 1),
-(2, 1, 1),
-(3, 1, 1),
-(4, 1, 1),
 (5, 1, 1),
-(6, 1, 1),
 (7, 1, 1),
-(8, 1, 1),
-(9, 1, 1);
+(10, 1, 1),
+(11, 1, 1),
+(12, 1, 1),
+(13, 1, 1),
+(14, 1, 1),
+(15, 1, 1),
+(16, 1, 1),
+(18, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -234,16 +492,6 @@ CREATE TABLE `report_attachments` (
   `uploaded_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `report_attachments`
---
-
-INSERT INTO `report_attachments` (`attachment_id`, `report_id`, `uploaded_by`, `file_name`, `storage_key`, `mime_type`, `uploaded_at`) VALUES
-(1, 2, 5, '752845640_2292209851525229_8427586804494950547_n.jpg', 'a653d1a3324403e387cc1c57d2c3abd4e75f06b9079295df', 'image/jpeg', '2026-11-12 19:45:43'),
-(2, 3, 2, '436f56ab-168d-4660-920f-d28bfbc74db5.jpg', 'afaf16889be94b9251958cfd9fe27a40d6171478526195cd', 'image/jpeg', '2026-11-12 23:08:05'),
-(3, 4, 2, '204df3b3-5fee-47a3-b12d-25bf954c4bed.jpg', '8afa9c035bb6946b723abd02d09d955a61044b1c0e4ef611', 'image/jpeg', '2026-11-12 23:11:23'),
-(4, 5, 8, 'IMG_4523.png', '264a095ff4c75ff0cd22fb3289eacd55e79b9ab1029b5ea9', 'image/png', '2026-11-12 23:22:47');
-
 -- --------------------------------------------------------
 
 --
@@ -258,26 +506,6 @@ CREATE TABLE `report_status_history` (
   `note` text DEFAULT NULL,
   `changed_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `report_status_history`
---
-
-INSERT INTO `report_status_history` (`history_id`, `report_id`, `changed_by`, `status`, `note`, `changed_at`) VALUES
-(1, 1, 2, 'Submitted', 'Report received.', '2026-11-06 06:15:06'),
-(2, 1, 1, 'Submitted', 'done', '2026-11-06 06:16:13'),
-(3, 1, 1, 'Submitted', 'Wala man talaga sira', '2026-11-12 19:36:07'),
-(4, 1, 1, 'Submitted', 'wala man sira po', '2026-11-12 19:36:26'),
-(5, 1, 1, 'In Progress', NULL, '2026-11-12 19:36:39'),
-(6, 2, 5, 'Submitted', 'Report received.', '2026-11-12 19:45:43'),
-(7, 3, 2, 'Submitted', 'Report received.', '2026-11-12 23:08:05'),
-(8, 4, 2, 'Submitted', 'Report received.', '2026-11-12 23:11:23'),
-(9, 5, 8, 'Submitted', 'Report received.', '2026-11-12 23:22:47'),
-(10, 5, 7, 'In Progress', 'progress', '2026-11-12 23:23:25'),
-(11, 5, 7, 'Resolved', NULL, '2026-11-12 23:23:49'),
-(12, 5, 1, 'Under Review', NULL, '2026-11-13 01:34:57'),
-(13, 5, 1, 'In Progress', NULL, '2026-11-13 01:35:03'),
-(14, 5, 1, 'Resolved', NULL, '2026-11-13 01:35:10');
 
 -- --------------------------------------------------------
 
@@ -298,13 +526,6 @@ CREATE TABLE `request_appointments` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `request_appointments`
---
-
-INSERT INTO `request_appointments` (`appointment_id`, `request_id`, `changed_by`, `status`, `appointment_date`, `appointment_time`, `office`, `location`, `instructions`, `created_at`, `updated_at`) VALUES
-(1, 5, 1, 'scheduled', '2026-11-19', '17:14:00', 'gvgvu', 'tufutffu', 'gcftydctyct', '2026-11-13 09:12:54', '2026-11-13 09:12:54');
 
 -- --------------------------------------------------------
 
@@ -329,16 +550,10 @@ CREATE TABLE `request_documents` (
 --
 
 INSERT INTO `request_documents` (`document_id`, `request_id`, `uploaded_by`, `document_name`, `storage_key`, `mime_type`, `review_status`, `review_note`, `uploaded_at`) VALUES
-(1, 3, 7, 'IMG_2777.jpeg', '24634552dbfec6b91d13571479679dbe3706c835ef1f1ee1', 'image/jpeg', 'accepted', NULL, '2026-11-12 18:50:22'),
-(2, 3, 7, 'IMG_2773.jpeg', 'fe5576ed0c632f2c8cd8832bb8726218f315ae942d8e9907', 'image/jpeg', 'submitted', NULL, '2026-11-12 18:50:44'),
-(3, 4, 5, 'Medical request form', '0c5b9b3686878fba7b4f1bedea3e6a749c5e6453a09dfc8b', 'image/png', 'submitted', 'submitted', '2026-11-12 19:48:15'),
-(4, 4, 5, 'Medical exam results', '523b130621826e10d25d830af657d03dc17cb8fd06ec0ab1', 'image/png', 'needs correction', 'Invalid medical result', '2026-11-12 19:48:15'),
-(5, 4, 5, 'Barangay clearance', '8742b050dff4bc052ac8a9712a80ba73fcd65af53e089fed', 'image/png', 'submitted', NULL, '2026-11-12 19:48:15'),
-(6, 4, 5, 'Official receipt', '375011b5bbf07513cc93ce216e0a2b79432b4448599ba8b7', 'image/png', 'submitted', NULL, '2026-11-12 19:48:15'),
-(7, 5, 2, 'Valid government ID', 'ed0ebab30b85a14d57773221a4d14fedc6744b23a758140e', 'image/jpeg', 'accepted', 'hahgsdsdx', '2026-11-12 23:39:01'),
-(8, 5, 2, 'Proof of residency', '2202b7eeb7440b6311dad06f93fc374343f80a90e287f8fc', 'image/jpeg', 'submitted', NULL, '2026-11-12 23:39:01'),
-(9, 5, 2, 'Barangay certification', '84f834c9b7ec833caad0c16c72d80360e897f74142209142', 'image/jpeg', 'submitted', NULL, '2026-11-12 23:39:01'),
-(10, 5, 2, 'Application form', '2d6e0bcf24915672f2b10d266099a4dffc09c546eea6e138', 'image/jpeg', 'submitted', NULL, '2026-11-12 23:39:01');
+(11, 6, 18, 'Building plans', 'b0ccc4edd8d7c523b8ab3912085594899df64d54d90d14a3', 'image/jpeg', 'submitted', NULL, '2026-11-18 09:32:49'),
+(12, 6, 18, 'Lot title or authorization', 'e0952c351d86fc4c82b43d5f4a2c39f1e82d23e2b477f4d3', 'image/jpeg', 'submitted', NULL, '2026-11-18 09:32:49'),
+(13, 6, 18, 'Valid government ID', '36d5c00963c79981af394dd334ae928d6145cee194b00b27', 'image/jpeg', 'submitted', NULL, '2026-11-18 09:32:49'),
+(14, 6, 18, 'Scope of work details', 'c3669c52b55575e75c50918878b059a3477617aad2d80476', 'image/jpeg', 'submitted', NULL, '2026-11-18 09:32:49');
 
 -- --------------------------------------------------------
 
@@ -360,25 +575,11 @@ CREATE TABLE `request_status_history` (
 --
 
 INSERT INTO `request_status_history` (`history_id`, `request_id`, `changed_by`, `status`, `note`, `changed_at`) VALUES
-(1, 1, 4, 'Submitted', 'Request received.', '2026-11-06 05:26:06'),
-(2, 1, 1, 'Submitted', NULL, '2026-11-06 06:15:46'),
-(3, 1, 1, 'Submitted', 'fghgf', '2026-11-06 06:16:47'),
-(4, 2, 5, 'Submitted', 'Request received.', '2026-11-12 17:45:11'),
-(5, 2, 1, 'Submitted', NULL, '2026-11-12 18:12:43'),
-(6, 2, 1, 'Rejected', NULL, '2026-11-12 18:12:55'),
-(7, 2, 1, 'Rejected', NULL, '2026-11-12 18:13:03'),
-(8, 2, 1, 'Rejected', NULL, '2026-11-12 18:13:07'),
-(9, 2, 1, 'Rejected', 'upload more info', '2026-11-12 18:14:23'),
-(10, 3, 7, 'Submitted', 'Request received.', '2026-11-12 18:49:14'),
-(11, 4, 5, 'Submitted', 'Request received.', '2026-11-12 19:48:15'),
-(12, 5, 2, 'Submitted', 'Request received.', '2026-11-12 23:39:01'),
-(13, 5, 1, 'In Progress', NULL, '2026-11-13 01:08:22'),
-(14, 5, 1, 'Completed', NULL, '2026-11-13 01:13:11'),
-(15, 5, 1, 'For Revision', NULL, '2026-11-13 01:13:42'),
-(16, 5, 1, 'For Revision', NULL, '2026-11-13 01:13:51'),
-(17, 5, 1, 'For Revision', 'bvhvhvh', '2026-11-13 01:17:05'),
-(18, 5, 1, 'Completed', 'bvhvhvh', '2026-11-13 01:18:13'),
-(19, 4, 1, 'In Progress', NULL, '2026-11-13 01:22:43');
+(20, 6, 18, 'Submitted', 'Request received.', '2026-11-18 09:32:49'),
+(21, 6, 1, 'Under Review', NULL, '2026-11-18 09:43:15'),
+(22, 6, 1, 'Submitted', NULL, '2026-11-18 09:43:21'),
+(23, 6, 1, 'Under Review', NULL, '2026-11-18 09:43:30'),
+(24, 6, 1, 'Submitted', NULL, '2026-11-18 09:43:32');
 
 -- --------------------------------------------------------
 
@@ -405,15 +606,17 @@ CREATE TABLE `resident_profiles` (
 --
 
 INSERT INTO `resident_profiles` (`account_id`, `first_name`, `middle_name`, `last_name`, `mobile_number`, `barangay_id`, `address`, `profile_image_key`, `verification`, `privacy_policy_version`, `consented_at`) VALUES
-(1, 'Richard', 'Miranda', 'Lacanlale', '09942518011', 16, 'I dont Know', NULL, 'pending', 'v1', '2026-11-06 03:07:02'),
-(2, 'Janine Mariz', NULL, 'Marcellones', '09693683493', 16, 'Non', NULL, 'verified', 'v1', '2026-11-06 03:57:38'),
-(3, 'test', 'test', 'test', '09176491308', 3, 'eeeeeee', NULL, 'pending', 'v1', '2026-11-06 07:39:37'),
-(4, 'mmmm', 'a', 'dasdasd', '09176491308', 18, 'dasdasd', NULL, 'pending', 'v1', '2026-11-06 13:25:07'),
-(5, 'Jester', NULL, 'Dayao', '09850411895', 3, '32432 eme eme', NULL, 'verified', 'v1', '2026-11-13 01:20:34'),
-(6, 'Irina', 'Donovan', 'Frennier', '09123456789', 19, 'Blk 22, Lot 16', NULL, 'pending', 'v1', '2026-11-13 02:41:58'),
-(7, 'Cheska', NULL, 'Sitchon', '09455432378', 12, 'No. 123, 123 street', NULL, 'pending', 'v1', '2026-11-13 02:43:05'),
-(8, 'Janna', 'Dejito', 'Pagal', '09184455768', 16, 'Zone 2, San Isidro, Bacolor', NULL, 'verified', 'v1', '2026-11-13 06:58:09'),
-(9, 'Jerome', 'P.', 'Aquino', '09916268164', 12, 'bbhvbdbubud', NULL, 'pending', 'v1', '2026-11-13 08:11:12');
+(1, 'Richard', 'Miranda', 'Lacanlale', '09942518011', 16, 'I dont Know', NULL, 'verified', 'v1', '2026-11-05 19:07:02'),
+(5, 'Jester', NULL, 'Dayao', '09850411895', 3, '32432 eme eme', NULL, 'verified', 'v1', '2026-11-12 17:20:34'),
+(7, 'Cheska', NULL, 'Sitchon', '09455432378', 12, 'No. 123, 123 street', NULL, 'verified', 'v1', '2026-11-12 18:43:05'),
+(10, 'Test', 'Synthetic', 'Admin Demo 01', '00000000001', 20, 'TEST DATA ONLY - Zone 35', NULL, 'verified', 'test-seed', '2026-11-18 16:52:12'),
+(11, 'Test', 'Synthetic', 'Admin Demo 02', '00000000002', 6, 'TEST DATA ONLY - Zone 94', NULL, 'verified', 'test-seed', '2026-11-18 16:52:12'),
+(12, 'Test', 'Synthetic', 'Admin Demo 03', '00000000003', 4, 'TEST DATA ONLY - Zone 56', NULL, 'verified', 'test-seed', '2026-11-18 16:52:12'),
+(13, 'Test', 'Synthetic', 'Admin Demo 04', '00000000004', 12, 'TEST DATA ONLY - Zone 71', NULL, 'verified', 'test-seed', '2026-11-18 16:52:12'),
+(14, 'Test', 'Synthetic', 'Admin Demo 05', '00000000005', 21, 'TEST DATA ONLY - Zone 84', NULL, 'verified', 'test-seed', '2026-11-18 16:52:12'),
+(15, 'Test', 'Synthetic', 'Admin Demo 06', '00000000006', 6, 'TEST DATA ONLY - Zone 25', NULL, 'verified', 'test-seed', '2026-11-18 16:52:12'),
+(16, 'Test', 'Synthetic', 'Admin Demo 07', '00000000007', 1, 'TEST DATA ONLY - Zone 28', NULL, 'verified', 'test-seed', '2026-11-18 16:52:12'),
+(18, 'Janine Mariz', NULL, 'Marcellones', '09693683493', 19, '0133, random street', NULL, 'verified', 'v1', '2026-11-18 17:30:57');
 
 -- --------------------------------------------------------
 
@@ -451,7 +654,7 @@ CREATE TABLE `resident_verification_history` (
 --
 
 INSERT INTO `resident_verification_history` (`history_id`, `account_id`, `changed_by`, `status`, `note`, `changed_at`) VALUES
-(1, 8, 7, 'verified', NULL, '2026-11-12 23:21:23');
+(2, 18, 1, 'verified', NULL, '2026-11-18 09:32:43');
 
 -- --------------------------------------------------------
 
@@ -478,7 +681,7 @@ CREATE TABLE `services` (
 
 INSERT INTO `services` (`service_id`, `code`, `name`, `description`, `category`, `office`, `status`, `fee_information`, `processing_info`, `instructions`) VALUES
 (1, 'business-permit', 'Business Permit', 'Apply for a new or renewed permit for operating a business or enterprise in Bacolor.', 'Business', 'Municipal Treasurer\'s Office', 'Unavailable', 'Fee varies depending on business type and category', 'Application review and payment processing are handled through the municipal office.', 'Submit the completed application and required supporting documents at the office counter or designated municipal intake desk.'),
-(2, 'civil-registry', 'Civil Registry Certificate', 'Request certified copies of birth, marriage, or death certificates and related civil registry records.', 'Civil Registry', 'Municipal Civil Registry Office', 'Unavailable', 'Processing fee depends on the type of certificate and request', 'Requests are processed after verification of records and required documentation.', 'Provide the requested record details and submit the application with any required supporting papers.'),
+(2, 'civil-registry', 'Civil Registry Certificate', 'Request certified copies of birth, marriage, or death certificates and related civil registry records.', 'Civil Registry', 'Municipal Civil Registry Office', 'Available', 'Processing fee depends on the type of certificate and request', 'Requests are processed after verification of records and required documentation.', 'Provide the requested record details and submit the application with any required supporting papers.'),
 (3, 'barangay-clearance', 'Barangay Clearance', 'Secure a barangay clearance for employment, business, or local transactions requiring local certification.', 'Community', 'Barangay Office', 'Available', 'Fee may vary depending on the purpose of the clearance', 'Barangay review and approval are required before the clearance is released.', 'Coordinate with the barangay where you are residing and submit the necessary documents to the local clerk or office.'),
 (4, 'building-permit', 'Building Permit', 'Secure approval for construction, renovation, or structural works that require municipal engineering review.', 'Engineering', 'Municipal Engineering Office', 'Available', 'Fee varies based on project scope and project cost estimate', 'Project documents are assessed by the engineering office before approval is issued.', 'Submit the plans and requirements to the engineering office for evaluation and follow-up review.'),
 (5, 'community-tax-certificate', 'Community Tax Certificate', 'Request a cedula or community tax certificate for personal or local compliance purposes.', 'Finance', 'Municipal Treasurer\'s Office', 'Available', 'Community tax fees apply according to municipal schedule', 'Payment and verification are done at the treasurer\'s office.', 'Present the required documents to the municipal treasurer and complete the payment process.'),
@@ -512,11 +715,7 @@ CREATE TABLE `service_requests` (
 --
 
 INSERT INTO `service_requests` (`request_id`, `reference`, `account_id`, `service_id`, `details`, `status`, `submitted_at`, `updated_at`) VALUES
-(1, 'IB-2026-8CC997EA', 4, 3, 'nothing', 'Submitted', '2026-11-06 05:26:06', '2026-11-06 06:16:47'),
-(2, 'IB-2026-16889A20', 5, 3, 'kikik', 'Rejected', '2026-11-12 17:45:11', '2026-11-12 18:14:23'),
-(3, 'IB-2026-AA6747DA', 7, 1, 'Testing lng', 'Submitted', '2026-11-12 18:49:14', '2026-11-12 18:49:14'),
-(4, 'IB-2026-5CD6AF04', 5, 6, 'dsgds', 'In Progress', '2026-11-12 19:48:15', '2026-11-13 01:22:43'),
-(5, 'IB-2026-185264DC', 2, 3, 'cleaaarance', 'Completed', '2026-11-12 23:39:01', '2026-11-13 01:18:13');
+(6, 'IB-2026-5BCA78FE', 18, 4, 'Just need it', 'Submitted', '2026-11-18 09:32:49', '2026-11-18 09:43:32');
 
 -- --------------------------------------------------------
 
@@ -634,6 +833,61 @@ ALTER TABLE `accounts`
   ADD UNIQUE KEY `email` (`email`);
 
 --
+-- Indexes for table `admin_account_roles`
+--
+ALTER TABLE `admin_account_roles`
+  ADD PRIMARY KEY (`account_id`,`role_id`),
+  ADD KEY `idx_admin_account_roles_role` (`role_id`),
+  ADD KEY `fk_admin_account_roles_grantor` (`granted_by`);
+
+--
+-- Indexes for table `admin_authorization_audit`
+--
+ALTER TABLE `admin_authorization_audit`
+  ADD PRIMARY KEY (`audit_id`),
+  ADD KEY `idx_admin_authorization_audit_target` (`target_account_id`,`changed_at`),
+  ADD KEY `idx_admin_authorization_audit_actor` (`actor_account_id`,`changed_at`),
+  ADD KEY `fk_admin_authorization_audit_role` (`role_id`);
+
+--
+-- Indexes for table `admin_permissions`
+--
+ALTER TABLE `admin_permissions`
+  ADD PRIMARY KEY (`permission_id`),
+  ADD UNIQUE KEY `uq_admin_permissions_code` (`permission_code`);
+
+--
+-- Indexes for table `admin_roles`
+--
+ALTER TABLE `admin_roles`
+  ADD PRIMARY KEY (`role_id`),
+  ADD UNIQUE KEY `uq_admin_roles_code` (`role_code`);
+
+--
+-- Indexes for table `admin_role_permissions`
+--
+ALTER TABLE `admin_role_permissions`
+  ADD PRIMARY KEY (`role_id`,`permission_id`),
+  ADD KEY `fk_admin_role_permissions_permission` (`permission_id`);
+
+--
+-- Indexes for table `admin_role_service_permissions`
+--
+ALTER TABLE `admin_role_service_permissions`
+  ADD PRIMARY KEY (`role_id`,`permission_id`,`service_id`),
+  ADD KEY `idx_admin_role_service_permissions_service` (`service_id`),
+  ADD KEY `fk_admin_role_service_permissions_permission` (`permission_id`);
+
+--
+-- Indexes for table `audit_history`
+--
+ALTER TABLE `audit_history`
+  ADD PRIMARY KEY (`history_id`),
+  ADD KEY `actor_created_at` (`actor_account_id`,`created_at`),
+  ADD KEY `entity_created_at` (`entity_type`,`entity_id`,`created_at`),
+  ADD KEY `event_created_at` (`event_type`,`created_at`);
+
+--
 -- Indexes for table `barangays`
 --
 ALTER TABLE `barangays`
@@ -647,6 +901,16 @@ ALTER TABLE `community_reports`
   ADD PRIMARY KEY (`report_id`),
   ADD KEY `account_id` (`account_id`),
   ADD KEY `barangay_id` (`barangay_id`);
+
+--
+-- Indexes for table `community_report_assignments`
+--
+ALTER TABLE `community_report_assignments`
+  ADD PRIMARY KEY (`assignment_id`),
+  ADD UNIQUE KEY `uq_community_report_role` (`report_id`,`role_id`),
+  ADD KEY `idx_community_report_assignments_role` (`role_id`),
+  ADD KEY `idx_community_report_assignments_service` (`service_id`),
+  ADD KEY `fk_community_report_assignments_grantor` (`assigned_by`);
 
 --
 -- Indexes for table `news_articles`
@@ -774,7 +1038,31 @@ ALTER TABLE `transparency_documents`
 -- AUTO_INCREMENT for table `accounts`
 --
 ALTER TABLE `accounts`
-  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `account_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+
+--
+-- AUTO_INCREMENT for table `admin_authorization_audit`
+--
+ALTER TABLE `admin_authorization_audit`
+  MODIFY `audit_id` bigint(20) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `admin_permissions`
+--
+ALTER TABLE `admin_permissions`
+  MODIFY `permission_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT for table `admin_roles`
+--
+ALTER TABLE `admin_roles`
+  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `audit_history`
+--
+ALTER TABLE `audit_history`
+  MODIFY `history_id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT for table `barangays`
@@ -789,10 +1077,16 @@ ALTER TABLE `community_reports`
   MODIFY `report_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
+-- AUTO_INCREMENT for table `community_report_assignments`
+--
+ALTER TABLE `community_report_assignments`
+  MODIFY `assignment_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `news_articles`
 --
 ALTER TABLE `news_articles`
-  MODIFY `article_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `article_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `public_contacts`
@@ -822,13 +1116,13 @@ ALTER TABLE `request_appointments`
 -- AUTO_INCREMENT for table `request_documents`
 --
 ALTER TABLE `request_documents`
-  MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `document_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `request_status_history`
 --
 ALTER TABLE `request_status_history`
-  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `resident_verification_documents`
@@ -840,7 +1134,7 @@ ALTER TABLE `resident_verification_documents`
 -- AUTO_INCREMENT for table `resident_verification_history`
 --
 ALTER TABLE `resident_verification_history`
-  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `services`
@@ -852,7 +1146,7 @@ ALTER TABLE `services`
 -- AUTO_INCREMENT for table `service_requests`
 --
 ALTER TABLE `service_requests`
-  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `service_requirements`
@@ -871,11 +1165,57 @@ ALTER TABLE `transparency_documents`
 --
 
 --
+-- Constraints for table `admin_account_roles`
+--
+ALTER TABLE `admin_account_roles`
+  ADD CONSTRAINT `fk_admin_account_roles_account` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_admin_account_roles_grantor` FOREIGN KEY (`granted_by`) REFERENCES `accounts` (`account_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_admin_account_roles_role` FOREIGN KEY (`role_id`) REFERENCES `admin_roles` (`role_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `admin_authorization_audit`
+--
+ALTER TABLE `admin_authorization_audit`
+  ADD CONSTRAINT `fk_admin_authorization_audit_actor` FOREIGN KEY (`actor_account_id`) REFERENCES `accounts` (`account_id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `fk_admin_authorization_audit_role` FOREIGN KEY (`role_id`) REFERENCES `admin_roles` (`role_id`),
+  ADD CONSTRAINT `fk_admin_authorization_audit_target` FOREIGN KEY (`target_account_id`) REFERENCES `accounts` (`account_id`);
+
+--
+-- Constraints for table `admin_role_permissions`
+--
+ALTER TABLE `admin_role_permissions`
+  ADD CONSTRAINT `fk_admin_role_permissions_permission` FOREIGN KEY (`permission_id`) REFERENCES `admin_permissions` (`permission_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_admin_role_permissions_role` FOREIGN KEY (`role_id`) REFERENCES `admin_roles` (`role_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `admin_role_service_permissions`
+--
+ALTER TABLE `admin_role_service_permissions`
+  ADD CONSTRAINT `fk_admin_role_service_permissions_permission` FOREIGN KEY (`permission_id`) REFERENCES `admin_permissions` (`permission_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_admin_role_service_permissions_role` FOREIGN KEY (`role_id`) REFERENCES `admin_roles` (`role_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_admin_role_service_permissions_service` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `audit_history`
+--
+ALTER TABLE `audit_history`
+  ADD CONSTRAINT `audit_history_actor_fk` FOREIGN KEY (`actor_account_id`) REFERENCES `accounts` (`account_id`) ON DELETE SET NULL;
+
+--
 -- Constraints for table `community_reports`
 --
 ALTER TABLE `community_reports`
   ADD CONSTRAINT `community_reports_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`account_id`),
   ADD CONSTRAINT `community_reports_ibfk_2` FOREIGN KEY (`barangay_id`) REFERENCES `barangays` (`barangay_id`);
+
+--
+-- Constraints for table `community_report_assignments`
+--
+ALTER TABLE `community_report_assignments`
+  ADD CONSTRAINT `fk_community_report_assignments_grantor` FOREIGN KEY (`assigned_by`) REFERENCES `accounts` (`account_id`),
+  ADD CONSTRAINT `fk_community_report_assignments_report` FOREIGN KEY (`report_id`) REFERENCES `community_reports` (`report_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_community_report_assignments_role` FOREIGN KEY (`role_id`) REFERENCES `admin_roles` (`role_id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `fk_community_report_assignments_service` FOREIGN KEY (`service_id`) REFERENCES `services` (`service_id`) ON DELETE SET NULL;
 
 --
 -- Constraints for table `notification_preferences`

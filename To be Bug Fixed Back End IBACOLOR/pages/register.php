@@ -2,6 +2,7 @@
     session_start();
     $isAuthenticated = isset($_SESSION['account_id']) && in_array($_SESSION['role'] ?? '', ['resident', 'admin'], true);
     require_once '../includes/connection.php';
+    require_once '../includes/audit-history.php';
 
     $getBarangayQuery = "SELECT barangay_id, name FROM barangays ORDER BY name";
     $getBarangay = $iBacolorConnection->prepare($getBarangayQuery);
@@ -142,6 +143,16 @@
                     'request_updates' => 1,
                     'announcement_updates' => 1,
                 ]);
+
+                recordAdminAuditHistory(
+                    $iBacolorConnection,
+                    $accountId,
+                    'resident',
+                    'registered',
+                    'account',
+                    $accountId,
+                    ['role' => 'resident', 'status' => 'active', 'verification' => 'pending']
+                );
 
                 $iBacolorConnection->commit();
                 session_regenerate_id(true);

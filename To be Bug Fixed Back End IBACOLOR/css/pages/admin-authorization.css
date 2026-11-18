@@ -1,0 +1,251 @@
+@import "../style.css";
+@import "../components.css";
+@import "../responsive.css?v=admin-sidebar-14";
+
+html.admin-access-page,
+body.admin-view[data-page="admin/authorization"] {
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
+}
+
+.admin-sidebar > a[aria-current="page"] {
+  border-left-color: var(--accent-gold);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-weight: 800;
+}
+
+.authorization-layout {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.authorization-layout > *,
+.authorization-card {
+  min-width: 0;
+}
+
+.authorization-card {
+  overflow: hidden;
+}
+
+.authorization-card .table-wrap {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+
+.authorization-card h3 {
+  margin: 1.5rem 0 0.6rem;
+}
+
+.authorization-form {
+  display: grid;
+  gap: 1rem;
+}
+
+.authorization-form > * {
+  min-width: 0;
+}
+
+.authorization-form label,
+.role-select-label {
+  display: grid;
+  gap: 0.4rem;
+  max-width: 38rem;
+}
+
+.authorization-form label small,
+.authorization-help {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+.authorization-form fieldset {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid #d5dce2;
+  border-radius: 0.65rem;
+}
+
+.authorization-form legend {
+  padding: 0 0.35rem;
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.role-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 0.65rem 1rem;
+}
+
+.role-options label,
+.permission-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+}
+
+.role-options input,
+.account-role-controls input,
+.permission-toggle input,
+.service-permission-table input {
+  width: auto;
+  min-width: 1rem;
+  height: 1rem;
+  flex: 0 0 1rem;
+  margin-top: 0.2rem;
+  padding: 0;
+  accent-color: var(--navy);
+}
+
+.role-options label > span,
+.account-role-controls label > span,
+.permission-toggle span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.authorization-table {
+  width: 100%;
+  min-width: 760px;
+}
+
+.authorization-table td,
+.authorization-table th {
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.admin-account-cell strong,
+.admin-account-cell small {
+  display: block;
+}
+
+.admin-account-cell small {
+  margin-top: 0.25rem;
+  color: var(--muted);
+}
+
+.account-role-controls {
+  display: grid;
+  gap: 0.45rem;
+  min-width: 14rem;
+}
+
+.account-role-controls label {
+  display: flex;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+
+.account-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  min-width: 11rem;
+}
+
+.account-actions .button,
+.account-actions button {
+  padding: 0.45rem 0.7rem;
+  font-size: 0.86rem;
+}
+
+.button-danger {
+  border: 1px solid #a92f2f;
+  background: #fff;
+  color: #8d2424;
+}
+
+.button-danger:hover {
+  background: #fff2f2;
+}
+
+.role-select-label {
+  margin-bottom: 1rem;
+}
+
+.global-permissions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.global-permission {
+  min-width: 0;
+  padding: 0.75rem;
+  border: 1px solid #e0e5e9;
+  border-radius: 0.55rem;
+}
+
+.global-permission small {
+  display: block;
+  min-width: 0;
+  margin: 0.25rem 0 0 1.5rem;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.permission-locked {
+  color: var(--muted);
+}
+
+.service-permission-table {
+  min-width: 680px;
+}
+
+.service-permission-table td:not(:first-child),
+.service-permission-table th:not(:first-child) {
+  text-align: center;
+}
+
+.service-permission-table label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.service-permission-table input {
+  margin: 0;
+}
+
+.authorization-message {
+  min-width: 0;
+  margin: 0;
+  padding: 0.8rem 1rem;
+  border-radius: 0.5rem;
+  background: #eaf5ee;
+  color: #174e2b;
+  overflow-wrap: anywhere;
+}
+
+.authorization-message.is-error {
+  background: #fff0ef;
+  color: #862c25;
+}
+
+.authorization-message[hidden] {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .authorization-card {
+    padding: clamp(16px, 4vw, 22px);
+  }
+
+  .authorization-card .section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .authorization-form > .button {
+    width: 100%;
+  }
+
+}

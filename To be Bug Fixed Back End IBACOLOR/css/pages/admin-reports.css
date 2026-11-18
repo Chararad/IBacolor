@@ -3,3 +3,54 @@
 @import "../responsive.css?v=admin-sidebar-12";
 
 /* Add styles specific to the admin-reports page below. */
+
+.report-review,
+.report-routing {
+  margin-bottom: 0.5rem;
+}
+
+.report-review form,
+.report-routing form {
+  display: grid;
+  gap: 0.65rem;
+  min-width: 13rem;
+  margin-top: 0.6rem;
+  padding: 0.75rem;
+  border: 1px solid #dfe4e8;
+  border-radius: 0.5rem;
+  background: #fff;
+}
+
+.report-review label,
+.report-routing label {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.report-routing label {
+  grid-template-columns: auto 1fr;
+  align-items: start;
+}
+
+.report-routing input {
+  margin-top: 0.25rem;
+  accent-color: var(--navy);
+}
+
+.report-routing summary,
+.report-review summary {
+  cursor: pointer;
+  list-style: none;
+}
+
+.report-routing summary::-webkit-details-marker,
+.report-review summary::-webkit-details-marker {
+  display: none;
+}
+
+.report-preview {
+  max-width: 8rem;
+  max-height: 8rem;
+  margin-right: 0.5rem;
+  object-fit: cover;
+}

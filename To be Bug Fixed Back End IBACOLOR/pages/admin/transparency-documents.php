@@ -3,6 +3,7 @@
 require_once __DIR__ . '/../../includes/page-auth.php';
 require_once __DIR__ . '/../../includes/transparency-config.php';
 require_once __DIR__ . '/../../includes/transparency-ots.php';
+require_once __DIR__ . '/../../includes/audit-history.php';
 
 $_SESSION['portal_csrf_token'] ??= bin2hex(random_bytes(32));
 $csrfToken = $_SESSION['portal_csrf_token'];
@@ -23,11 +24,14 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
         if (!$documentId || $documentId < 1) {
             $formError = 'Select a valid document.';
         } else {
+            $iBacolorConnection->beginTransaction();
             $existsStatement = $iBacolorConnection->prepare(
-                'SELECT document_id FROM transparency_documents WHERE document_id = :document_id LIMIT 1'
+                'SELECT status FROM transparency_documents WHERE document_id = :document_id LIMIT 1 FOR UPDATE'
             );
             $existsStatement->execute(['document_id' => $documentId]);
-            if (!$existsStatement->fetchColumn()) {
+            $previousStatus = $existsStatement->fetchColumn();
+            if ($previousStatus === false) {
+                $iBacolorConnection->rollBack();
                 $formError = 'The selected document could not be found.';
             } else {
                 if ($action === 'publish') {
@@ -50,6 +54,19 @@ if (($_SERVER['REQUEST_METHOD'] ?? 'GET') === 'POST') {
                     );
                 }
                 $updateStatement->execute(['document_id' => $documentId]);
+                recordAdminAuditHistory(
+                    $iBacolorConnection,
+                    (int) $accountId,
+                    (string) $_SESSION['role'],
+                    $action === 'draft' ? 'returned_to_draft' : ($action === 'publish' ? 'published' : 'archived'),
+                    'transparency_document',
+                    $documentId,
+                    [
+                        'previous_status' => $previousStatus,
+                        'status' => $action === 'publish' ? 'Published' : ($action === 'draft' ? 'Draft' : 'Archived'),
+                    ]
+                );
+                $iBacolorConnection->commit();
                 $_SESSION['transparency_documents_notice'] = 'Document status updated.';
                 header('Location: transparency-documents.php');
                 exit;
@@ -183,6 +200,22 @@ try {
         'ots_submitted_at' => $otsSubmittedAt,
     ]);
 
+    $documentId = (int) $iBacolorConnection->lastInsertId();
+    recordAdminAuditHistory(
+        $iBacolorConnection,
+        (int) $accountId,
+        (string) $_SESSION['role'],
+        'uploaded',
+        'transparency_document',
+        $documentId,
+        [
+            'category' => $category,
+            'year' => $year,
+            'status' => 'Draft',
+            'version' => $previous ? (int) $previous['version_number'] + 1 : 1,
+        ]
+    );
+
     $iBacolorConnection->commit();
 
     $_SESSION['transparency_documents_notice'] =
@@ -234,12 +267,27 @@ try {
 $search = is_string($_GET['q'] ?? null) ? trim($_GET['q']) : '';
 $filterCategory = is_string($_GET['category'] ?? null) ? $_GET['category'] : '';
 $filterStatus = is_string($_GET['status'] ?? null) ? $_GET['status'] : '';
-$filterYear = filter_var($_GET['year'] ?? null, FILTER_VALIDATE_INT);
+$filterYearInput = is_string($_GET['year'] ?? null) ? trim($_GET['year']) : '';
+$filterYear = false;
+$filterDate = '';
+if (preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $filterYearInput, $dateParts)) {
+    $dateYear = (int) $dateParts[1];
+    if (checkdate((int) $dateParts[2], (int) $dateParts[3], $dateYear)) {
+        $filterYear = $dateYear;
+        $filterDate = $filterYearInput;
+    }
+} else {
+    $filterYear = filter_var($filterYearInput, FILTER_VALIDATE_INT);
+    if ($filterYear !== false && $filterYear >= 1901 && $filterYear <= 2155) {
+        $filterDate = sprintf('%04d-01-01', $filterYear);
+    }
+}
 $conditions = [];
 $parameters = [];
 if ($search !== '') {
-    $conditions[] = '(title LIKE :search_title OR description LIKE :search_description)';
+    $conditions[] = '(title LIKE :search_title OR category LIKE :search_category OR description LIKE :search_description)';
     $parameters['search_title'] = '%' . $search . '%';
+    $parameters['search_category'] = '%' . $search . '%';
     $parameters['search_description'] = '%' . $search . '%';
 }
 if (in_array($filterCategory, TRANSPARENCY_CATEGORIES, true)) {
@@ -259,6 +307,7 @@ if ($filterYear !== false && $filterYear >= 1901 && $filterYear <= 2155) {
     $parameters['document_year'] = $filterYear;
 } else {
     $filterYear = null;
+    $filterDate = '';
 }
 $listQuery = 'SELECT document_id, title, category, document_year, uploaded_at, status, version_number
               FROM transparency_documents';
@@ -281,7 +330,7 @@ function transparencyAdminEscape(string|int|null $value): string
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Transparency Documents | iBacolor</title>
-        <link rel="stylesheet" href="../../css/pages/admin-transparency-documents.css?v=admin-sidebar-12" />
+        <link rel="stylesheet" href="../../css/pages/admin-transparency-documents.css?v=transparency-upload-validation-1" />
     </head>
     <body data-page="admin/transparency-documents" class="admin-view">
         <div id="app">
@@ -294,6 +343,9 @@ function transparencyAdminEscape(string|int|null $value): string
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
+                <p class="admin-label">System</p>
+                <a href="../admin/history.php">◷ History logs</a>
+                <?php if (adminIsMasterAdmin($iBacolorConnection, (int) $accountId)): ?><a href="../admin/authorization.php">⚙ Admin access</a><?php endif; ?>
                 <div class="admin-sidebar-footer">
                     <a href="../logout.php">Sign out</a>
                 </div>
@@ -316,7 +368,7 @@ function transparencyAdminEscape(string|int|null $value): string
                         <?php if ($formError !== ''): ?>
                             <p class="notice notice-warning" role="alert"><?= transparencyAdminEscape($formError) ?></p>
                         <?php endif; ?>
-                        <form class="form-card transparency-upload-form" method="post" enctype="multipart/form-data">
+                        <form class="form-card transparency-upload-form" method="post" enctype="multipart/form-data" novalidate>
                             <h2>Upload an official PDF</h2>
                             <input type="hidden" name="csrf_token" value="<?= transparencyAdminEscape($csrfToken) ?>" />
                             <input type="hidden" name="action" value="upload" />
@@ -336,11 +388,22 @@ function transparencyAdminEscape(string|int|null $value): string
                             <label>PDF file<input name="pdf_file" type="file" accept=".pdf,application/pdf" required /><small>PDF only, up to 10 MB. Uploading the same title and category creates a new version.</small></label>
                             <div class="form-actions"><button class="button" type="submit">Upload PDF as Draft</button></div>
                         </form>
+                        <div class="modal" id="transparency-upload-validation-modal" role="dialog" aria-modal="true" aria-labelledby="transparency-upload-validation-title" aria-describedby="transparency-upload-validation-message" aria-hidden="true">
+                            <section class="modal-content transparency-validation-content">
+                                <button class="modal-close" type="button" aria-label="Close validation message" data-close-transparency-validation>×</button>
+                                <h2 id="transparency-upload-validation-title">Check the upload details</h2>
+                                <p id="transparency-upload-validation-message">Complete or correct these fields before uploading:</p>
+                                <ul id="transparency-upload-validation-fields"></ul>
+                                <div class="form-actions">
+                                    <button class="button" type="button" data-close-transparency-validation>Review fields</button>
+                                </div>
+                            </section>
+                        </div>
 
                         <article class="card transparency-document-management">
                             <h2>Manage documents</h2>
                             <form class="transparency-filters" method="get">
-                                <label>Search<input type="search" name="q" value="<?= transparencyAdminEscape($search) ?>" placeholder="Title or description" /></label>
+                                <label>Search<input type="search" name="q" value="<?= transparencyAdminEscape($search) ?>" placeholder="Title or category" /></label>
                                 <label>Category
                                     <select name="category">
                                         <option value="">All categories</option>
@@ -349,7 +412,9 @@ function transparencyAdminEscape(string|int|null $value): string
                                         <?php endforeach; ?>
                                     </select>
                                 </label>
-                                <label>Year<input type="number" name="year" min="1901" max="2155" value="<?= $filterYear ? transparencyAdminEscape($filterYear) : '' ?>" /></label>
+                                <label>Year (choose any date)
+                                    <input type="date" name="year" min="1901-01-01" max="2155-12-31" value="<?= transparencyAdminEscape($filterDate) ?>" aria-label="Choose a date; results are filtered by its year" />
+                                </label>
                                 <label>Status
                                     <select name="status">
                                         <option value="">All statuses</option>
@@ -417,5 +482,6 @@ function transparencyAdminEscape(string|int|null $value): string
             </main>
         </div>
         <script src="../../js/portal.js?v=admin-sidebar-6"></script>
+        <script src="../../js/pages/admin-transparency-documents.js?v=transparency-upload-validation-1"></script>
     </body>
 </html>

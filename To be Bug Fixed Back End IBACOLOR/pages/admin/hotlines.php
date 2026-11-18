@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Manage Hotlines | iBacolor</title>
-        <link rel="stylesheet" href="../../css/pages/admin-hotlines.css?v=admin-sidebar-12" />
+        <link rel="stylesheet" href="../../css/pages/admin-hotlines.css?v=hotline-toolbar-layout-2" />
     </head>
     <body data-page="admin/hotlines" class="admin-view">
         <div id="app">
@@ -18,6 +18,9 @@
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
+                <p class="admin-label">System</p>
+                <a href="../admin/history.php">◷ History logs</a>
+                <?php if (adminIsMasterAdmin($iBacolorConnection, (int) $accountId)): ?><a href="../admin/authorization.php">⚙ Admin access</a><?php endif; ?>
                 <div class="admin-sidebar-footer">
                     <a href="../logout.php">Sign out</a>
                 </div>
@@ -38,9 +41,14 @@
                 <section class="section">
                     <div class="container">
                         <article class="card">
-                            <div class="section-heading compact">
+                            <div class="hotline-management-heading">
                                 <h2>Published hotlines</h2>
-                                <button class="button" type="button">+ Add hotline</button>
+                            </div>
+                            <div class="hotline-toolbar-actions">
+                                <label class="hotline-search">Search
+                                    <input id="hotline-search" type="search" placeholder="Office, contact, or details" />
+                                </label>
+                                <button class="button" id="add-hotline-button" type="button">+ Add hotline</button>
                             </div>
                             <div class="table-wrap">
                                 <table>
@@ -58,8 +66,8 @@
                                             <td>(045) 900-1000</td>
                                             <td>General municipal inquiries and office directory.</td>
                                             <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    Edit</button><button class="button button-small button-ghost" type="button">
+                                                <button class="button button-small button-outline hotline-edit-button" type="button">
+                                                    Edit</button><button class="button button-small button-outline hotline-delete-button" type="button">
                                                     Delete
                                                 </button>
                                             </td>
@@ -72,8 +80,8 @@
                                                 coordination.
                                             </td>
                                             <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    Edit</button><button class="button button-small button-ghost" type="button">
+                                                <button class="button button-small button-outline hotline-edit-button" type="button">
+                                                    Edit</button><button class="button button-small button-outline hotline-delete-button" type="button">
                                                     Delete
                                                 </button>
                                             </td>
@@ -85,8 +93,8 @@
                                                 Public safety, police assistance, and traffic matters.
                                             </td>
                                             <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    Edit</button><button class="button button-small button-ghost" type="button">
+                                                <button class="button button-small button-outline hotline-edit-button" type="button">
+                                                    Edit</button><button class="button button-small button-outline hotline-delete-button" type="button">
                                                     Delete
                                                 </button>
                                             </td>
@@ -99,12 +107,13 @@
                                                 assistance.
                                             </td>
                                             <td class="table-actions">
-                                                <button class="button button-small button-outline" type="button">
-                                                    Edit</button><button class="button button-small button-ghost" type="button">
+                                                <button class="button button-small button-outline hotline-edit-button" type="button">
+                                                    Edit</button><button class="button button-small button-outline hotline-delete-button" type="button">
                                                     Delete
                                                 </button>
                                             </td>
                                         </tr>
+                                        <tr id="hotline-search-empty" hidden><td colspan="4">No hotlines match your search.</td></tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -131,18 +140,65 @@
                     <span>© 2026 Municipality of Bacolor</span>
                 </div>
             </footer>
-            <div class="modal" id="demo-modal" role="dialog" aria-modal="true" aria-hidden="true">
-                <div class="modal-content">
-                    <button class="modal-close" type="button" aria-label="Close">
-                        ×
-                    </button>
-                    <h2>iBacolor</h2>
-                    <p>This dialog is part of the frontend component foundation.</p>
-                </div>
+            <div class="modal" id="hotline-editor-modal" role="dialog" aria-modal="true" aria-labelledby="hotline-editor-title" aria-hidden="true">
+                <form class="modal-content hotline-editor-content" id="hotline-editor-form">
+                    <button class="modal-close" type="button" aria-label="Close hotline editor" data-close-hotline-editor>×</button>
+                    <h2 id="hotline-editor-title">Add hotline</h2>
+                    <p class="hotline-editor-intro">Enter the official contact details shown in the public directory.</p>
+                    <p class="notice notice-warning hotline-editor-error" id="hotline-editor-error" role="alert" hidden></p>
+                    <input type="hidden" name="contactId" />
+                    <div class="hotline-editor-fields">
+                        <label>Office or hotline name
+                            <input name="name" maxlength="255" required />
+                        </label>
+                        <label>Contact type
+                            <select name="type" required>
+                                <option value="hotline">Hotline</option>
+                                <option value="emergency">Emergency</option>
+                                <option value="office">Office</option>
+                            </select>
+                        </label>
+                        <label>Telephone number(s)
+                            <input name="telephone" maxlength="100" />
+                        </label>
+                        <label>Email
+                            <input name="email" type="email" maxlength="255" />
+                        </label>
+                        <label class="hotline-editor-wide">Address or service description
+                            <textarea name="address" rows="2" maxlength="255"></textarea>
+                        </label>
+                        <label>Directory category
+                            <input name="category" maxlength="255" />
+                        </label>
+                        <label>Official contact person
+                            <input name="contact_name" maxlength="255" />
+                        </label>
+                        <label class="hotline-editor-wide">Services or purposes <small>Separate items with semicolons.</small>
+                            <textarea name="purpose" rows="3" maxlength="2000"></textarea>
+                        </label>
+                        <label>Other HTTPS social link
+                            <input name="social_link" type="url" pattern="https://.*" maxlength="255" title="Enter a valid HTTPS URL." />
+                        </label>
+                        <label>Facebook page HTTPS URL
+                            <input name="fb_page_link" type="url" pattern="https://.*" maxlength="255" title="Enter a valid HTTPS URL." />
+                        </label>
+                        <label>Website HTTPS URL
+                            <input name="website_link" type="url" pattern="https://.*" maxlength="255" title="Enter a valid HTTPS URL." />
+                        </label>
+                        <label>Official social media HTTPS URL
+                            <input name="official_socmed" type="url" pattern="https://.*" maxlength="255" title="Enter a valid HTTPS URL." />
+                        </label>
+                    </div>
+                    <label class="hotline-verified-field"><input name="is_verified" type="checkbox" /> These contact details have been officially verified</label>
+                    <div class="form-actions">
+                        <button class="button" type="submit">Save hotline</button>
+                        <button class="button button-outline" type="button" data-close-hotline-editor>Cancel</button>
+                    </div>
+                </form>
             </div>
         </div>
     
         <script src="../../js/portal.js?v=admin-sidebar-6"></script>
-        <script src="../../js/pages/admin-hotlines.js"></script>
+        <script src="../../js/pages/admin-hotlines.js?v=hotline-editor-modal-1"></script>
 </body>
 </html>

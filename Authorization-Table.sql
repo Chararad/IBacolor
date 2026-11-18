@@ -104,6 +104,26 @@ CREATE TABLE IF NOT EXISTS admin_authorization_audit (
         FOREIGN KEY (role_id) REFERENCES admin_roles (role_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- General admin activity history. The main database dump creates this too;
+-- keeping it here makes the authorization SQL usable as a combined setup file.
+CREATE TABLE IF NOT EXISTS audit_history (
+    history_id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    actor_account_id int(11) DEFAULT NULL,
+    actor_role varchar(20) NOT NULL,
+    event_type varchar(64) NOT NULL,
+    entity_type varchar(64) NOT NULL,
+    entity_id varchar(64) NOT NULL,
+    details JSON DEFAULT NULL,
+    created_at datetime NOT NULL,
+    PRIMARY KEY (history_id),
+    KEY actor_created_at (actor_account_id, created_at),
+    KEY entity_created_at (entity_type, entity_id, created_at),
+    KEY event_created_at (event_type, created_at),
+    CONSTRAINT audit_history_actor_fk
+        FOREIGN KEY (actor_account_id) REFERENCES accounts (account_id)
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 INSERT INTO admin_roles (role_code, role_name, role_description) VALUES
     ('master_admin', 'Master Admin', 'Manages admin role assignments and authorizations.'),
     ('main_website_admin', 'Main Website Admin', 'Manages shared website administration modules.'),
@@ -123,6 +143,7 @@ INSERT INTO admin_permissions (permission_code, permission_description) VALUES
     ('services.manage', 'Manage municipal services.'),
     ('hotlines.manage', 'Manage emergency hotlines.'),
     ('users.manage', 'Manage registered user accounts.'),
+    ('transparency_documents.manage', 'Manage published transparency documents.'),
     ('community_reports.view_all', 'View all community reports.'),
     ('community_reports.manage', 'Manage community reports.'),
     ('community_reports.route', 'Assign community reports to departments or services.'),
@@ -148,6 +169,7 @@ WHERE
         'services.manage',
         'hotlines.manage',
         'users.manage',
+        'transparency_documents.manage',
         'community_reports.view_all',
         'community_reports.manage',
         'community_reports.route'
@@ -172,7 +194,7 @@ WHERE r.role_code IN (
     'municipal_planning',
     'municipal_health'
 )
-AND p.permission_code = 'community_reports.view_assigned'
+AND p.permission_code IN ('community_reports.view_assigned', 'dashboard.view')
 ON DUPLICATE KEY UPDATE role_id = VALUES(role_id);
 
 -- These service codes must exist in the services table for their scopes to be
@@ -219,17 +241,6 @@ JOIN admin_permissions AS p ON p.permission_code IN (
 )
 ON DUPLICATE KEY UPDATE role_id = VALUES(role_id);
 
--- Assign the Master Admin role only after selecting the intended active admin.
--- Replace the email below, then execute this statement:
---
--- INSERT INTO admin_account_roles (account_id, role_id, granted_by)
--- SELECT target.account_id, r.role_id, target.account_id
--- FROM accounts AS target
--- JOIN admin_roles AS r ON r.role_code = 'master_admin'
--- WHERE target.email = 'REPLACE_WITH_MASTER_ADMIN_EMAIL'
---   AND target.roles = 'admin'
---   AND target.status = 'active';
---
--- Account-role changes made by the Authorization Management page should also
--- be written to admin_authorization_audit. Only active admin accounts should
--- receive admin roles; enforce this in the application when granting access.
+-- Account email-to-role assignments are maintained separately in
+-- Admin-Account-Setup.sql; password hashes and activation are handled by
+-- scripts/provision-admin-accounts.php.
