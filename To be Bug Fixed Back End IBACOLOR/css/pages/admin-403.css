@@ -1,0 +1,45 @@
+@import "../style.css";
+@import "../components.css";
+@import "../responsive.css?v=admin-sidebar-12";
+
+.admin-view .access-denied-section {
+  display: grid;
+  min-height: calc(100vh - 64px);
+  place-items: center;
+  padding: 40px 0;
+  background: var(--soft);
+}
+.admin-view .access-denied-card {
+  max-width: 700px;
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 56px);
+  border-top: 4px solid var(--navy);
+  text-align: center;
+}
+.admin-view .access-denied-code {
+  margin: 0;
+  color: var(--navy);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(72px, 14vw, 112px);
+  font-weight: 700;
+  line-height: 1;
+}
+.admin-view .access-denied-card .eyebrow {
+  margin: 16px 0 8px;
+}
+.admin-view .access-denied-card h1 {
+  margin: 0 auto 12px;
+  font-size: clamp(26px, 4vw, 38px);
+  line-height: 1.2;
+}
+.admin-view .access-denied-card .lead {
+  max-width: 500px;
+  margin: 0 auto 24px;
+  color: var(--muted);
+}
+.admin-view .access-denied-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}

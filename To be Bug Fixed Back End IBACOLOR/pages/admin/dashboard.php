@@ -5,7 +5,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Admin Dashboard | iBacolor</title>
-        <link rel="stylesheet" href="../../css/pages/admin-dashboard.css?v=admin-sidebar-12" />
+        <link rel="stylesheet" href="../../css/pages/admin-dashboard.css?v=admin-dashboard-links-1" />
     </head>
     <body data-page="admin/dashboard" class="admin-view">
         <div id="app">
