@@ -5,18 +5,21 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Admin Dashboard | iBacolor</title>
-        <link rel="stylesheet" href="../../css/pages/admin-dashboard.css" />
+        <link rel="stylesheet" href="../../css/pages/admin-dashboard.css?v=admin-sidebar-12" />
     </head>
     <body data-page="admin/dashboard" class="admin-view">
         <div id="app">
-            <aside class="admin-sidebar">
-                <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
+            <aside class="admin-sidebar" id="admin-sidebar" aria-label="Admin menu" aria-hidden="true" hidden>
+                <div class="admin-sidebar-header">
+                    <button class="admin-menu-toggle admin-menu-close" type="button" aria-label="Close admin menu" aria-expanded="false" aria-controls="admin-sidebar"><span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span></button>
+                    <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
+                </div>
                 <p class="admin-label">Workspace</p>
                 <a href="../admin/dashboard.php" aria-current="page">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">
-                    <a href="../../main.php">← Public website</a>
+                    <a href="../logout.php">Sign out</a>
                 </div>
             </aside>
             <?php require __DIR__ . '/../../includes/site-header.php'; ?>
@@ -24,7 +27,7 @@
                 <section class="page-header">
                     <div class="container">
                         <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span>Admin Dashboard
+                            Administration <span>/</span>Admin Dashboard
                         </div>
                         <p class="eyebrow">Administration</p>
                         <h1>Municipal operations dashboard</h1>
@@ -34,26 +37,26 @@
                 <section class="section">
                     <div class="container">
                         <div class="stats-grid">
-                            <article class="card stat-card">
+                            <a class="card stat-card" href="requests.php">
                                 <p class="stat-label">Service requests</p>
                                 <strong class="stat-value">4</strong>
                                 <p class="stat-note">All requests</p>
-                            </article>
-                            <article class="card stat-card">
+                            </a>
+                            <a class="card stat-card" href="requests.php?status=In%20Progress">
                                 <p class="stat-label">In progress</p>
                                 <strong class="stat-value">2</strong>
                                 <p class="stat-note">Current requests</p>
-                            </article>
-                            <article class="card stat-card">
+                            </a>
+                            <a class="card stat-card" href="reports.php">
                                 <p class="stat-label">Open reports</p>
                                 <strong class="stat-value">2</strong>
                                 <p class="stat-note">Needs attention</p>
-                            </article>
-                            <article class="card stat-card">
+                            </a>
+                            <a class="card stat-card" href="users.php">
                                 <p class="stat-label">Residents</p>
                                 <strong class="stat-value">3</strong>
                                 <p class="stat-note">Registered residents</p>
-                            </article>
+                            </a>
                         </div>
                         <div class="content-grid">
                             <div>
@@ -145,12 +148,12 @@
             <footer class="site-footer">
                 <div class="container footer-grid">
                     <div>
-                        <a class="brand brand-footer" href="../../main.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a>
-                        <p>A simpler way to access municipal information and public services.</p>
+                        <div class="brand brand-footer"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Administration portal</small></span></div>
+                        <p>Administrative workspace for municipal operations.</p>
                     </div>
                     <div>
-                        <h3>Explore</h3>
-                        <a href="../services.php">Services</a><a href="../news.php">News and announcements</a><a href="../hotlines.php">Emergency hotlines</a>
+                        <h3>Administration</h3>
+                        <p>Manage resident services and municipal content.</p>
                     </div>
                     <div>
                         <h3>Need assistance?</h3>
@@ -172,7 +175,7 @@
             </div>
         </div>
     
-        <script src="../../js/portal.js"></script>
+        <script src="../../js/portal.js?v=admin-sidebar-6"></script>
         <script src="../../js/pages/admin-dashboard.js"></script>
 </body>
 </html>

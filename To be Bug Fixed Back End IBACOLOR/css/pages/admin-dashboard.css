@@ -1,6 +1,6 @@
 @import "../style.css";
 @import "../components.css";
-@import "../responsive.css";
+@import "../responsive.css?v=admin-sidebar-12";
 
 /* Admin sidebar: highlight the section you are currently in. */
 .admin-sidebar > a[aria-current="page"] {
@@ -8,4 +8,16 @@
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
   font-weight: 800;
+}
+
+.admin-view .stats-grid a.stat-card {
+  color: inherit;
+  text-decoration: none;
+}
+.admin-view .stats-grid a.stat-card:hover {
+  border-color: var(--navy);
+}
+.admin-view .stats-grid a.stat-card:focus-visible {
+  outline: 3px solid var(--navy);
+  outline-offset: 3px;
 }

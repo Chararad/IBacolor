@@ -1,6 +1,6 @@
 @import "../style.css";
 @import "../components.css";
-@import "../responsive.css";
+@import "../responsive.css?v=admin-sidebar-12";
 
 /* Admin sidebar: highlight the section you are currently in. */
 .admin-sidebar > a[aria-current="page"] {

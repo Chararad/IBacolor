@@ -1,8 +1,7 @@
 @import "../style.css";
 @import "../components.css";
-@import "../responsive.css";
+@import "../responsive.css?v=admin-sidebar-12";
 
-/* Add styles specific to the admin-users page below. */
 .user-filters {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -13,4 +12,13 @@
 .user-filters label {
     display: grid;
     gap: 0.4rem;
+}
+
+.admin-view .table-wrap tbody tr[data-user-details] {
+    cursor: pointer;
+}
+
+.admin-view .table-wrap tbody tr[data-user-details]:focus-visible {
+    outline: 2px solid var(--navy);
+    outline-offset: -2px;
 }

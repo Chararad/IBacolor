@@ -67,19 +67,58 @@
   const formData = (form) => Object.fromEntries(new FormData(form).entries());
 
   function initializeNavigation() {
-    const toggle = document.querySelector(".menu-toggle");
-    const nav = document.getElementById("main-nav");
-    if (toggle && nav) {
-      toggle.addEventListener("click", () => {
-        const open = document.body.classList.toggle("nav-open");
-        toggle.setAttribute("aria-expanded", String(open));
+    const isAdminView = document.body.classList.contains("admin-view");
+    const toggle = isAdminView
+      ? document.querySelector(".admin-menu-toggle:not(.admin-menu-close)")
+      : document.querySelector(".menu-toggle");
+    const adminToggles = isAdminView
+      ? document.querySelectorAll(".admin-menu-toggle")
+      : toggle ? [toggle] : [];
+    const nav = document.getElementById(isAdminView ? "admin-sidebar" : "main-nav");
+    const closeToggle = isAdminView ? nav?.querySelector(".admin-menu-close") : null;
+    const openClass = isAdminView ? "admin-sidebar-open" : "nav-open";
+
+    if (isAdminView && nav) nav.hidden = false;
+
+    const setOpen = (open) => {
+      document.body.classList.toggle(openClass, open);
+      adminToggles.forEach((control) => {
+        control.setAttribute("aria-expanded", String(open));
+        if (isAdminView) {
+          control.setAttribute("aria-label", open ? "Close admin menu" : "Open admin menu");
+        }
+      });
+      if (isAdminView) nav?.setAttribute("aria-hidden", String(!open));
+      if (open && isAdminView) closeToggle?.focus();
+    };
+
+    if (adminToggles.length && nav) {
+      adminToggles.forEach((control) => {
+        control.addEventListener("click", () => {
+          const opening = !document.body.classList.contains(openClass);
+          setOpen(opening);
+          if (!opening) toggle?.focus();
+        });
       });
       nav.addEventListener("click", (event) => {
         if (event.target.closest("a")) {
-          document.body.classList.remove("nav-open");
-          toggle.setAttribute("aria-expanded", "false");
+          setOpen(false);
         }
       });
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !document.body.classList.contains(openClass)) return;
+        setOpen(false);
+        toggle?.focus();
+      });
+
+      if (isAdminView) {
+        document.addEventListener("click", (event) => {
+          if (!document.body.classList.contains(openClass)) return;
+          if (nav.contains(event.target) || Array.from(adminToggles).some((control) => control.contains(event.target))) return;
+          setOpen(false);
+          toggle?.focus();
+        });
+      }
     }
     const currentPath = window.location.pathname;
     document.querySelectorAll(".site-nav .nav-links a").forEach((link) => {

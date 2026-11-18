@@ -5,18 +5,21 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Manage Requests | iBacolor</title>
-        <link rel="stylesheet" href="../../css/pages/admin-requests.css" />
+        <link rel="stylesheet" href="../../css/pages/admin-requests.css?v=admin-request-queues-1" />
     </head>
     <body data-page="admin/requests" class="admin-view">
         <div id="app">
-            <aside class="admin-sidebar">
-                <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
+            <aside class="admin-sidebar" id="admin-sidebar" aria-label="Admin menu" aria-hidden="true" hidden>
+                <div class="admin-sidebar-header">
+                    <button class="admin-menu-toggle admin-menu-close" type="button" aria-label="Close admin menu" aria-expanded="false" aria-controls="admin-sidebar"><span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span></button>
+                    <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
+                </div>
                 <p class="admin-label">Workspace</p>
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php" aria-current="page">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">
-                    <a href="../../main.php">← Public website</a>
+                    <a href="../logout.php">Sign out</a>
                 </div>
             </aside>
             <?php require __DIR__ . '/../../includes/site-header.php'; ?>
@@ -24,7 +27,7 @@
                 <section class="page-header">
                     <div class="container">
                         <div class="breadcrumbs">
-                            <a href="../../main.php">Home</a><span>/</span><a href="dashboard.php">Dashboard</a><span>/</span>Manage requests
+                            Administration <span>/</span>Manage requests
                         </div>
                         <p class="eyebrow">Administration</p>
                         <h1>Manage requests</h1>
@@ -83,12 +86,12 @@
             <footer class="site-footer">
                 <div class="container footer-grid">
                     <div>
-                        <a class="brand brand-footer" href="../../main.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Municipal Public Service Portal</small></span></a>
-                        <p>A simpler way to access municipal information and public services.</p>
+                        <div class="brand brand-footer"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Administration portal</small></span></div>
+                        <p>Administrative workspace for municipal operations.</p>
                     </div>
                     <div>
-                        <h3>Explore</h3>
-                        <a href="../services.php">Services</a><a href="../news.php">News and announcements</a><a href="../hotlines.php">Emergency hotlines</a>
+                        <h3>Administration</h3>
+                        <p>Manage resident services and municipal content.</p>
                     </div>
                     <div>
                         <h3>Need assistance?</h3>
@@ -110,7 +113,7 @@
             </div>
         </div>
     
-        <script src="../../js/portal.js"></script>
-        <script src="../../js/pages/admin-requests.js"></script>
+        <script src="../../js/portal.js?v=admin-sidebar-6"></script>
+        <script src="../../js/pages/admin-requests.js?v=admin-request-queues-status-compat-1"></script>
 </body>
 </html>

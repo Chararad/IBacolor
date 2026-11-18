@@ -24,7 +24,12 @@ document.addEventListener("portal:ready", async () => {
   const inQueue = (request, queue) => !QUEUES[queue] || QUEUES[queue].includes(normalize(request.status));
 
   const requestedView = new URLSearchParams(window.location.search).get("view");
-  let activeQueue = requestedView && Object.hasOwn(QUEUES, requestedView) ? requestedView : "needs-action";
+  const requestedStatus = normalize(new URLSearchParams(window.location.search).get("status"));
+  const queueFromStatus = Object.keys(QUEUES).find((queue) =>
+    Array.isArray(QUEUES[queue]) && QUEUES[queue].includes(requestedStatus));
+  let activeQueue = requestedView && Object.hasOwn(QUEUES, requestedView)
+    ? requestedView
+    : queueFromStatus || "needs-action";
   let requests = [];
 
   const statusSelect = (request) => {

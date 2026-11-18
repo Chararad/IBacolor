@@ -1099,7 +1099,7 @@ function apiDispatch(): never
     }
     if ($action === 'admin.users') {
         $rows=$iBacolorConnection->query(
-            "SELECT a.account_id,a.email,a.status,a.created_at,rp.first_name,rp.last_name,
+            "SELECT a.account_id,a.email,a.status,a.created_at,rp.first_name,rp.middle_name,rp.last_name,
              COALESCE((SELECT vh.status FROM resident_verification_history vh WHERE vh.account_id=a.account_id
                        ORDER BY vh.changed_at DESC,vh.history_id DESC LIMIT 1),rp.verification) verification,
              (SELECT vh.note FROM resident_verification_history vh WHERE vh.account_id=a.account_id
@@ -1109,6 +1109,96 @@ function apiDispatch(): never
              LEFT JOIN barangays b ON b.barangay_id=rp.barangay_id WHERE a.roles='resident' ORDER BY a.created_at DESC"
         )->fetchAll();
         apiResponse(200,['users'=>$rows]);
+    }
+    if ($action === 'admin.user-details') {
+        $target = filter_var($_GET['accountId'] ?? null, FILTER_VALIDATE_INT);
+        if (!$target) {
+            apiResponse(422, ['error' => 'Choose a valid resident account.']);
+        }
+        $profileQuery = $iBacolorConnection->prepare(
+            "SELECT a.account_id,a.email,a.status,rp.first_name,rp.middle_name,rp.last_name,
+             rp.mobile_number,rp.address,rp.consented_at AS registered_at,b.name AS barangay_name,
+             COALESCE((SELECT vh.status FROM resident_verification_history vh WHERE vh.account_id=a.account_id
+                       ORDER BY vh.changed_at DESC,vh.history_id DESC LIMIT 1),rp.verification) AS verification
+             FROM accounts a JOIN resident_profiles rp ON rp.account_id=a.account_id
+             LEFT JOIN barangays b ON b.barangay_id=rp.barangay_id
+             WHERE a.account_id=:id AND a.roles='resident'"
+        );
+        $profileQuery->execute(['id' => $target]);
+        $profile = $profileQuery->fetch();
+        if (!$profile) {
+            apiResponse(404, ['error' => 'Resident account not found.']);
+        }
+
+        $verificationQuery = $iBacolorConnection->prepare(
+            "SELECT vh.status,vh.note,vh.changed_at,
+             COALESCE(NULLIF(TRIM(CONCAT_WS(' ',NULLIF(actor_profile.first_name,''),NULLIF(actor_profile.middle_name,''),NULLIF(actor_profile.last_name,''))),''),actor.email) AS actor_name
+             FROM resident_verification_history vh
+             JOIN accounts actor ON actor.account_id=vh.changed_by
+             LEFT JOIN resident_profiles actor_profile ON actor_profile.account_id=actor.account_id
+             WHERE vh.account_id=:id ORDER BY vh.changed_at ASC,vh.history_id ASC"
+        );
+        $verificationQuery->execute(['id' => $target]);
+
+        $requestsQuery = $iBacolorConnection->prepare(
+            "SELECT sr.request_id,sr.reference,sr.details,sr.status,sr.submitted_at,sr.updated_at,s.name AS service_name
+             FROM service_requests sr LEFT JOIN services s ON s.service_id=sr.service_id
+             WHERE sr.account_id=:id ORDER BY sr.submitted_at DESC,sr.request_id DESC"
+        );
+        $requestsQuery->execute(['id' => $target]);
+        $requests = $requestsQuery->fetchAll();
+        $requestHistoryQuery = $iBacolorConnection->prepare(
+            "SELECT h.request_id,h.status,h.note,h.changed_at,
+             COALESCE(NULLIF(TRIM(CONCAT_WS(' ',NULLIF(actor_profile.first_name,''),NULLIF(actor_profile.middle_name,''),NULLIF(actor_profile.last_name,''))),''),actor.email) AS actor_name
+             FROM request_status_history h
+             JOIN service_requests sr ON sr.request_id=h.request_id
+             JOIN accounts actor ON actor.account_id=h.changed_by
+             LEFT JOIN resident_profiles actor_profile ON actor_profile.account_id=actor.account_id
+             WHERE sr.account_id=:id ORDER BY h.changed_at ASC,h.history_id ASC"
+        );
+        $requestHistoryQuery->execute(['id' => $target]);
+        $requestHistory = [];
+        foreach ($requestHistoryQuery->fetchAll() as $entry) {
+            $requestHistory[$entry['request_id']][] = $entry;
+        }
+        foreach ($requests as &$request) {
+            $request['history'] = $requestHistory[$request['request_id']] ?? [];
+        }
+        unset($request);
+
+        $reportsQuery = $iBacolorConnection->prepare(
+            "SELECT cr.report_id,cr.reference,cr.category,cr.location_details,cr.description,cr.observed_at,
+             cr.frequency,cr.status,cr.submitted_at,cr.updated_at,b.name AS barangay_name
+             FROM community_reports cr LEFT JOIN barangays b ON b.barangay_id=cr.barangay_id
+             WHERE cr.account_id=:id ORDER BY cr.submitted_at DESC,cr.report_id DESC"
+        );
+        $reportsQuery->execute(['id' => $target]);
+        $reports = $reportsQuery->fetchAll();
+        $reportHistoryQuery = $iBacolorConnection->prepare(
+            "SELECT h.report_id,h.status,h.note,h.changed_at,
+             COALESCE(NULLIF(TRIM(CONCAT_WS(' ',NULLIF(actor_profile.first_name,''),NULLIF(actor_profile.middle_name,''),NULLIF(actor_profile.last_name,''))),''),actor.email) AS actor_name
+             FROM report_status_history h
+             JOIN community_reports cr ON cr.report_id=h.report_id
+             JOIN accounts actor ON actor.account_id=h.changed_by
+             LEFT JOIN resident_profiles actor_profile ON actor_profile.account_id=actor.account_id
+             WHERE cr.account_id=:id ORDER BY h.changed_at ASC,h.history_id ASC"
+        );
+        $reportHistoryQuery->execute(['id' => $target]);
+        $reportHistory = [];
+        foreach ($reportHistoryQuery->fetchAll() as $entry) {
+            $reportHistory[$entry['report_id']][] = $entry;
+        }
+        foreach ($reports as &$report) {
+            $report['history'] = $reportHistory[$report['report_id']] ?? [];
+        }
+        unset($report);
+
+        apiResponse(200, [
+            'profile' => $profile,
+            'verificationHistory' => $verificationQuery->fetchAll(),
+            'requests' => $requests,
+            'reports' => $reports,
+        ]);
     }
     if ($action === 'admin.user-documents') {
         $target = filter_var($_GET['accountId'] ?? null, FILTER_VALIDATE_INT);

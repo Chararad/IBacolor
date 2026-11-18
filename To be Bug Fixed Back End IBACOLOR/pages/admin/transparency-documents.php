@@ -281,25 +281,28 @@ function transparencyAdminEscape(string|int|null $value): string
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
         <title>Transparency Documents | iBacolor</title>
-        <link rel="stylesheet" href="../../css/pages/admin-transparency-documents.css" />
+        <link rel="stylesheet" href="../../css/pages/admin-transparency-documents.css?v=admin-sidebar-12" />
     </head>
     <body data-page="admin/transparency-documents" class="admin-view">
         <div id="app">
-            <aside class="admin-sidebar">
-                <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
+            <aside class="admin-sidebar" id="admin-sidebar" aria-label="Admin menu" aria-hidden="true" hidden>
+                <div class="admin-sidebar-header">
+                    <button class="admin-menu-toggle admin-menu-close" type="button" aria-label="Close admin menu" aria-expanded="false" aria-controls="admin-sidebar"><span class="menu-icon" aria-hidden="true"><span></span><span></span><span></span></span></button>
+                    <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
+                </div>
                 <p class="admin-label">Workspace</p>
                 <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
                 <p class="admin-label">Content</p>
                 <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
                 <div class="admin-sidebar-footer">
-                    <a href="../../main.php">← Public website</a>
+                    <a href="../logout.php">Sign out</a>
                 </div>
             </aside>
             <?php require __DIR__ . '/../../includes/site-header.php'; ?>
             <main>
                 <section class="page-header">
                     <div class="container">
-                        <div class="breadcrumbs"><a href="../../main.php">Home</a><span>/</span>Transparency Documents</div>
+                        <div class="breadcrumbs">Administration <span>/</span>Transparency Documents</div>
                         <p class="eyebrow">Administration</p>
                         <h1>Transparency Documents</h1>
                         <p class="lead">Upload official PDFs, keep document versions, and manage public availability.</p>
@@ -413,6 +416,6 @@ function transparencyAdminEscape(string|int|null $value): string
                 </section>
             </main>
         </div>
-        <script src="../../js/portal.js"></script>
+        <script src="../../js/portal.js?v=admin-sidebar-6"></script>
     </body>
 </html>
