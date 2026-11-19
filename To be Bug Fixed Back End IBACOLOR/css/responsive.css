@@ -1,4 +1,12 @@
 @media (max-width: 1050px) {
+  .bottom-nav .emergency-action > span:not(.icon) {
+    display: none;
+  }
+  .admin-view .admin-sidebar-icon {
+    width: 16px;
+    height: 16px;
+    margin-right: 8px;
+  }
   .nav-links {
     gap: 12px;
   }

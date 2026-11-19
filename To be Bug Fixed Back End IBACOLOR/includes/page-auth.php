@@ -33,6 +33,7 @@ if (!$account || !in_array($account['roles'], $allowedRoles, true) || $account['
 }
 
 if ($requiredRole === 'admin') {
+    require_once __DIR__ . '/admin-sidebar-icons.php';
     require_once __DIR__ . '/admin-authorization.php';
     if (!adminCanOpenPage($iBacolorConnection, (int) $accountId, basename($_SERVER['SCRIPT_NAME'] ?? ''))) {
         http_response_code(403);

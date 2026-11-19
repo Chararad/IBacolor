@@ -325,6 +325,10 @@ body[data-page="home"] .cookie-banner .button {
   body[data-page="home"] .hero-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+  body[data-page="home"] .quick-services-section .quick-grid {
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
   body[data-page="home"] .hero h1,
   body[data-page="home"] .hero-copy {
     max-width: none;
@@ -334,6 +338,10 @@ body[data-page="home"] .cookie-banner .button {
 @media (max-width: 760px) {
   body[data-page="home"] .hero {
     padding: 44px 0 48px;
+  }
+  /* the desktop "align-items: end" would push this heading to the right once it stacks */
+  body[data-page="home"] .quick-services-section .section-heading {
+    align-items: flex-start;
   }
   body[data-page="home"] .history-layout {
     grid-template-columns: minmax(0, 1fr);

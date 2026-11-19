@@ -15,14 +15,14 @@
                 <a class="admin-sidebar-brand" href="../admin/dashboard.php"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Admin portal</small></span></a>
             </div>
             <p class="admin-label">Workspace</p>
-            <a href="../admin/dashboard.php">▦ Dashboard</a><a href="../admin/requests.php">▤ Service requests</a><a href="../admin/documents.php">▧ Documents</a><a href="../admin/reports.php">! Community reports</a>
+            <a href="../admin/dashboard.php"><?= adminSidebarIcon('dashboard') ?>Dashboard</a><a href="../admin/requests.php"><?= adminSidebarIcon('clipboard-list') ?>Service requests</a><a href="../admin/documents.php"><?= adminSidebarIcon('file-text') ?>Documents</a><a href="../admin/reports.php"><?= adminSidebarIcon('alert-circle') ?>Community reports</a>
             <p class="admin-label">Content</p>
-            <a href="../admin/news.php">✦ News</a><a href="../admin/transparency-documents.php">▤ Transparency Documents</a><a href="../admin/services.php">▣ Services</a><a href="../admin/hotlines.php">☎ Hotlines</a><a href="../admin/users.php">◯ Users</a>
+            <a href="../admin/news.php"><?= adminSidebarIcon('newspaper') ?>News</a><a href="../admin/transparency-documents.php"><?= adminSidebarIcon('file-search') ?>Transparency Documents</a><a href="../admin/services.php"><?= adminSidebarIcon('briefcase') ?>Services</a><a href="../admin/hotlines.php"><?= adminSidebarIcon('phone') ?>Hotlines</a><a href="../admin/users.php"><?= adminSidebarIcon('users') ?>Users</a>
             <p class="admin-label">System</p>
-            <a href="../admin/history.php">◷ History logs</a>
-            <a href="../admin/authorization.php" aria-current="page">⚙ Admin access</a>
+            <a href="../admin/history.php"><?= adminSidebarIcon('history') ?>History logs</a>
+            <a href="../admin/authorization.php" aria-current="page"><?= adminSidebarIcon('shield-check') ?>Admin access</a>
             <div class="admin-sidebar-footer">
-                <a href="../logout.php">Sign out</a>
+                <a href="../logout.php"><?= adminSidebarIcon('logout') ?>Sign out</a>
             </div>
         </aside>
         <?php require __DIR__ . '/../../includes/site-header.php'; ?>
@@ -126,7 +126,14 @@
                     <div class="brand brand-footer"><img class="brand-logo" src="../../assets/bacolor-seal.webp" alt="" /><span><strong>iBacolor</strong><small>Administration portal</small></span></div>
                     <p>Administrative workspace for municipal operations.</p>
                 </div>
-                <div><h3>Administration</h3><p>Manage administrator access and permissions.</p></div>
+                <div>
+                    <h3>Explore</h3>
+                    <a href="../services.php">Services</a>
+                    <a href="../news.php">News and announcements</a>
+                    <a href="../hotlines.php">Emergency hotlines</a>
+                    <a href="../transparency.php">Transparency</a>
+                    <a href="../resident/reports.php">Community Report</a>
+                </div>
                 <div><h3>Need assistance?</h3><p>Municipal Hall<br />(045) 900-1000<br />Mon–Fri, 8:00 AM–5:00 PM</p></div>
             </div>
             <div class="container footer-bottom"><span>© 2026 Municipality of Bacolor</span></div>

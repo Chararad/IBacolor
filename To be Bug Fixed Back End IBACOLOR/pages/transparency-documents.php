@@ -111,10 +111,16 @@ function transparencyPublicEscape(string|int|null $value): string
                         <a href="news.php">News and announcements</a>
                         <a href="hotlines.php">Emergency hotlines</a>
                         <a href="transparency.php">Transparency</a>
+                        <a href="resident/reports.php">Community Report</a>
                     </div>
                     <div>
                         <h3>Need assistance?</h3>
                         <p>Municipal Hall<br />(045) 900-1000<br />Mon–Fri, 8:00 AM–5:00 PM</p>
+                        <a class="footer-facebook-link" href="https://www.facebook.com/SupportersOfMayorDimanDatu" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                            <svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor" aria-hidden="true" focusable="false">
+                                <path d="M13.7 21v-8h2.7l.4-3h-3.1V8.1c0-.9.3-1.5 1.6-1.5H17V3.9c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3V10H7.5v3h2.8v8h3.4z"></path>
+                            </svg>
+                        </a>
                     </div>
                 </div>
                 <div class="container footer-bottom"><span>© 2026 Municipality of Bacolor</span></div>
