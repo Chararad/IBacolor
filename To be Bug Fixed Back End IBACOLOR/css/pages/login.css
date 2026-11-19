@@ -3,3 +3,70 @@
 @import "../responsive.css";
 
 /* Add styles specific to the login page below. */
+.login-form #login-email {
+  font-weight: 400;
+}
+
+.login-form input:focus {
+  outline: none;
+  box-shadow: none;
+}
+
+.login-password-group {
+  margin-bottom: 18px;
+}
+
+.login-password-group > label {
+  margin-bottom: 0;
+}
+
+.login-forgot-link {
+  display: inline-block;
+  margin-top: 10px;
+}
+
+.login-password-field {
+  position: relative;
+  margin-top: 7px;
+}
+
+.login-password-field input {
+  margin-top: 0;
+  padding-right: 44px;
+}
+
+.login-password-field input::-ms-reveal,
+.login-password-field input::-ms-clear {
+  display: none;
+}
+
+.password-visibility-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  display: grid;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.password-visibility-toggle:hover {
+  color: var(--red);
+}
+
+.password-visibility-toggle:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 1px;
+}
+
+.password-visibility-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+}

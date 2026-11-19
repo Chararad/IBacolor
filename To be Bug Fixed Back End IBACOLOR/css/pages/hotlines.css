@@ -3,3 +3,31 @@
 @import "../responsive.css";
 
 /* Add styles specific to the hotlines page below. */
+.office-icon-library {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.office-card-icon {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.hotline-card-icon {
+  display: block;
+  width: 28px;
+  height: 28px;
+}
+
+.hotline-section-heading {
+  margin-top: 56px;
+}
+
+@media (max-width: 700px) {
+  .hotline-section-heading {
+    margin-top: 44px;
+  }
+}

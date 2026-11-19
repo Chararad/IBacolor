@@ -3,3 +3,112 @@
 @import "../responsive.css";
 
 /* Add styles specific to the register page below. */
+.form-card input:focus,
+.form-card select:focus,
+.form-card textarea:focus {
+  outline: none;
+  border-color: var(--red);
+  box-shadow: none;
+}
+
+.form-card input:focus-visible,
+.form-card select:focus-visible,
+.form-card textarea:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+.register-fixed-field {
+  margin-bottom: 18px;
+}
+
+.register-fixed-label {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.register-fixed-value {
+  display: block;
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid #cfc5bd;
+  border-radius: 4px;
+  color: var(--ink);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: default;
+  pointer-events: none;
+  user-select: none;
+}
+
+.register-password-hint {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.register-password-field {
+  position: relative;
+  display: block;
+  margin-top: 7px;
+}
+
+.register-password-field input {
+  margin-top: 0;
+  padding-right: 44px;
+}
+
+.register-password-field input::-ms-reveal,
+.register-password-field input::-ms-clear {
+  display: none;
+}
+
+.register-password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  display: none;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  place-items: center;
+  transform: translateY(-50%);
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.register-password-field.has-value .register-password-toggle {
+  display: grid;
+}
+
+.register-password-toggle:hover {
+  color: var(--red);
+}
+
+.register-password-toggle:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 1px;
+}
+
+.register-password-icon {
+  display: block;
+  width: 20px;
+  height: 20px;
+}
+
+.register-field-error {
+  display: block;
+  margin-top: 6px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.4;
+}

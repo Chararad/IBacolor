@@ -67,8 +67,8 @@
             $errors[] = 'Enter a valid Philippine mobile number.';
         }
 
-        if ($password === '' || preg_match('/^(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/', $password) !== 1) {
-            $errors[] = 'Password must be at least 8 characters and include a number and a symbol.';
+        if ($password === '' || preg_match('/^(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}$/', $password) !== 1) {
+            $errors[] = 'Password must be at least 8 characters and include uppercase and lowercase letters, a number, and a special character.';
         }
 
         if ($password !== $confirmPassword) {
@@ -221,10 +221,36 @@
                                 </label>
                                 <label>Residential address<textarea name="address"                                 rows="3"
                                 maxlength="255" required="" autocomplete="street-address" placeholder="House no./street, barangay, municipality, province"><?= htmlspecialchars($formValues['address'], ENT_QUOTES, 'UTF-8') ?></textarea></label>
-                                <label>Municipality<input name="municipality" value="Bacolor" readonly="" /></label>
-                                <label>Province<input name="province" value="Pampanga" readonly="" /></label>
-                                <label>Password<input name="password" type="password" required="" minlength="8" pattern="(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" autocomplete="new-password" placeholder="change password" /></label>
-                                <label>Confirm password<input name="confirmPassword" type="password" required="" minlength="8" autocomplete="new-password" /></label>
+                                <div class="register-fixed-field">
+                                    <span class="register-fixed-label">Municipality</span>
+                                    <span class="register-fixed-value">Bacolor</span>
+                                </div>
+                                <div class="register-fixed-field">
+                                    <span class="register-fixed-label">Province</span>
+                                    <span class="register-fixed-value">Pampanga</span>
+                                </div>
+                                <label>Password
+                                    <span class="register-password-field">
+                                        <input id="register-password" name="password" type="password" required="" minlength="8" pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*[0-9])(?=.*[^A-Za-z0-9]).{8,}" autocomplete="new-password" />
+                                        <button class="register-password-toggle" type="button" aria-label="Show password" aria-controls="register-password" aria-pressed="false" title="Show password">
+                                            <svg class="register-password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                                <path d="M2 12s3.7-7 10-7 10 7 10 7-3.7 7-10 7-10-7-10-7Z M12 9a3 3 0 1 0 0 6a3 3 0 0 0 0-6Z M3 3l18 18" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                    <small class="register-password-hint">Use at least 8 characters, including uppercase and lowercase letters, a number, and a special character.</small>
+                                </label>
+                                <label>Confirm password
+                                    <span class="register-password-field">
+                                        <input id="register-confirm-password" name="confirmPassword" type="password" required="" minlength="8" autocomplete="new-password" />
+                                        <button class="register-password-toggle" type="button" aria-label="Show password" aria-controls="register-confirm-password" aria-pressed="false" title="Show password">
+                                            <svg class="register-password-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                                <path d="M2 12s3.7-7 10-7 10 7 10 7-3.7 7-10 7-10-7-10-7Z M12 9a3 3 0 1 0 0 6a3 3 0 0 0 0-6Z M3 3l18 18" />
+                                            </svg>
+                                        </button>
+                                    </span>
+                                    <small class="register-password-hint">Use at least 8 characters, including uppercase and lowercase letters, a number, and a special character.</small>
+                                </label>
                             </div>
                             <div class="location-capture">
                                 <button class="button button-outline" id="capture-location" type="button">Pin my current location</button>
@@ -299,7 +325,7 @@
         </div>
         
         
-        <script src="../js/register.js"></script>
+        <script src="../js/register.js?v=4"></script>
         <script src="../js/helper.js"></script>
     </body>
     

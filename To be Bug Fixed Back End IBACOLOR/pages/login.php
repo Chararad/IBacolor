@@ -112,13 +112,24 @@
                                 <span>Municipal Public Service Portal<strong>For residents and visitors</strong></span>
                             </div>
                         </div>
-                        <form action="login.php" class="form-card login-form" id="login-form" method="POST">
+                        <form action="login.php" class="form-card login-form" id="login-form" method="POST" autocomplete="off">
                             <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['login_csrf_token'], ENT_QUOTES, 'UTF-8') ?>" />
                             <p class="eyebrow">Resident portal</p>
                             <h2>Sign in to your account</h2>
                             <p class="login-form-intro">Track service requests and community reports.</p>
-                            <label>Email address<input name="email" type="email" value="<?= htmlspecialchars($emailValue, ENT_QUOTES, 'UTF-8') ?>" maxlength="100" required="" autocomplete="email" /></label>
-                            <label>Password<input name="password" type="password" required="" autocomplete="current-password" /></label>
+                            <label for="login-email">Email address<input id="login-email" name="email" type="email" value="<?= htmlspecialchars($emailValue, ENT_QUOTES, 'UTF-8') ?>" maxlength="100" required="" autocomplete="email" /></label>
+                            <div class="login-password-group">
+                                <label for="login-password">Password</label>
+                                <div class="login-password-field">
+                                    <input id="login-password" name="password" type="password" required="" autocomplete="off" />
+                                    <button class="password-visibility-toggle" id="toggle-password-visibility" type="button" aria-label="Show password" aria-controls="login-password" aria-pressed="false" title="Show password">
+                                        <svg class="password-visibility-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                            <path id="password-visibility-icon-path" d="M2 12s3.7-7 10-7 10 7 10 7-3.7 7-10 7-10-7-10-7Z M12 9a3 3 0 1 0 0 6a3 3 0 0 0 0-6Z" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                <a class="text-link login-forgot-link" href="forgot_password.php">Forgot Password?</a>
+                            </div>
                             <div id="login-status" class="notice notice-warning" role="status" <?= $loginError === '' ? 'hidden' : '' ?>><?= htmlspecialchars($loginError, ENT_QUOTES, 'UTF-8') ?></div>
                             <div class="form-actions">
                                 <button class="button" type="submit">Sign in</button>
@@ -170,5 +181,6 @@
             </nav>
         </div>
         
+        <script src="../js/pages/login.js?v=2"></script>
     </body>
 </html>

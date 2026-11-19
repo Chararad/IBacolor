@@ -216,7 +216,9 @@ INSERT INTO `public_contacts` (`contact_id`, `name`, `type`, `telephone`, `email
 (12, 'Municipal Environment and Natural Resources Office', 'office', NULL, NULL, 'Municipal Hall, Bacolor, Pampanga', 0, NULL, NULL, 'Environmental programs; Solid waste coordination; Environmental concerns', 'Environment', NULL, 'https://www.bacolor.gov.ph', NULL),
 (13, 'Municipal General Services Office', 'office', NULL, NULL, 'Municipal Hall, Bacolor, Pampanga', 0, NULL, NULL, 'Municipal property and facilities; General support services', 'General Services', NULL, 'https://www.bacolor.gov.ph', NULL),
 (14, 'Municipality of Bacolor', 'office', '(045) 900-1000', 'municipalityofbacolor@gmail.com', 'Municipal Hall, Cabambangan (Pob.), Bacolor, Pampanga', 0, NULL, NULL, 'General municipal inquiries and office directory', 'General inquiries', NULL, 'https://www.bacolor.gov.ph', 'https://www.facebook.com/BacolorPampanga'),
-(15, 'Municipal Disaster Risk Reduction Management Office (MDRRMO - Bacolor)', 'emergency', 'Smart: 0929-446-1940 | Globe: 0966-136-5586', 'mdrrmcbacolor@gmail.com', 'XMW2+RM3, Barangay Cabambangan (Pob.), Bacolor, Pampanga', 0, NULL, 'Mr. Joel D. Samia', 'Disaster preparedness; Emergency rescue; Risk assessment; Disaster mitigation', 'Emergency', 'https://www.facebook.com/BacolorRescue.DIMANteam', NULL, NULL);
+(15, 'Municipal Disaster Risk Reduction Management Office (MDRRMO - Bacolor)', 'emergency', 'Smart: 0929-446-1940 | Globe: 0966-136-5586', 'mdrrmcbacolor@gmail.com', 'XMW2+RM3, Barangay Cabambangan (Pob.), Bacolor, Pampanga', 0, NULL, 'Mr. Joel D. Samia', 'Disaster preparedness; Emergency rescue; Risk assessment; Disaster mitigation', 'Emergency', 'https://www.facebook.com/BacolorRescue.DIMANteam', NULL, NULL),
+(18, 'PNP Bacolor', 'emergency', '(045) 901-0833', NULL, 'XMW2+GM2, National Road, Bacolor, 2001 Pampanga', 0, NULL, 'PMA J Jessie James M. Domingo', 'Law enforcement; Crime prevention; Public safety and security; Traffic management; Investigation services; Community policing', 'Emergency / Public Safety', 'https://www.facebook.com/PulisBaculud/', NULL, NULL),
+(19, 'Fire Department Bacolor', 'emergency', '(045) 436-1828 | 0923 103 8363', NULL, 'XMW2+VJJ, Bacolor, Pampanga', 0, NULL, 'FSINSP Jovel E. Hernandez', 'Fire prevention and suppression; Emergency rescue services; Fire safety inspections; Fire safety education and awareness programs', 'Emergency / Public Safety', 'https://www.facebook.com/p/Bacolor-Fire-Station-BFP-R3-61569884632047/', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -798,7 +800,7 @@ ALTER TABLE `news_articles`
 -- AUTO_INCREMENT for table `public_contacts`
 --
 ALTER TABLE `public_contacts`
-  MODIFY `contact_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `contact_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `report_attachments`
