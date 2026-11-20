@@ -76,3 +76,4 @@ Database cleanup and system-data backup:
    preserves the remaining service and hotline rows.
 6. The reset script changes database rows only. It does not delete uploaded
    files from `storage/private/`.
+7. AI must not inject anything to the current sql.
